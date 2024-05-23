@@ -123,20 +123,20 @@ const SocketProvider = ({ children }) => {
     localStorage.setItem('isFirstLogin', true);
   }
 
-  useEffect(() => {
-    if (!socket) {
-      setSocket(io(process.env.REACT_APP_SERVER_ENDPOINT.replace("http", "ws"), {
-        transportOptions: {
-          polling: {
-            maxHttpBufferSize: 1e8,
-            extraHeaders: accessToken ? {
-              Authorization: "Bearer " + accessToken
-            } : null
-          },
-        }
-      }));
-    }
-  }, [socket]);
+  // useEffect(() => {
+  //   if (!socket) {
+  //     setSocket(io(process.env.REACT_APP_SERVER_ENDPOINT.replace("http", "ws"), {
+  //       transportOptions: {
+  //         polling: {
+  //           maxHttpBufferSize: 1e8,
+  //           extraHeaders: accessToken ? {
+  //             Authorization: "Bearer " + accessToken
+  //           } : null
+  //         },
+  //       }
+  //     }));
+  //   }
+  // }, [socket]);
 
   useEffect(() => {
     const handleRefresh = async () => {

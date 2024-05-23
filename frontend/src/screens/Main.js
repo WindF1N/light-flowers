@@ -138,6 +138,10 @@ function Main() {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo({top: 0, smooth: "behavior"});
+  }, [])
+
   return (
     <div className="view">
       <div className={styles.header}>
@@ -152,23 +156,23 @@ function Main() {
         <div className={styles.itemsWrapper}>
           <div className={styles.items}>
             <div className={styles.item}>
-              <span>Фотоотчёт</span>
-              <div>Присылаем фото собранного букета и фотоотчёт о вручении</div>
+              <span style={{zIndex: 1}}>Фотоотчёт</span>
+              <div style={{zIndex: 1}}>Присылаем фото собранного букета и фотоотчёт о вручении</div>
               <img src={require("./images/photo.svg").default} alt="" style={{position: "absolute", top: 0, right: 0, width: 80, transform: "rotate(14.5deg)", filter: "brightness(.3)"}} />
             </div>
             <div className={styles.item}>
-              <span>Оплата при получении</span>
-              <div>Наличными курьеру или переводом</div>
+              <span style={{zIndex: 1}}>Оплата при получении</span>
+              <div style={{zIndex: 1}}>Наличными курьеру или переводом</div>
               <img src={require("./images/rouble.svg").default} alt="" style={{position: "absolute", top: 0, right: -10, width: 80, transform: "rotate(14.5deg)", filter: "brightness(.3)"}} />
             </div>
             <div className={styles.item}>
-              <span>Бесплатная доставка</span>
-              <div>При заказе от 4500 ₽</div>
+              <span style={{zIndex: 1}}>Бесплатная доставка</span>
+              <div style={{zIndex: 1}}>При заказе от 4500 ₽</div>
               <img src={require("./images/delivery.svg").default} alt="" style={{position: "absolute", top: 0, right: 0, width: 80, transform: "rotate(14.5deg)", filter: "brightness(.3)"}} />
             </div>
             <div className={styles.item}>
-              <span>Круглосуточно</span>
-              <div>Режим работы 24/7</div>
+              <span style={{zIndex: 1}}>Круглосуточно</span>
+              <div style={{zIndex: 1}}>Режим работы 24/7</div>
               <img src={require("./images/clock.svg").default} alt="" style={{position: "absolute", top: 0, right: 0, width: 80, transform: "rotate(14.5deg)", filter: "brightness(.3)"}} />
             </div>
           </div>
@@ -179,7 +183,7 @@ function Main() {
           <Post data={post} key={index}/>
         ))}
       </div> */}
-      <Title text="Каталог" allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view} showMore={() => alert("Хайп")}/>
+      <Title text="Каталог" allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view} showMore={() => navigate("/search")}/>
       {view === "grid" &&
       <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
         <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
@@ -327,7 +331,7 @@ function Main() {
         </div>
       </div>}
       <div style={{marginTop: 20}}>
-        <Button text="Показать всё" />
+        <Button text="Показать всё" handleClick={() => navigate("/search")} />
       </div>
       <div className={styles.information}>
         <div className={styles.informationblocks}>
@@ -409,7 +413,6 @@ function Main() {
           powered by <span>LIGHT Business</span> © 2024
         </div>
       </footer>
-      <FixedButton />
     </div>
   );
 }

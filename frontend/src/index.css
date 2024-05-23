@@ -20,9 +20,8 @@ body {
   position: relative;
   overflow: hidden;
 
-  padding: 0 15px;
+  padding: 0 15px 150px 15px;
   box-sizing: border-box;
-
 }
 
 .no-scrollbar::-webkit-scrollbar {

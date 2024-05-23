@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useMainContext } from './context';
 
+import FixedButton from './components/FixedButton';
+
 import Main from './screens/Main';
 import Loading from './screens/Loading';
 import LoadUserInfo from './screens/LoadUserInfo';
@@ -34,31 +36,34 @@ const Navigate = () => {
     !loading ?
       ( !loadUserInfo ?
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="/verify" element={<Verify />} />
-            <Route path="/add" element={<SelectCategory />} />
-            <Route path="/add/car" element={<AddCar />} />
-            <Route path="/add/service" element={<AddService />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/activity" element={<Activity />} />
-            <Route path="/passwords" element={<Passwords />} />
-            <Route path="/password" element={<Password />} />
-            <Route path="/messenger" element={<Messenger />} />
-            <Route path="/search/more" element={<SearchMore />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/posts/:id" element={<Post />} />
-            <Route path="/posts/:id/comments" element={<Comments />} />
-            <Route path="/users/:id" element={<User />} />
-            <Route path="/services/:id" element={<Service />} />
-            <Route path="/page/:id" element={<Page />} />
-            <Route path="/serv/:id" element={<Serv />} />
-            <Route path="/add-damage/" element={<AddDamage />} />
-            <Route path="/prokat" element={<Redirect link={"http://prolbrm2.beget.tech"} />} />
-            <Route path="/travel" element={<Redirect link={"http://objectnss.beget.tech"} />} />
-            <Route path="/documents" element={<Redirect link={"http://kostya.prolbrm2.beget.tech:5000"} />} />
-          </Routes>
+          <div>
+            <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/verify" element={<Verify />} />
+              <Route path="/add" element={<SelectCategory />} />
+              <Route path="/add/car" element={<AddCar />} />
+              <Route path="/add/service" element={<AddService />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/activity" element={<Activity />} />
+              <Route path="/passwords" element={<Passwords />} />
+              <Route path="/password" element={<Password />} />
+              <Route path="/messenger" element={<Messenger />} />
+              <Route path="/search/more" element={<SearchMore />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/posts/:id" element={<Post />} />
+              <Route path="/posts/:id/comments" element={<Comments />} />
+              <Route path="/users/:id" element={<User />} />
+              <Route path="/services/:id" element={<Service />} />
+              <Route path="/page/:id" element={<Page />} />
+              <Route path="/serv/:id" element={<Serv />} />
+              <Route path="/add-damage/" element={<AddDamage />} />
+              <Route path="/prokat" element={<Redirect link={"http://prolbrm2.beget.tech"} />} />
+              <Route path="/travel" element={<Redirect link={"http://objectnss.beget.tech"} />} />
+              <Route path="/documents" element={<Redirect link={"http://kostya.prolbrm2.beget.tech:5000"} />} />
+            </Routes>
+            <FixedButton />
+          </div>
         </BrowserRouter>
         : <LoadUserInfo />
       )
