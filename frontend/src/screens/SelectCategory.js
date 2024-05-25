@@ -34,7 +34,6 @@ function SelectCategory() {
           </div>
         </div>
       </div>
-      <FixedButton />
     </div>
   );
 }

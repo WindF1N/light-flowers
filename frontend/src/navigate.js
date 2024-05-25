@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useMainContext } from './context';
 
 import FixedButton from './components/FixedButton';
@@ -27,6 +27,7 @@ import Passwords from './screens/Passwords';
 import Password from './screens/Password';
 import Messenger from './screens/Messenger';
 import Redirect from './screens/Redirect';
+import Cart from './screens/Cart';
 
 const Navigate = () => {
 
@@ -35,13 +36,13 @@ const Navigate = () => {
   return (
     !loading ?
       ( !loadUserInfo ?
-        <BrowserRouter>
           <div>
             <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/login" element={<SignIn />} />
               <Route path="/verify" element={<Verify />} />
               <Route path="/add" element={<SelectCategory />} />
+              <Route path="/cart" element={<Cart />} />
               <Route path="/add/car" element={<AddCar />} />
               <Route path="/add/service" element={<AddService />} />
               <Route path="/search" element={<Search />} />
@@ -64,7 +65,6 @@ const Navigate = () => {
             </Routes>
             <FixedButton />
           </div>
-        </BrowserRouter>
         : <LoadUserInfo />
       )
 

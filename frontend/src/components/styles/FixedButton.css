@@ -23,7 +23,6 @@
 }
 
 .fixed-button img {
-  margin-top: -5px;
   width: 100%;
   height: 100%;
 }
@@ -116,7 +115,7 @@
   transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-.fixed-button.acc {
+.fixed-button.add {
   transform: translateY(0) scale(.1);
   opacity: 0;
   transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
@@ -124,26 +123,11 @@
 }
 
 .fixed-button.add.visible {
-  transform: translateY(-390px) scale(.9);
+  transform: translateY(-65px) scale(.9);
   opacity: 1;
 }
 
 .fixed-button.add img {
-  margin-top: 0;
-  width: 100%;
-}
-
-.fixed-button.acc.visible {
-  transform: translateY(-65px) scale(.95);
-  opacity: 1;
-}
-
-.fixed-button.acc img {
-  margin-top: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
 }
 
 .fixed-button.search.visible {
@@ -187,12 +171,8 @@
 }
 
 .fixed-button-up.visible {
-  transform: translateY(-385px) scale(.95);
+  transform: translateY(-60px) scale(.95);
   opacity: 1;
-}
-
-.fixed-button.visible {
-  transform: rotate(180deg);
 }
 
 .upper .fixed-button {

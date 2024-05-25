@@ -178,6 +178,23 @@ function Main() {
           </div>
         </div>
       </div>
+      <div style={{position: "relative", width: "100%", height: "120px", borderRadius: 9, overflow: "hidden"}}>
+        <img src={require("./images/woman.avif")} alt="" style={{borderRadius: 9, display: "flex", width: "100%", height: "100%", objectFit: "cover", position: "absolute", zIndex: 1}} />
+        <div style={{position: "relative", 
+                     boxSizing: "border-box", 
+                     background: "linear-gradient(10deg, rgba(24, 24, 26, .7) 45%, rgba(24, 24, 26, 0)) 55%", 
+                     width: "100%", 
+                     height: "100%", 
+                     zIndex: 2, 
+                     padding: 15,
+                     display: "flex",
+                     alignItems: "flex-end"}}>
+          <div style={{zIndex: 1, display: "flex", flexFlow: "column", rowGap: 5}}>
+            <div style={{fontSize: 16, fontWeight: 300}}>Вы приводите клиентов - мы за это платим</div>
+            <div style={{fontSize: 12, fontWeight: 300, color: "#bbb"}}>Рекомендуйте наши букеты и получаете до 5 000₽ за каждый букет, купленный по вашему промокоду</div>
+          </div>
+        </div>
+      </div>
       {/* <div className={styles.posts}>
         {posts.map((post, index) => (
           <Post data={post} key={index}/>
