@@ -193,7 +193,9 @@ function Add() {
           <div className={styles.flex20gap}>
             <FormLIGHT inputs={Object.entries(inputs).slice(0, 1)} setInputs={setInputs} errors={errors} touched={touched} />
             <FormLIGHT inputs={Object.entries(inputs).slice(1, 2)} setInputs={setInputs} errors={errors} touched={touched} />
-            <div>
+            {values.category === "Розы с любовью" &&
+            <>
+              <div>
                 <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступные цвета</div>
                 <div style={{
                   display: "flex",
@@ -325,8 +327,10 @@ function Add() {
                 ))}
               </div>
             </div>
+            </>}
             <FormLIGHT inputs={Object.entries(inputs).slice(2)} setInputs={setInputs} errors={errors} touched={touched} />
-            <AddPrice />
+            {values.category === "Розы с любовью" &&
+            <AddPrice />}
             <Button text="Сохранить" />
           </div>
           <ScrollToError/>

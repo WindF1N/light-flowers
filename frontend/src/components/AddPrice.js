@@ -170,6 +170,45 @@ function AddPrice({ data }) {
                 Добавить цену
             </div>
         </animated.div>
+        <div style={{display: "flex", flexFlow: "column", gap: 10}}>
+          <animated.div style={{display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#18181A", padding: "10px 10px", borderRadius: 9, ...props}} onClick={toggle}>
+            <div style={{display: "flex", flexWrap: "wrap", gap: 5}}>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Белые</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Красные</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Черные</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Синие</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Желтые</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Оранжевые</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Розовые</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Микс</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>19 роз</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>29 роз</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>51 роза</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>101 роза</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>50 см</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>60 см</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>70 см</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>80 см</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Лента</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Коробка</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Корзина</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Подарочной упаковка</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Классика</div>
+            </div>
+            <div style={{flexShrink: 0}}>
+              <div style={{fontSize: 14, fontWeight: 300, color: "#fff"}}>4 000 ₽<br/><span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>8 000 ₽</span></div>
+            </div>
+          </animated.div>
+          <animated.div style={{display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#18181A", padding: "10px 10px", borderRadius: 9, ...props}} onClick={toggle}>
+            <div style={{display: "flex", flexWrap: "wrap", gap: 5}}>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>Белые</div>
+              <div style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>19 роз</div>
+            </div>
+            <div style={{flexShrink: 0}}>
+              <div style={{fontSize: 14, fontWeight: 300, color: "#fff"}}>2 000 ₽<br/><span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>5 000 ₽</span></div>
+            </div>
+          </animated.div>
+        </div>
       {isOpen &&
         <animated.div style={{
                         position: "fixed", 
