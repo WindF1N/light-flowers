@@ -7,26 +7,9 @@ import Main from './screens/Main';
 import Loading from './screens/Loading';
 import LoadUserInfo from './screens/LoadUserInfo';
 
-import SignIn from './screens/SignIn';
-import Verify from './screens/Verify';
 import Search from './screens/Search';
-import SearchMore from './screens/SearchMore';
-import Comments from './screens/Comments';
-import Post from './screens/Post';
-import User from './screens/User';
 import SelectCategory from './screens/SelectCategory';
-import AddCar from './screens/Add';
-import AddService from './screens/AddService';
-import Settings from './screens/Settings';
-import Service from './screens/Service';
-import Page from './screens/Page';
-import Serv from './screens/Serv';
-import AddDamage from './screens/AddDamage';
-import Activity from './screens/Activity';
-import Passwords from './screens/Passwords';
-import Password from './screens/Password';
-import Messenger from './screens/Messenger';
-import Redirect from './screens/Redirect';
+import Add from './screens/Add';
 import Cart from './screens/Cart';
 
 const Navigate = () => {
@@ -35,39 +18,15 @@ const Navigate = () => {
 
   return (
     !loading ?
-      ( !loadUserInfo ?
-          <div>
-            <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/verify" element={<Verify />} />
-              <Route path="/add" element={<SelectCategory />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/add/car" element={<AddCar />} />
-              <Route path="/add/service" element={<AddService />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/activity" element={<Activity />} />
-              <Route path="/passwords" element={<Passwords />} />
-              <Route path="/password" element={<Password />} />
-              <Route path="/messenger" element={<Messenger />} />
-              <Route path="/search/more" element={<SearchMore />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/posts/:id" element={<Post />} />
-              <Route path="/posts/:id/comments" element={<Comments />} />
-              <Route path="/users/:id" element={<User />} />
-              <Route path="/services/:id" element={<Service />} />
-              <Route path="/page/:id" element={<Page />} />
-              <Route path="/serv/:id" element={<Serv />} />
-              <Route path="/add-damage/" element={<AddDamage />} />
-              <Route path="/prokat" element={<Redirect link={"http://prolbrm2.beget.tech"} />} />
-              <Route path="/travel" element={<Redirect link={"http://objectnss.beget.tech"} />} />
-              <Route path="/documents" element={<Redirect link={"http://kostya.prolbrm2.beget.tech:5000"} />} />
-            </Routes>
-            <FixedButton />
-          </div>
-        : <LoadUserInfo />
-      )
-
+      <div>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/add" element={<Add />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/search" element={<Search />} />
+        </Routes>
+        <FixedButton />
+      </div>
     :
       <Loading />
   );

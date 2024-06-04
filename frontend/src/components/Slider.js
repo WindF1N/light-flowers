@@ -85,13 +85,12 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
   }
 
   return (
-    <div className={styles.imagesWrapper}>
+    <div className={styles.imagesWrapper} style={!canAdd ? {borderTopLeftRadius: 25, borderTopRightRadius: 25} : null}>
       { !canAdd ?
           <div className={styles.images} ref={imagesDivRef}>
             {images.map((image, index) => (
               <div className={styles.image} key={index}>
                 <LazyLoadImage src={image.file} placeholderSrc={image.file_lazy} alt="" />
-                <span style={{position: "absolute", top: 25, right: 25, opacity: .2, fontSize: 18, fontWeight: 500}}>AutoLIGHT</span>
               </div>
             ))}
           </div>
@@ -133,10 +132,6 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
         <div className={styles.removeImage} onClick={handleRemoveImage}>
           <img src={require("./images/remove.svg").default} alt="remove"/>
         </div>}
-      {(!canAdd && images.length > 0 && category === "Автомобили") &&
-      <div style={{position: "absolute", bottom: images.length > 1 ? 20 : 8, right: 5}}>
-        <GosNumber number={"м555мм"} region={"95"} size={.6} />
-      </div>}
     </div>
   );
 }

@@ -37,6 +37,10 @@ const SocketProvider = ({ children }) => {
   const [ services_View, setServices_View ] = useState("grid");
   const [ dealersView, setDealersView ] = useState("grid");
 
+  const [ handleClickBackButton, setHandleClickBackButton ] = useState();
+  
+  const [ openPost, setOpenPost ] = useState(null);
+
   const login = async (data, navigate) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_SERVER_ENDPOINT}/login`, data);
@@ -280,6 +284,9 @@ const SocketProvider = ({ children }) => {
                                      setServices_View,
                                      dealersView, 
                                      setDealersView,
+
+                                     handleClickBackButton, setHandleClickBackButton,
+                                     openPost, setOpenPost,
 
                                      error,
                                      setError,

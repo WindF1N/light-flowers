@@ -29,7 +29,7 @@ const FixedButton = (props) => {
   const [ isProButtonVisible, setIsProButtonVisible ] = useState(true);
   const [ canGoBack, setCanGoBack ] = useState(false);
   const [ canScrollUp, setCanScrollUp ] = useState(false);
-  const { accessToken, refreshToken, account } = useMainContext();
+  const { accessToken, refreshToken, account, handleClickBackButton } = useMainContext();
 
   const scrollUp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -76,7 +76,7 @@ const FixedButton = (props) => {
         <img src={require("./images/plus.svg").default} className="" alt="plus" />
       </div>
       <div className={`fixed-button ${isProButtonVisible ? 'visible' : ''}`} onClick={() => navigate('/cart')}>
-        <img src={require("./images/cart.svg").default} className="" alt="cart" />
+        <img src={require("./images/cart.svg").default} className="" alt="cart" style={{marginTop: 3, marginRight: 1}} />
         <div style={{position: "absolute", 
                      top: 1, 
                      right: 1, 
@@ -91,7 +91,7 @@ const FixedButton = (props) => {
                      fontWeight: 300}}>3</div>
       </div>
       {canGoBack ?
-        <div className="fixed-button-back" onClick={goBack}>
+        <div className="fixed-button-back" onClick={handleClickBackButton ? handleClickBackButton : goBack}>
           <img src={require("./images/arrow-right.svg").default} className="" alt="arrow" />
         </div>
       :

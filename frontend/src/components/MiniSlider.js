@@ -40,7 +40,7 @@ function MiniSlider({ images, imagesDivRef, activeImage, setActiveImage, canAdd,
 
   useEffect(() => {
     if (activeImageRef.current) {
-      activeImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      activeImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     };
     if (activeImage < 3 && sliderRef.current) {
       scrollToLeft();

@@ -9,8 +9,7 @@
   width: auto;
   display: flex;
   align-items: center;
-  padding: 5px;
-  background-color: #18181A;
+  padding: 5px 10px;
   padding-bottom: 20px;
   gap: 5px;
 }
@@ -18,12 +17,13 @@
 .images .image {
   width: 15vw;
   height: 10vw;
-  border: 2px solid #18181A;
   border-radius: 6px;
   flex-shrink: 0;
 
   position: relative;
   overflow: hidden;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, .25);
 }
 
 .images .imageActive {
@@ -33,11 +33,13 @@
   border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
+
+  box-shadow: 0 0 10px rgba(255, 255, 255, .25);
 }
 
 .images .image img, .images .imageActive img {
   width: 15vw;
-  height: 10vw;
+  height: calc(10vw + 14px);
   object-fit: cover;
   border-radius: 4px;
 }

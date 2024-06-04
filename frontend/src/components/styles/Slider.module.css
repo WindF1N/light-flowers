@@ -1,6 +1,6 @@
 .imagesWrapper {
   position: relative;
-  height: 75vw;
+  height: 100vw;
   overflow: hidden;
 }
 
@@ -17,7 +17,7 @@
 
 .image img {
   width: 100vw;
-  height: 75vw;
+  height: 100vw;
   object-fit: cover;
 }
 

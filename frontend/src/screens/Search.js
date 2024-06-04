@@ -1,325 +1,242 @@
-import styles from './styles/Search.module.css';
+import styles from './styles/Main.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import FixedButton from '../components/FixedButton';
-import SearchInput from '../components/SearchInput';
 import Title from '../components/Title';
+import Filter from '../components/Filter';
+import Post from '../components/Post';
 import { useMainContext } from '../context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { useSpringRef, animated, useSpring, easings } from '@react-spring/web';
 
 function Search() {
 
   const navigate = useNavigate();
-
-  const { account, sendMessage, message, setMessage, posts, setPosts, users, select, setSelect, transportView, setTransportView, servicesView, setServicesView, services_View, setServices_View, dealersView, setDealersView } = useMainContext();
   const [ view, setView ] = useState("grid");
   const [ sortBy, setSortBy ] = useState("Сначала недорогие");
-
+  const [ posts, setPosts ] = useState([
+    {
+      _id: "1",
+      images: [
+        {
+          _id: "i-1",
+          file: require("../screens/images/flowers.avif"),
+          file_lazy: require("../screens/images/flowers.avif")
+        },
+        {
+          _id: "i-2",
+          file: require("../screens/images/flowers2.avif"),
+          file_lazy: require("../screens/images/flowers2.avif")
+        },
+        {
+          _id: "i-3",
+          file: require("../screens/images/flowers3.avif"),
+          file_lazy: require("../screens/images/flowers3.avif")
+        },
+        {
+          _id: "i-4",
+          file: require("../screens/images/flowers4.avif"),
+          file_lazy: require("../screens/images/flowers4.avif")
+        },
+        {
+          _id: "i-5",
+          file: require("../screens/images/flowers.avif"),
+          file_lazy: require("../screens/images/flowers.avif")
+        },
+        {
+          _id: "i-6",
+          file: require("../screens/images/flowers2.avif"),
+          file_lazy: require("../screens/images/flowers2.avif")
+        },
+        {
+          _id: "i-7",
+          file: require("../screens/images/flowers3.avif"),
+          file_lazy: require("../screens/images/flowers3.avif")
+        },
+        {
+          _id: "i-8",
+          file: require("../screens/images/flowers4.avif"),
+          file_lazy: require("../screens/images/flowers4.avif")
+        }
+      ],
+      title: "Букет из 19 роз",
+      price: "2 700,00 ₽",
+      oldPrice: "4 400,00 ₽"
+    },
+    {
+      _id: "2",
+      images: [
+        {
+          _id: "i-2",
+          file: require("../screens/images/flowers2.avif"),
+          file_lazy: require("../screens/images/flowers2.avif")
+        }
+      ],
+      title: "Букет из 29 роз",
+      price: "5 100,00 ₽",
+      oldPrice: "7 500,00 ₽"
+    },
+    {
+      _id: "3",
+      images: [
+        {
+          _id: "i-3",
+          file: require("../screens/images/flowers3.avif"),
+          file_lazy: require("../screens/images/flowers3.avif")
+        }
+      ],
+      title: "Букет из 51 розы",
+      price: "8 700,00 ₽",
+      oldPrice: "10 100,00 ₽"
+    },
+    {
+      _id: "4",
+      images: [
+        {
+          _id: "i-4",
+          file: require("../screens/images/flowers4.avif"),
+          file_lazy: require("../screens/images/flowers4.avif")
+        }
+      ],
+      title: "Букет кустовых роз Лав Лидия",
+      price: "8 700,00 ₽",
+      oldPrice: "9 900,00 ₽"
+    },
+    {
+      _id: "5",
+      images: [
+        {
+          _id: "i-5",
+          file: require("../screens/images/flowers5.avif"),
+          file_lazy: require("../screens/images/flowers5.avif")
+        }
+      ],
+      title: "Букет кустовых роз Лав Лидия",
+      price: "8 700,00 ₽",
+      oldPrice: "9 900,00 ₽"
+    },
+    {
+      _id: "6",
+      images: [
+        {
+          _id: "i-6",
+          file: require("../screens/images/flowers5.avif"),
+          file_lazy: require("../screens/images/flowers5.avif")
+        }
+      ],
+      title: "Букет кустовых роз Лав Лидия",
+      price: "8 700,00 ₽",
+      oldPrice: "9 900,00 ₽"
+    }
+  ]);
   useEffect(() => {
     window.scrollTo({top: 0, smooth: "behavior"});
   }, [])
-
-  const postDivRef = useRef();
-  const imageDivRef = useRef();
-  const isShow = useRef(false);
-  const api = useSpringRef();
-  const props = useSpring({
-    ref: api,
-    from: { position: "static", top: 0, left: 0, width: "calc(50vw - 20px)", height: "auto", zIndex: 1, borderRadius: 9, overflow: "hidden" },
-    to: { position: "fixed", top: 0, left: 0, width: window.innerWidth + "px", height: window.innerHeight + "px", zIndex: 9, borderRadius: 0 }
-  })
-  const api2 = useSpringRef();
-  const props2 = useSpring({
-    ref: api2,
-    from: { width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", borderRadius: 9 },
-    to: { width: "100vw", height: "100vw", borderRadius: 0 }
-  })
-  const [ sizePost, setSizePost ] = useState(null);
-  const [ sizeImage, setSizeImage ] = useState(null);
-  const [ isOpenPost, setIsOpenPost ] = useState(false);
-  const toggle = () => {
-    if (postDivRef.current) {
-      const { top, left } = postDivRef.current.getBoundingClientRect();
-      api.set({ top, left, width: sizePost.width + "px", height: sizePost.height + "px" })
-    }
-    if (imageDivRef.current) {
-      api2.set({ width: sizeImage.width + "px", height: sizeImage.height + "px" })
-    }
-    if (isShow.current) {
-      api.start({ position: "fixed", top: 0, left: 0, width: window.innerWidth + "px", height: window.innerHeight + "px", zIndex: 9, borderRadius: 0, background: "#1C1C1E", config: { duration: 150, tension: 280, friction: 60 } });
-      api2.start({ width: window.innerWidth + "px", height: window.innerWidth + "px", borderRadius: 0, config: { duration: 150, tension: 280, friction: 60 } });
-    } else {
-      if (postDivRef.current) {
-        const { top, left } = postDivRef.current.getBoundingClientRect();
-        api.start({ position: "static", top: top, left: left, width: sizePost.width + "px", height: sizePost.height + "px", zIndex: 1, borderRadius: 9, background: "#1C1C1E", config: { duration: 150, tension: 280, friction: 60 } });
-      }
-      if (imageDivRef.current) {
-        api2.start({ width: sizeImage.width + "px", height: sizeImage.height + "px", borderRadius: 9, config: { duration: 150, tension: 280, friction: 60 } });
-      }
-    }
-    isShow.current = !isShow.current;
-    setIsOpenPost(!isShow.current);
+  const [ isOpenFilter, setIsOpenFilter ] = useState(false);
+  const openFilter = () => {
+    setIsOpenFilter(true);
   }
   useEffect(() => {
-    if (postDivRef.current) {
-      setSizePost({
-        width: postDivRef.current.offsetWidth,
-        height: postDivRef.current.offsetHeight
-      });
+    if (isOpenFilter) {
+      const scrollY = window.scrollY;
+      document.querySelector("html").style.overflow = "hidden";
+      document.querySelector("body").style.overflow = "hidden";
+      document.querySelector("body").style.position = "fixed";
+      document.querySelector("body").style.top = `-${scrollY}px`
     }
-  }, [postDivRef.current])
-  useEffect(() => {
-    if (imageDivRef.current) {
-      setSizeImage({
-        width: imageDivRef.current.offsetWidth,
-        height: imageDivRef.current.offsetHeight
-      });
-    }
-  }, [imageDivRef.current])
+  }, [isOpenFilter])
+  const counts = [
+    "19 роз",
+    "29 роз",
+    "51 роза",
+    "101 роза"
+  ]
+  const [ selectedCounts, setSelectedCounts ] = useState([]);
+  const categories = [
+    "Розы с любовью",
+    "Подарки"
+  ]
+  const [ selectedCategory, setSelectedCategory ] = useState("Розы с любовью");
   return (
-    <div className="view">
-      <Title text="Каталог" allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view}/>
-      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 20}}>
-        <div style={{display: "flex", alignItems: "center", columnGap: 8}} onClick={() => {
-          document.getElementById(`sort`).focus();
-          document.getElementById(`arrow`).style.transform = "rotate(270deg)";
+    <>
+      <div className="view">
+        <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15}}>
+          <div style={{display: "flex", alignItems: "center", gap: 15}}>
+            <div>
+              <img src={require("./images/splash.svg").default} alt="" style={{width: 50}} />
+            </div>
+            <div>
+              <div style={{fontSize: 24, fontWeight: 300}}>Студия <span>Роз</span></div>
+              <div style={{fontSize: 12, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
+            </div>
+          </div>
+        </div>
+        <Title text={selectedCategory} allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view} canChangeTitle={true} choices={categories} selectedChoice={selectedCategory} setSelectedChoice={setSelectedCategory} />
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 20}}>
+          <div style={{display: "flex", alignItems: "center", columnGap: 8}} onClick={() => {
+            document.getElementById(`sort`).focus();
+            document.getElementById(`arrow`).style.transform = "rotate(270deg)";
+          }}>
+            <div style={{fontSize: 15, fontWeight: 300}}>{sortBy}</div> <img id="arrow" src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
+            <select id="sort" style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {document.getElementById(`arrow`).style.transform = "rotate(90deg)";setSortBy(e.target.value)}} onBlur={() => {document.getElementById(`arrow`).style.transform = "rotate(90deg)"}}>
+              <option value="Сначала недорогие">Сначала недорогие</option>
+              <option value="Сначала дорогие">Сначала дорогие</option>
+              <option value="Сначала популярные">Сначала популярные</option>
+            </select>
+          </div>
+          <div style={{display: "flex", alignItems: "center", columnGap: 8}} onClick={openFilter}>
+            <img src={require("../screens/images/compare.svg").default} alt="" style={{filter: "brightness(.6)"}} /> <div style={{fontSize: 15, fontWeight: 300}}>Фильтры</div>
+          </div>
+        </div>
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 10,
+          paddingBottom: 20
         }}>
-          <div style={{fontSize: 15, fontWeight: 300}}>{sortBy}</div> <img id="arrow" src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
-          <select id="sort" style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {document.getElementById(`arrow`).style.transform = "rotate(90deg)";setSortBy(e.target.value)}} onBlur={() => {document.getElementById(`arrow`).style.transform = "rotate(90deg)"}}>
-            <option value="Сначала недорогие">Сначала недорогие</option>
-            <option value="Сначала дорогие">Сначала дорогие</option>
-            <option value="Сначала популярные">Сначала популярные</option>
-          </select>
+          {counts.map((count, index) => (
+            <div key={"count" + index} 
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "4px 7px",
+                    borderRadius: 4,
+                    background: selectedCounts.includes(count) ? "#fff" : "rgb(24, 24, 26)",
+                    fontSize: 15,
+                    fontWeight: 300,
+                    color: selectedCounts.includes(count) ? "#000" : "#fff"
+                  }}
+                  onClick={() => {
+                  if (selectedCounts.includes(count)) {
+                    setSelectedCounts(prevState => prevState.filter((selectedCount) => count !== selectedCount))
+                  } else {
+                    setSelectedCounts(prevState => [...prevState, count])
+                  }
+                  }}
+            >
+              {count}
+            </div>
+          ))}
         </div>
-        <div style={{display: "flex", alignItems: "center", columnGap: 8}}>
-          <img src={require("../screens/images/compare.svg").default} alt="" style={{filter: "brightness(.6)"}} /> <div style={{fontSize: 15, fontWeight: 300}}>Фильтры</div>
-        </div>
+        {view === "grid" &&
+        <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
+          {posts.map((post) => (
+            <div key={post._id}>
+              <Post data={post} type="block" />
+            </div>
+          ))}
+        </div>}
+        {view === "list" && 
+        <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
+          {posts.map((post) => (
+            <div key={post._id}>
+              <Post data={post} type="line" />
+            </div>
+          ))}
+        </div>}
       </div>
-      {view === "grid" &&
-      <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
-        
-        <div style={{width: "calc(50vw - 20px)", position: "relative"}}>
-          <animated.div style={props}>
-            <div ref={postDivRef} onClick={toggle} style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10}}>
-              <animated.div ref={imageDivRef} style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", ...props2}}>
-                <img src={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </animated.div>
-              {!isOpenPost &&
-                <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-                  <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-                </div>}
-              <div style={{height: "100%",display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-                <div style={{fontSize: 14, fontWeight: 400}}>Букет из 19 роз</div>
-                <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>2 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>4 400,00 ₽</span></div>
-              </div>
-            </div>
-          </animated.div>
-        </div>
-
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers2.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)"}}>
-            <div style={{width: 28, height: 28, marginRight: -3, zIndex: 1}}>
-              <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-            </div>
-            <div style={{width: 34, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-            </div>
-            <div style={{width: 28, height: 28, marginLeft: -3, zIndex: 1}}>
-              <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-            </div>
-          </div>
-          <div style={{height: "100%",display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400}}>Букет из 29 роз</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>5 100,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>7 500,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers3.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400}}>Букет из 51 розы</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>10 100,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers4.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400, maxWidth: "100%"}}>Букет кустовых роз Лав Лидия</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers4.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400, maxWidth: "100%"}}>Букет кустовых роз Лав Лидия</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers4.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400, maxWidth: "100%"}}>Букет кустовых роз Лав Лидия</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-          </div>
-        </div>
-      </div>}
-      {view === "list" && 
-      <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет из 19 роз</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>2 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>4 400,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto"}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers2.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет из 29 роз</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>5 100,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>7 500,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers3.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет из 51 розы</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>10 100,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers4.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет кустовых роз Лав Лидия</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers4.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет кустовых роз Лав Лидия</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers4.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет кустовых роз Лав Лидия</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-      </div>}
-    </div>
+      {isOpenFilter &&
+        <Filter setIsOpenFilter={setIsOpenFilter} />}
+    </>
   );
 }
 

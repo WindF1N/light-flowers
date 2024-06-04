@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Post from '../components/Post';
 import Title from '../components/Title';
 import Button from '../components/Button';
+import Items from '../components/Items';
 import FixedButton from '../components/FixedButton';
 import { useMainContext } from '../context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -12,118 +13,6 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 function Main() {
 
   const navigate = useNavigate();
-
-  const { sendMessage, posts, setPosts, message, setMessage } = useMainContext();
-  const [ isOpenPromo, setIsOpenPromo ] = useState(false);
-
-  useEffect(() => {
-    if (posts.length === 0) {
-      sendMessage(JSON.stringify(["posts", "list"]));
-    }
-  }, [])
-
-  useEffect(() => {
-    if (message) {
-      if (message[0] === 'images') {
-        if (message[1] === 'get') {
-          setPosts(prevState => {
-            // Найдите пост, к которому нужно добавить изображения
-            const postToUpdate = prevState.find(post => post._id === message[3]);
-
-            // Если пост найден, добавьте изображения
-            if (postToUpdate) {
-              const newImages = [...message[2]];
-              const updatedPost = { ...postToUpdate, images: newImages };
-
-              // Замените старый пост в состоянии на обновленный
-              return prevState.map(post => (post._id === message[3] ? updatedPost : post));
-            }
-
-            // Если пост не найден, верните предыдущее состояние
-            return prevState;
-          });
-        }
-      } else if (message[0] === 'user') {
-        if (message[1] === 'get') {
-          setPosts(prevState => {
-            // Найдите пост, к которому нужно добавить изображения
-            const postToUpdate = prevState.find(post => post._id === message[3]);
-
-            // Если пост найден, добавьте изображения
-            if (postToUpdate) {
-              const updatedPost = { ...postToUpdate, user: message[2] };
-
-              // Замените старый пост в состоянии на обновленный
-              return prevState.map(post => (post._id === message[3] ? updatedPost : post));
-            }
-
-            // Если пост не найден, верните предыдущее состояние
-            return prevState;
-          });
-        }
-      } else if (message[0] === 'comments') {
-        if (message[1] === 'last') {
-          setPosts(prevState => {
-            // Найдите пост, к которому нужно добавить изображения
-            const postToUpdate = prevState.find(post => post._id === message[3]);
-
-            // Если пост найден, добавьте изображения
-            if (postToUpdate) {
-              var newComments;
-              if ('comments' in postToUpdate) {
-                newComments = [...postToUpdate.comments, message[2]];
-              } else {
-                newComments = [message[2]];
-              }
-              const updatedPost = { ...postToUpdate, comments: newComments };
-
-              // Замените старый пост в состоянии на обновленный
-              return prevState.map(post => (post._id === message[3] ? updatedPost : post));
-            }
-
-            // Если пост не найден, верните предыдущее состояние
-            return prevState;
-          });
-        } else if (message[1] === 'count') {
-          setPosts(prevState => {
-            // Найдите пост, к которому нужно добавить изображения
-            const postToUpdate = prevState.find(post => post._id === message[3]);
-
-            // Если пост найден, добавьте изображения
-            if (postToUpdate) {
-              const updatedPost = { ...postToUpdate, comments_count: message[2] };
-
-              // Замените старый пост в состоянии на обновленный
-              return prevState.map(post => (post._id === message[3] ? updatedPost : post));
-            }
-
-            // Если пост не найден, верните предыдущее состояние
-            return prevState;
-          });
-        }
-      } else if (message[0] === 'favorite_posts') {
-        if (message[1] === 'check') {
-          setPosts(prevState => {
-            // Найдите пост, к которому нужно добавить изображения
-            const postToUpdate = prevState.find(post => post._id === message[3]);
-  
-            // Если пост найден, добавьте изображения
-            if (postToUpdate) {
-              const updatedPost = { ...postToUpdate, isFavorite: message[2] };
-  
-              // Замените старый пост в состоянии на обновленный
-              return prevState.map(post => (post._id === message[3] ? updatedPost : post));
-            }
-  
-            // Если пост не найден, верните предыдущее состояние
-            return prevState;
-          });
-        }
-      }
-      setMessage(null);
-    };
-  }, [message]);
-
   const [ view, setView ] = useState("grid");
 
   const handleClick = (e) => {
@@ -142,17 +31,101 @@ function Main() {
     window.scrollTo({top: 0, smooth: "behavior"});
   }, [])
 
+  const [ posts, setPosts ] = useState([
+    {
+      _id: "1",
+      images: [
+        {
+          _id: "i-1",
+          file: require("../screens/images/flowers.avif"),
+          file_lazy: require("../screens/images/flowers.avif")
+        }
+      ],
+      title: "Букет из 19 роз",
+      price: "2 700,00 ₽",
+      oldPrice: "4 400,00 ₽"
+    },
+    {
+      _id: "2",
+      images: [
+        {
+          _id: "i-2",
+          file: require("../screens/images/flowers2.avif"),
+          file_lazy: require("../screens/images/flowers2.avif")
+        }
+      ],
+      title: "Букет из 29 роз",
+      price: "5 100,00 ₽",
+      oldPrice: "7 500,00 ₽"
+    },
+    {
+      _id: "3",
+      images: [
+        {
+          _id: "i-3",
+          file: require("../screens/images/flowers3.avif"),
+          file_lazy: require("../screens/images/flowers3.avif")
+        }
+      ],
+      title: "Букет из 51 розы",
+      price: "8 700,00 ₽",
+      oldPrice: "10 100,00 ₽"
+    },
+    {
+      _id: "4",
+      images: [
+        {
+          _id: "i-4",
+          file: require("../screens/images/flowers4.avif"),
+          file_lazy: require("../screens/images/flowers4.avif")
+        }
+      ],
+      title: "Букет кустовых роз Лав Лидия",
+      price: "8 700,00 ₽",
+      oldPrice: "9 900,00 ₽"
+    },
+    {
+      _id: "5",
+      images: [
+        {
+          _id: "i-5",
+          file: require("../screens/images/flowers5.avif"),
+          file_lazy: require("../screens/images/flowers5.avif")
+        }
+      ],
+      title: "Букет кустовых роз Лав Лидия",
+      price: "8 700,00 ₽",
+      oldPrice: "9 900,00 ₽"
+    },
+    {
+      _id: "6",
+      images: [
+        {
+          _id: "i-6",
+          file: require("../screens/images/flowers5.avif"),
+          file_lazy: require("../screens/images/flowers5.avif")
+        }
+      ],
+      title: "Букет кустовых роз Лав Лидия",
+      price: "8 700,00 ₽",
+      oldPrice: "9 900,00 ₽"
+    }
+  ]);
+
   return (
     <div className="view">
-      <div className={styles.header}>
-        <div>
-          <img src={require("./images/logo.svg").default} alt="" />
-        </div>
-        <div>
-          Для тех кто ценит качество, удобство и свой комфорт
+      <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15, marginBottom: 20}}>
+        <div style={{display: "flex", alignItems: "center", gap: 15}}>
+          <div>
+            <img src={require("./images/splash.svg").default} alt="" style={{width: 50}} />
+          </div>
+          <div>
+            <div style={{fontSize: 24, fontWeight: 300}}>Студия <span>Роз</span></div>
+            <div style={{fontSize: 12, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
+          </div>
         </div>
       </div>
-      <div className={styles.block}>
+      {/* <div className={styles.block}>
         <div className={styles.itemsWrapper}>
           <div className={styles.items}>
             <div className={styles.item}>
@@ -177,6 +150,9 @@ function Main() {
             </div>
           </div>
         </div>
+      </div> */}
+      <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 20}}>
+        Cвежие цветы | Доставка | Гарантия | Круглосуточно
       </div>
       <div style={{position: "relative", width: "100%", height: "120px", borderRadius: 9, overflow: "hidden"}}>
         <img src={require("./images/woman.avif")} alt="" style={{borderRadius: 9, display: "flex", width: "100%", height: "100%", objectFit: "cover", position: "absolute", zIndex: 1}} />
@@ -200,158 +176,44 @@ function Main() {
           <Post data={post} key={index}/>
         ))}
       </div> */}
-      <Title text="Каталог" allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view} showMore={() => navigate("/search")}/>
-      {view === "grid" &&
-      <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
+      <div style={{display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 20, borderBottom: "0.5px solid rgb(24, 24, 26)", paddingBottom: 20}}>
+        {posts.map((post, index) => (
+          <div key={post._id}>
+            {index === 2 &&
+            <Post data={post} type="old-big" />}
+            {[0, 1].includes(index) &&
+            <Post data={post} type="old-normal" />}
+            {![0, 1, 2].includes(index) &&
+            <Post data={post} type="old-small" />}
           </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%",display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400}}>Букет из 19 роз</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>2 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>4 400,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers2.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)"}}>
-            <div style={{width: 28, height: 28, marginRight: -3, zIndex: 1}}>
-              <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-            </div>
-            <div style={{width: 34, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-            </div>
-            <div style={{width: 28, height: 28, marginLeft: -3, zIndex: 1}}>
-              <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-            </div>
-          </div>
-          <div style={{height: "100%",display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400}}>Букет из 29 роз</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>5 100,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>7 500,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers3.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400}}>Букет из 51 розы</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>10 100,00 ₽</span></div>
-          </div>
-        </div>
-        <div style={{position: "relative", width: "calc(50vw - 20px)", background: "#1C1C1E", borderRadius: 9, display: "flex", flexFlow: "column", rowGap: 10}}>
-          <div style={{width: "calc(50vw - 20px)", height: "calc(50vw - 20px)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img src={require("./images/flowers4.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-          </div>
-          <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-            <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-          </div>
-          <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 10px 10px 10px"}}>
-            <div style={{fontSize: 14, fontWeight: 400, maxWidth: "100%"}}>Букет кустовых роз Лав Лидия</div>
-            <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-          </div>
-        </div>
-      </div>}
-      {view === "list" && 
-      <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет из 19 роз</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>2 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>4 400,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto"}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers2.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет из 29 роз</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>5 100,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>7 500,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers3.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет из 51 розы</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>10 100,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-        <div>
-          <div style={{display: "flex", columnGap: 14, alignItems: "center"}}>
-            <div style={{width: 80, height: 80, flexShrink: 0}}>
-              <LazyLoadImage src={require("./images/flowers4.avif")} placeholderSrc={require("./images/flowers.avif")} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
-            </div>
-            <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
-              <div style={{fontSize: 14, fontWeight: 400}}>Букет кустовых роз Лав Лидия</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>8 700,00 ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>9 900,00 ₽</span></div>
-            </div>
-            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div>
-          </div>
-          <div>
-            
-          </div>
-        </div>
-      </div>}
-      <div style={{marginTop: 20}}>
-        <Button text="Показать всё" handleClick={() => navigate("/search")} />
+        ))}
+      </div>
+      <div style={{marginTop: 15, display: "flex", justifyContent: "center", color: "#bbb", fontWeight: 300, fontSize: 15, alignItems: "center", gap: 8}} onClick={() => navigate("/search")}>
+        Показать всё <img src={require("../components/images/arrow-right.svg").default} alt="" style={{display: "flex", marginTop: 1, filter: "brightness(.6)"}} />
       </div>
       <div className={styles.information}>
         <div className={styles.informationblocks}>
+          <div className={styles.informationblock}>
+            <div className={styles.informationtitle} onClick={handleClick}>
+              <span>Доставка</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
+            </div>
+            <div className={styles.informationdescription}>
+              <Items items={[
+                {
+                  label: "Сочи",
+                  value: "Бесплатно"
+                },
+                {
+                  label: "Адлер",
+                  value: "Бесплатно"
+                },
+                {
+                  label: "Краснодар",
+                  value: "Бесплатно"
+                },
+              ]} />
+            </div>
+          </div>
           <div className={styles.informationblock}>
             <div className={styles.informationtitle} onClick={handleClick}>
               <span>Почему мы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
@@ -413,6 +275,14 @@ function Main() {
         </div>
       </div>
       <footer className={styles.footer}>
+        <div style={{display: "flex", flexFlow: "column", padding: "20px 0 10px 0"}}>
+          <div style={{fontSize: 16, fontWeight: 300, color: "#fff", paddingBottom: 5}}>Не нашли что искали?</div>
+          <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>
+            Отправьте сообщение или позвоните
+            подберем самый подходящий букет для
+            вашего мероприятия
+          </div>
+        </div>
         <div className={styles.contacts}>
           <div className={styles.telephone}>+7 966 775 79 66</div>
           <div className={styles.icons}>
