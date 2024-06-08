@@ -110,9 +110,11 @@ def handle_message(message):
             cards = list(mongo.db.cards.find(reverse_prepare_data(message[2])).limit(message[3]))
             for card in cards:
                 images = list(mongo.db.images.find({"card_id": card["_id"]}))
+                for image in images:
+                    image["_id"] = str(image["_id"])
                 card["images"] = images
                 card["_id"] = str(card["_id"])
-            emit('message', prepare_data(['cards', 'filter', cards, message[2], message[3]]))
+            emit('message', ['cards', 'filter', cards, message[2], message[3]])
         elif message[1] == "create":
             message[2]["status"] = 1
             message[2]["created_at"] = datetime.now()
