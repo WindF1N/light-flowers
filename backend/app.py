@@ -109,7 +109,7 @@ def handle_message(message):
         if message[1] == "filter":
             cards = list(mongo.db.cards.find(reverse_prepare_data(message[2])).limit(message[3]))
             for card in cards:
-                images = mongo.db.images.find({"card_id": card["_id"]})
+                images = list(mongo.db.images.find({"card_id": card["_id"]}))
                 card["images"] = images
                 card["_id"] = str(card["_id"])
             emit('message', prepare_data(['cards', 'filter', cards, message[2], message[3]]))
@@ -140,7 +140,7 @@ def handle_message(message):
                         "file_lazy": f"{os.getenv('SERVER_END_POINT')}/static/lazy/{filename}",
                         "index": message[3]
                     }).inserted_id
-                emit("message", prepare_data(["images", "added", message[3]]))
+                emit("message", ["images", "added", message[3]])
         elif message[1] == "delete":
             mongo.db.images.delete_one(reverse_prepare_data({"_id": message[2]}))
 
