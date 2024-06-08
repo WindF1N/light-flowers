@@ -114,12 +114,12 @@ def handle_message(message):
                     image["_id"] = str(image["_id"])
                 card["images"] = images
                 card["_id"] = str(card["_id"])
-            emit('message', ['cards', 'filter', cards, message[2], message[3]])
+            emit('message', dumps(['cards', 'filter', cards, message[2], message[3]]))
         elif message[1] == "create":
             message[2]["status"] = 1
             message[2]["created_at"] = datetime.now()
             new_card_id = mongo.db.cards.insert_one(message[2]).inserted_id
-            emit('message', ['cards', 'created', str(new_card_id)])
+            emit('message', dumps(['cards', 'created', str(new_card_id)]))
     elif message[0] == "images":
         if message[1] == "add":
             card = mongo.db.cards.find_one({"_id": ObjectId(message[2])})
@@ -142,7 +142,7 @@ def handle_message(message):
                         "file_lazy": f"{os.getenv('SERVER_END_POINT')}/static/lazy/{filename}",
                         "index": message[3]
                     }).inserted_id
-                emit("message", ["images", "added", message[3]])
+                emit("message", dumps(["images", "added", message[3]]))
         elif message[1] == "delete":
             mongo.db.images.delete_one(reverse_prepare_data({"_id": message[2]}))
 
