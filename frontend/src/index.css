@@ -16,6 +16,15 @@ body {
   background-color: #000;
 }
 
+body, html {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar, html::-webkit-scrollbar {
+  display: none;
+}
+
 .view {
   width: 100%;
   position: relative;

@@ -116,7 +116,7 @@ function Add() {
     setSaving(true);
   }
   useEffect(() => {
-    if (message) {
+    if (message && window.location.pathname === '/add') {
       if (message[0] === "cards") {
         if (message[1] === "created") {
           setCardId(message[2]);
@@ -134,7 +134,7 @@ function Add() {
       sendMessage(JSON.stringify(["images", "add", cardId, indexOfLoadedImage.current + 1, images[indexOfLoadedImage.current + 1].file]));
     } else if (cardId) {
       setSaving(false);
-      navigate("/search?id=" + cardId, { replace: true });
+      navigate("/search?card_id=" + cardId, { replace: true });
     }
   }, [cardId, indexOfLoadedImage.current])
   const colors = [

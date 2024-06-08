@@ -5,16 +5,16 @@ import FixedButton from './components/FixedButton';
 
 import Main from './screens/Main';
 import Loading from './screens/Loading';
-import LoadUserInfo from './screens/LoadUserInfo';
 
 import Search from './screens/Search';
-import SelectCategory from './screens/SelectCategory';
 import Add from './screens/Add';
+import Edit from './screens/Edit';
 import Cart from './screens/Cart';
+import CardRoute from './components/CardRoute';
 
 const Navigate = () => {
 
-  const { loading, loadUserInfo } = useMainContext();
+  const { loading } = useMainContext();
 
   return (
     !loading ?
@@ -24,6 +24,8 @@ const Navigate = () => {
           <Route path="/add" element={<Add />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/card/:id" element={<CardRoute />} />
+          <Route path="/edit/:id" element={<Edit />} />
         </Routes>
         <FixedButton />
       </div>

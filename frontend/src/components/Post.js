@@ -1,7 +1,7 @@
 import styles from '../screens/styles/Post.module.css';
 import styles2 from '../screens/styles/Main.module.css';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSpringRef, animated, useSpring, config } from '@react-spring/web';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import Slider from './Slider';
@@ -11,9 +11,6 @@ import Hint from './Hint';
 import { useMainContext } from '../context';
 
 function Post({ postData, type, parent, basePathUrl }) {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const cardId = params.get('card_id');
   const navigate = useNavigate();
   const [ data, setData ] = useState(postData);
   const { sendMessage, message, setMessage, cartItems, setCartItems } = useMainContext();
@@ -175,10 +172,10 @@ function Post({ postData, type, parent, basePathUrl }) {
     if (message && window.location.pathname === '/card/' + data._id) {
       if (message[0] === 'cards') {
         if (message[1] === 'filter') {
-          setPosts(prevState => [...prevState.filter(item => {
-            const isInMessage = message[2].some(msgItem => msgItem._id === item._id);
+          setPosts(prevState => [...prevState, ...message[2].filter(item => {
+            const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
             return !isInMessage;
-          }), ...message[2]]);
+          })]);
         }
       }
       setMessage(null);
@@ -269,6 +266,8 @@ function Post({ postData, type, parent, basePathUrl }) {
     setData(prevState => ({...prevState, selectedColor: selectedColor, selectedCount: selectedCount, selectedPackage: selectedPackage, selectedSize: selectedSize }))
   }, [divCountItemsCartRef.current])
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const cardId = searchParams.get('card_id');
     if (cardId === data._id) {
       toggle();
     }
@@ -428,11 +427,24 @@ function Post({ postData, type, parent, basePathUrl }) {
                     <img src={require("../screens/images/share.svg").default} alt="" />
                     Поделиться
                   </div>
+                  <div className={styles.action} style={{color: "#8F8E93"}} onClick={() => {
+                    window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
+                    setPosts([]);
+                    document.querySelector("html").style.overflow = "auto";
+                    document.querySelector("body").style.overflow = "auto";
+                    document.querySelector("body").style.position = "relative";
+                    document.querySelector("body").style.top = "0px";
+                    setIsOpenPost(false);
+                    navigate("/edit/" + data._id);
+                  }}>
+                    <img src={require("./images/settings.svg").default} alt="" />
+                    Настройки
+                  </div>
                 </div>
               </div>
-              <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px"}}>{data.title} </div>
+              <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px 20px 15px"}}>{data.title} </div>
               {colors.length > 0 &&
-              <div style={{padding: "20px 15px 30px 15px"}}>
+              <div style={{padding: "0px 15px 30px 15px"}}>
                 <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
                 <div style={{
                   display: "flex",
@@ -596,7 +608,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
                     {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).map((post, index) => (
                       <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
-                        <Post postData={post} type="block-small" parent={
+                        <Post postData={post} type="block-small" basePathUrl={basePathUrl} parent={
                           {
                             api,
                             modalApi,
@@ -620,7 +632,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
                     {posts.filter((post) => post.category === "Подарки" && post._id !== data._id).map((post, index) => (
                       <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
-                        <Post postData={post} type="block-small" parent={
+                        <Post postData={post} type="block-small" basePathUrl={basePathUrl} parent={
                           {
                             api,
                             modalApi,
@@ -654,7 +666,7 @@ function Post({ postData, type, parent, basePathUrl }) {
               </footer>
               <animated.div style={{width: "100%",
                                     boxSizing: "border-box",
-                                    height: "12vh",
+                                    height: "110px",
                                     padding: "0 20px",
                                     background: "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(26, 24, 24, 1) 100%)", 
                                     position: "fixed",
@@ -686,12 +698,14 @@ function Post({ postData, type, parent, basePathUrl }) {
                       </div>
                     </div>
                     <Button text="Оформить" small={true} handleClick={(e) => {
+                      window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
+                      setPosts([]);
                       document.querySelector("html").style.overflow = "auto";
                       document.querySelector("body").style.overflow = "auto";
                       document.querySelector("body").style.position = "relative";
                       document.querySelector("body").style.top = "0px";
-                      window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
-                      navigate("/cart")
+                      setIsOpenPost(false);
+                      navigate("/cart");
                     }} />
                   </div>
                   : <Button text="В корзину" small={true} handleClick={(e) => handleCart(e, 1)} />}

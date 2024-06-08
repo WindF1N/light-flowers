@@ -1,5 +1,5 @@
 import styles from './styles/Main.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Post from '../components/Post';
 import Button from '../components/Button';
@@ -7,6 +7,9 @@ import Items from '../components/Items';
 import { useMainContext } from '../context';
 
 function Main() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const cardId = params.get('card_id');
   const { sendMessage, message, setMessage } = useMainContext();
   const navigate = useNavigate();
   const [ posts, setPosts ] = useState([]);
@@ -23,13 +26,19 @@ function Main() {
   };
   useEffect(() => {
     window.scrollTo({top: 0, smooth: "behavior"});
-    sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью"}, 6]))
+    sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью"}, 6]));
+    if (cardId) {
+      sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
+    }
   }, [])
   useEffect(() => {
     if (message && window.location.pathname === "/") {
       if (message[0] === 'cards') {
         if (message[1] === 'filter') {
-          setPosts(message[2]);
+          setPosts(prevState => [...prevState, ...message[2].filter(item => {
+            const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
+            return !isInMessage;
+          })]);
         }
       }
       setMessage(null);

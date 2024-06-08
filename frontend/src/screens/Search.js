@@ -1,5 +1,5 @@
 import styles from './styles/Main.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import Title from '../components/Title';
 import Filter from '../components/Filter';
@@ -8,6 +8,9 @@ import { useMainContext } from '../context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 function Search() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const cardId = params.get('card_id');
   const { sendMessage, message, setMessage } = useMainContext();
   const navigate = useNavigate();
   const [ view, setView ] = useState("grid");
@@ -45,17 +48,20 @@ function Search() {
     if (message && window.location.pathname === "/search") {
       if (message[0] === 'cards') {
         if (message[1] === 'filter') {
-          setPosts(prevState => [...prevState.filter(item => {
-            const isInMessage = message[2].some(msgItem => msgItem._id === item._id);
+          setPosts(prevState => [...prevState, ...message[2].filter(item => {
+            const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
             return !isInMessage;
-          }), ...message[2]]);
+          })]);
         }
       }
       setMessage(null);
     };
   }, [message]);
   useEffect(() => {
-    sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25]))
+    sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25]));
+    if (cardId) {
+      sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
+    }
   }, [selectedCategory])
   return (
     <>

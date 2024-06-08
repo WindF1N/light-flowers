@@ -112,34 +112,37 @@ def handle_message(message):
                 images = mongo.db.images.find({"card_id": card["_id"]})
                 card["images"] = images
                 card["_id"] = str(card["_id"])
-            emit('message', dumps(['cards', 'filter', cards, message[2], message[3]]))
+            emit('message', prepare_data(['cards', 'filter', cards, message[2], message[3]]))
         elif message[1] == "create":
             message[2]["status"] = 1
             message[2]["created_at"] = datetime.now()
             new_card_id = mongo.db.cards.insert_one(message[2]).inserted_id
-            emit('message', dumps(['cards', 'created', str(new_card_id)]))
+            emit('message', ['cards', 'created', str(new_card_id)])
     elif message[0] == "images":
         if message[1] == "add":
             card = mongo.db.cards.find_one({"_id": ObjectId(message[2])})
             if card:
-                image_data = b64decode(message[4].split(',')[-1])
-                compressed_image_data = compress_image(image_data, (1200, 1200), 95)
-                compressed_image_data_lazy = compress_image(image_data, (100, 100), 75)
-                 # Генерируем случайное название файла
-                filename = str(uuid.uuid4()) + '.jpeg'
-                # Сохраняем сжатое изображение в файл
-                with open(f'static/{filename}', 'wb') as f:
-                    f.write(compressed_image_data)
-                with open(f'static/lazy/{filename}', 'wb') as f:
-                    f.write(compressed_image_data_lazy)
-                mongo.db.images.insert_one({
-                    "created_at": datetime.now(),
-                    "card_id": ObjectId(message[2]),
-                    "file": f"{os.getenv('SERVER_END_POINT')}/static/{filename}",
-                    "file_lazy": f"{os.getenv('SERVER_END_POINT')}/static/lazy/{filename}",
-                    "index": message[3]
-                }).inserted_id
-                emit("message", dumps(["images", "added", message[3]]))
+                if "," in message[4]:
+                    image_data = b64decode(message[4].split(',')[-1])
+                    compressed_image_data = compress_image(image_data, (1200, 1200), 95)
+                    compressed_image_data_lazy = compress_image(image_data, (100, 100), 75)
+                    # Генерируем случайное название файла
+                    filename = str(uuid.uuid4()) + '.jpeg'
+                    # Сохраняем сжатое изображение в файл
+                    with open(f'static/{filename}', 'wb') as f:
+                        f.write(compressed_image_data)
+                    with open(f'static/lazy/{filename}', 'wb') as f:
+                        f.write(compressed_image_data_lazy)
+                    mongo.db.images.insert_one({
+                        "created_at": datetime.now(),
+                        "card_id": ObjectId(message[2]),
+                        "file": f"{os.getenv('SERVER_END_POINT')}/static/{filename}",
+                        "file_lazy": f"{os.getenv('SERVER_END_POINT')}/static/lazy/{filename}",
+                        "index": message[3]
+                    }).inserted_id
+                emit("message", prepare_data(["images", "added", message[3]]))
+        elif message[1] == "delete":
+            mongo.db.images.delete_one(reverse_prepare_data({"_id": message[2]}))
 
 if __name__ == '__main__':
     socketio.run(app)
