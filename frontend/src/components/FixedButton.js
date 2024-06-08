@@ -72,7 +72,7 @@ const FixedButton = (props) => {
 
   return (
     <div className={props.upper && 'upper' || props.send && 'send'}>
-      {account.user?.username !== "thecreatxr" &&
+      {(account.user?.username === "thecreatxr" || account.user?.username === "Mr_Romadanov") &&
       <div className={`fixed-button add ${isProButtonVisible ? 'visible' : ''}`} onClick={() => navigate('/add')}>
         <img src={require("./images/plus.svg").default} className="" alt="plus" />
       </div>}
@@ -103,7 +103,7 @@ const FixedButton = (props) => {
           <div>Здесь твоя корзина</div>
         </div>}
       {(canScrollUp || props.send) &&
-      <div className={`fixed-button-up ${isProButtonVisible ? 'visible' : ''} ${account.user?.username === "thecreatxr" ? 'dif' : ''}`} onClick={!props.send ? scrollUp : props.onDelete}>
+      <div className={`fixed-button-up ${isProButtonVisible ? 'visible' : ''} ${(account.user?.username !== "thecreatxr" || account.user?.username !== "Mr_Romadanov") ? 'dif' : ''}`} onClick={!props.send ? scrollUp : props.onDelete}>
         {!props.send ?
           <img src={require("./images/arrow-right.svg").default} alt="arrow" />
           : <img src={require("./images/close.svg").default} alt="arrow" style={{width: "100%"}}/> }

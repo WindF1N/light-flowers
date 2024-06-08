@@ -21,6 +21,35 @@ import pillow_avif
 
 load_dotenv()
 
+def prepare_data(data):
+    if isinstance(data, list):
+        return [prepare_data(item) for item in data]
+    elif isinstance(data, dict):
+        return {k: prepare_data(v) for k, v in data.items()}
+    elif isinstance(data, (ObjectId, datetime)):
+        return str(data) if isinstance(data, ObjectId) else data.strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        return data
+
+def reverse_prepare_data(data):
+    if isinstance(data, list):
+        return [reverse_prepare_data(item) for item in data]
+    elif isinstance(data, dict):
+        return {k: reverse_prepare_data(v) for k, v in data.items()}
+    elif isinstance(data, str):
+        try:
+            # Пытаемся преобразовать строку в ObjectId
+            return ObjectId(data)
+        except Exception:
+            try:
+                # Пытаемся преобразовать строку в datetime
+                return datetime.strptime(data, '%Y-%m-%d %H:%M:%S')
+            except Exception:
+                # Если не удалось преобразовать, возвращаем исходную строку
+                return data
+    else:
+        return data
+
 app = Flask(__name__)
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 16 megabytes
@@ -78,7 +107,7 @@ def handle_message(message):
 
     if message[0] == "cards":
         if message[1] == "filter":
-            cards = list(mongo.db.cards.find(message[2]).limit(message[3]))
+            cards = list(mongo.db.cards.find(reverse_prepare_data(message[2])).limit(message[3]))
             for card in cards:
                 images = mongo.db.images.find({"card_id": card["_id"]})
                 card["images"] = images

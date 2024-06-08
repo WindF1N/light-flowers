@@ -1,7 +1,7 @@
 import styles from '../screens/styles/Post.module.css';
 import styles2 from '../screens/styles/Main.module.css';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSpringRef, animated, useSpring, config } from '@react-spring/web';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import Slider from './Slider';
@@ -11,6 +11,9 @@ import Hint from './Hint';
 import { useMainContext } from '../context';
 
 function Post({ postData, type, parent, basePathUrl }) {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const cardId = params.get('card_id');
   const navigate = useNavigate();
   const [ data, setData ] = useState(postData);
   const { sendMessage, message, setMessage, cartItems, setCartItems } = useMainContext();
@@ -265,6 +268,11 @@ function Post({ postData, type, parent, basePathUrl }) {
     };
     setData(prevState => ({...prevState, selectedColor: selectedColor, selectedCount: selectedCount, selectedPackage: selectedPackage, selectedSize: selectedSize }))
   }, [divCountItemsCartRef.current])
+  useEffect(() => {
+    if (cardId === data._id) {
+      toggle();
+    }
+  }, [])
   return (
     <>
       {type === "block" &&
@@ -682,6 +690,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                       document.querySelector("body").style.overflow = "auto";
                       document.querySelector("body").style.position = "relative";
                       document.querySelector("body").style.top = "0px";
+                      window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
                       navigate("/cart")
                     }} />
                   </div>
