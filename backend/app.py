@@ -116,10 +116,13 @@ def handle_message(message):
                 card["_id"] = str(card["_id"])
             emit('message', dumps(['cards', 'filter', cards, message[2], message[3]]))
         elif message[1] == "create":
-            message[2]["status"] = 1
             message[2]["created_at"] = datetime.now()
             new_card_id = mongo.db.cards.insert_one(message[2]).inserted_id
             emit('message', dumps(['cards', 'created', str(new_card_id)]))
+        elif message[1] == "update":
+            card = mongo.db.cards.find_one(ObjectId(message[4]))
+            mongo.db.cards.update_one({"_id": ObjectId(message[4])}, {"$set": message[2]})
+            emit('message', dumps(['cards', 'updated', message[4]]))
     elif message[0] == "images":
         if message[1] == "add":
             card = mongo.db.cards.find_one({"_id": ObjectId(message[2])})
