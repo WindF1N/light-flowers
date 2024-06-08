@@ -63,7 +63,7 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
         {inputs.map(([key, value]) => (
           <>
             {value.type === "text" &&
-            <div className={styles.input} key={key} onClick={value.handleClick}>
+            <div className={styles.input} onClick={value.handleClick}>
               <Field name={key}>
                 {({ field }) => (
                   <>
@@ -113,7 +113,7 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
             {value.type === "select" &&
             <Field name={key}>
               {({ field }) => (
-                <div className={`${styles.input} ${styles.select} ${value.error || (errors[key] && touched[key]) ? styles.error : null}`} key={key} onClick={() => {
+                <div className={`${styles.input} ${styles.select} ${value.error || (errors[key] && touched[key]) ? styles.error : null}`} onClick={() => {
                   document.getElementById(`select${key}`).focus()
                 }}>
                   <label htmlFor={key}>{value.label}</label>

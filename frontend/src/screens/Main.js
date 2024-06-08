@@ -2,19 +2,14 @@ import styles from './styles/Main.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Post from '../components/Post';
-import Title from '../components/Title';
 import Button from '../components/Button';
 import Items from '../components/Items';
-import FixedButton from '../components/FixedButton';
 import { useMainContext } from '../context';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-
 
 function Main() {
-
+  const { sendMessage, message, setMessage } = useMainContext();
   const navigate = useNavigate();
-  const [ view, setView ] = useState("grid");
-
+  const [ posts, setPosts ] = useState([]);
   const handleClick = (e) => {
     if (e.currentTarget.classList.contains('active')) {
       e.currentTarget.children[1].style.transform = 'rotate(0deg)';
@@ -26,92 +21,20 @@ function Main() {
       e.currentTarget.classList.add('active');
     }
   };
-
   useEffect(() => {
     window.scrollTo({top: 0, smooth: "behavior"});
+    sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью"}, 6]))
   }, [])
-
-  const [ posts, setPosts ] = useState([
-    {
-      _id: "1",
-      images: [
-        {
-          _id: "i-1",
-          file: require("../screens/images/flowers.avif"),
-          file_lazy: require("../screens/images/flowers.avif")
+  useEffect(() => {
+    if (message && window.location.pathname === "/") {
+      if (message[0] === 'cards') {
+        if (message[1] === 'filter') {
+          setPosts(message[2]);
         }
-      ],
-      title: "Букет из 19 роз",
-      price: "2 700,00 ₽",
-      oldPrice: "4 400,00 ₽"
-    },
-    {
-      _id: "2",
-      images: [
-        {
-          _id: "i-2",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        }
-      ],
-      title: "Букет из 29 роз",
-      price: "5 100,00 ₽",
-      oldPrice: "7 500,00 ₽"
-    },
-    {
-      _id: "3",
-      images: [
-        {
-          _id: "i-3",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        }
-      ],
-      title: "Букет из 51 розы",
-      price: "8 700,00 ₽",
-      oldPrice: "10 100,00 ₽"
-    },
-    {
-      _id: "4",
-      images: [
-        {
-          _id: "i-4",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    },
-    {
-      _id: "5",
-      images: [
-        {
-          _id: "i-5",
-          file: require("../screens/images/flowers5.avif"),
-          file_lazy: require("../screens/images/flowers5.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    },
-    {
-      _id: "6",
-      images: [
-        {
-          _id: "i-6",
-          file: require("../screens/images/flowers5.avif"),
-          file_lazy: require("../screens/images/flowers5.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    }
-  ]);
-
+      }
+      setMessage(null);
+    };
+  }, [message]);
   return (
     <div className="view">
       <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15, marginBottom: 20}}>
@@ -177,20 +100,29 @@ function Main() {
         ))}
       </div> */}
       <div style={{display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 20, borderBottom: "0.5px solid rgb(24, 24, 26)", paddingBottom: 20}}>
-        {posts.map((post, index) => (
-          <div key={post._id}>
-            {index === 2 &&
-            <Post data={post} type="old-big" />}
-            {[0, 1].includes(index) &&
-            <Post data={post} type="old-normal" />}
-            {![0, 1, 2].includes(index) &&
-            <Post data={post} type="old-small" />}
+        {posts.length > 0 ?
+          <>
+            {posts.map((post, index) => (
+              <div key={post._id}>
+                {index === 2 &&
+                <Post postData={post} type="old-big" basePathUrl="/" />}
+                {[0, 1].includes(index) &&
+                <Post postData={post} type="old-normal" basePathUrl="/" />}
+                {![0, 1, 2].includes(index) &&
+                <Post postData={post} type="old-small" basePathUrl="/" />}
+              </div>
+            ))}
+          </>
+          :
+          <div style={{width: "100%", height: "50vw", display: "flex", alignItems: "center", justifyContent: "center"}}>
+            <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>Букеты отсутствуют</div>
           </div>
-        ))}
+        }
       </div>
+      {posts.length > 0 &&
       <div style={{marginTop: 15, display: "flex", justifyContent: "center", color: "#bbb", fontWeight: 300, fontSize: 15, alignItems: "center", gap: 8}} onClick={() => navigate("/search")}>
         Показать всё <img src={require("../components/images/arrow-right.svg").default} alt="" style={{display: "flex", marginTop: 1, filter: "brightness(.6)"}} />
-      </div>
+      </div>}
       <div className={styles.information}>
         <div className={styles.informationblocks}>
           <div className={styles.informationblock}>

@@ -3,7 +3,6 @@ import { useSpringRef, animated, useSpring, config } from '@react-spring/web';
 import ScrollToError from './ScrollToError';
 import { Formik, Form } from 'formik';
 import Button from './Button';
-import EditPrice from './EditPrice';
 import FormLIGHT from './FormLIGHT';
 import * as Yup from 'yup';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
@@ -16,11 +15,11 @@ const validationSchema = Yup.object().shape({
     .max(100, 'Макс. длина 100')
 });
 
-function AddPrice({ prices, setPrices }) {
+function EditPrice({ price, prices, setPrices, index }) {
   const [ inputs, setInputs ] = useState({
     "price": {
       value: null,
-      isFocused: false,
+      isFocused: price.price.length > 0,
       error: null,
       label: "Цена, ₽",
       type: "text",
@@ -39,7 +38,7 @@ function AddPrice({ prices, setPrices }) {
     },
     "oldPrice": {
       value: null,
-      isFocused: false,
+      isFocused: price.oldPrice.length > 0,
       error: null,
       label: "Старая цена, ₽",
       type: "text",
@@ -76,13 +75,6 @@ function AddPrice({ prices, setPrices }) {
   })
   const scrollY = useRef();
   const toggle = () => {
-
-    setIsErrorVariables(false);
-    setSelectedColors([]);
-    setSelectedCounts([]);
-    setSelectedPackages([]);
-    setSelectedSizes([]);
-
     api.start({ transform: "scale(1.05)", config: { duration: 200 } });
     setTimeout(() => {
       api.start({ transform: "scale(1)", config: { duration: 200 } });
@@ -127,11 +119,6 @@ function AddPrice({ prices, setPrices }) {
             document.querySelector("body").style.top = "0px";
             window.scrollTo({ top: scrollY.current })
             closing.current = false;
-            setIsErrorVariables(false);
-            setSelectedColors([]);
-            setSelectedCounts([]);
-            setSelectedPackages([]);
-            setSelectedSizes([]);
             setIsOpen(false);
           }, 600)
         }
@@ -156,21 +143,21 @@ function AddPrice({ prices, setPrices }) {
     "Розовые",
     "Микс"
   ]
-  const [ selectedColors, setSelectedColors ] = useState([]);
+  const [ selectedColors, setSelectedColors ] = useState(price.colors || []);
   const counts = [
     "19 роз",
     "29 роз",
     "51 роза",
     "101 роза"
   ]
-  const [ selectedCounts, setSelectedCounts ] = useState([]);
+  const [ selectedCounts, setSelectedCounts ] = useState(price.counts || []);
   const sizes = [
     "50 см",
     "60 см",
     "70 см",
     "80 см"
   ]
-  const [ selectedSizes, setSelectedSizes ] = useState([]);
+  const [ selectedSizes, setSelectedSizes ] = useState(price.sizes || []);
   const packages = [
     "Лента",
     "Коробка",
@@ -178,14 +165,40 @@ function AddPrice({ prices, setPrices }) {
     "Подарочной упаковка",
     "Классика"
   ]
-  const [ selectedPackages, setSelectedPackages ] = useState([]);
+  const [ selectedPackages, setSelectedPackages ] = useState(price.packages || []);
   const [ isErrorVariables, setIsErrorVariables ] = useState(false);
   const handleSubmit = (values) => {
     values["colors"] = selectedColors;
     values["counts"] = selectedCounts;
     values["packages"] = selectedPackages;
     values["sizes"] = selectedSizes;
-    setPrices(prevState => [...prevState, values]);
+    setPrices(prevState => {
+      return prevState.map((item, i) => {
+        if (i === index) {
+          return values;
+        }
+        return item;
+      });
+    });
+    closing.current = true;
+    modalApi.start({ backdropFilter: "blur(0vh)", WebkitBackdropFilter: "blur(0vh)", background: "rgba(0, 0, 0, 0)", config: { duration: 300 } });
+    setTimeout(() => {
+      modalApiMain.start({ top: `${window.innerHeight}px`, config: { duration: 200 } });
+    }, 100)
+    setTimeout(() => {
+      document.querySelector("html").style.overflow = "auto";
+      document.querySelector("body").style.overflow = "auto";
+      document.querySelector("body").style.position = "relative";
+      document.querySelector("body").style.top = "0px";
+      window.scrollTo({ top: scrollY.current })
+      closing.current = false;
+      setIsOpen(false);
+    }, 600)
+  }
+  const handleRemove = () => {
+    setPrices(prevState => {
+      return prevState.filter((item, i) => i !== index);
+    });
     closing.current = true;
     modalApi.start({ backdropFilter: "blur(0vh)", WebkitBackdropFilter: "blur(0vh)", background: "rgba(0, 0, 0, 0)", config: { duration: 300 } });
     setTimeout(() => {
@@ -203,23 +216,27 @@ function AddPrice({ prices, setPrices }) {
   }
   return (
     <>
-        <animated.div style={{display: "flex", alignItems: "center", gap: 5, marginTop: 0, ...props}} onClick={toggle}>
-            <div style={{height: 27}}>
-                <img src={require("./images/plus.svg").default} className="" alt="whatsapp" style={{height: "100%"}} />
-            </div>
-            <div style={{
-                fontWeight: 300,
-                fontSize: 15
-            }}>
-                Добавить цену
-            </div>
-        </animated.div>
-        <div style={{display: "flex", flexFlow: "column", gap: 10}}>
-          {prices.map((price, index) => (
-            <EditPrice price={price} prices={prices} setPrices={setPrices} index={index} key={index}/>
+      <animated.div style={{display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#18181A", padding: "10px 10px", borderRadius: 9, ...props}} onClick={toggle}>
+        <div style={{display: "flex", flexWrap: "wrap", gap: 5}}>
+          {price.colors.map((color, index) => (
+            <div key={"color" + index} style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>{color}</div>
+          ))}
+          {price.counts.map((count, index) => (
+            <div key={"count" + index} style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>{count}</div>
+          ))}
+          {price.sizes.map((size, index) => (
+            <div key={"size" + index} style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>{size}</div>
+          ))}
+          {price.packages.map((package_, index) => (
+            <div key={"package" + index} style={{fontSize: 12, fontWeight: 400, padding: "3px 6px", background: "#fff", color: "#000", borderRadius: 4}}>{package_}</div>
           ))}
         </div>
-        
+        <div style={{flexShrink: 0}}>
+          {price.oldPrice.length > 0 ?
+            <div style={{fontSize: 14, fontWeight: 300, color: "#fff"}}>{price.price}<br/><span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>{price.oldPrice}</span></div>
+          : <div style={{fontSize: 14, fontWeight: 300, color: "#fff"}}>{price.price}</div>}
+        </div>
+      </animated.div>
       {isOpen &&
         <animated.div style={{
                         position: "fixed", 
@@ -252,14 +269,19 @@ function AddPrice({ prices, setPrices }) {
               >
                 <div style={{marginTop: "auto", marginBottom: 20, width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
               </div>
-              <div style={{padding: "30px 20px 15px 20px", fontSize: 16, fontWeight: 300}}>
-                Добавьте цену для отдельных<br/>характеристик букета
+              <div style={{padding: "30px 20px 15px 20px", fontSize: 16, fontWeight: 300, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                <div>
+                  Добавьте цену для отдельных<br/>характеристик букета
+                </div>
+                <div onClick={handleRemove} style={{display: "flex", alignItems: "center", justifyContent: "center", background: "rgb(24, 24, 26)", borderRadius: 6, padding: 5, boxShadow: "0 0 20px rgba(0, 0, 0, .1)"}}>
+                  <img src={require('./images/remove.svg').default} alt="" />
+                </div>
               </div>
               <div style={{padding: "0px 20px 20px 20px"}}>
                 <Formik
                     initialValues={{
-                        "price": "",
-                        "oldPrice": ""
+                        "price": price.price || "",
+                        "oldPrice": price.oldPrice || ""
                     }}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
@@ -426,4 +448,4 @@ function AddPrice({ prices, setPrices }) {
   )
 }
 
-export default AddPrice;
+export default EditPrice;

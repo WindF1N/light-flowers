@@ -7,10 +7,10 @@ const SocketContext = createContext();
 const SocketProvider = ({ children }) => {
 
   const [ state, setState ] = useState(null);
-  const [ loading, setLoading ] = useState(false);
+  const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState(null);
 
-  const [ account, setAccount ] = useState(null);
+  const [ account, setAccount ] = useState(window.Telegram.WebApp.initDataUnsafe);
   const [ accessToken, setAccessToken ] = useState(localStorage.getItem('accessToken'));
   const [ refreshToken, setRefreshToken ] = useState(localStorage.getItem('refreshToken'));
   const [ isFirstLogin, setIsFirstLogin ] = useState(JSON.parse(localStorage.getItem('isFirstLogin')));
@@ -41,181 +41,32 @@ const SocketProvider = ({ children }) => {
   
   const [ openPost, setOpenPost ] = useState(null);
 
-  const login = async (data, navigate) => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_ENDPOINT}/login`, data);
-      if ('error' in response.data) {
-        alert(response.data.error);
-        setError(response.data.error);
-      } else {
-        // setVerifyCodeId(response.data.code_id);
-        if ("user" in response.data) {
-          setAccount(response.data.user);
-        }
-        navigate(response.data.follow.link,
-                 { replace: response.data.follow.replace });
-      }
-      setLoading(false);
-    } catch (error) {
-      alert(error.message);
-      setError(error.message);
-    }
-  };
-
-  const verify = async (data, navigate) => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_ENDPOINT}/verify`, data);
-      if ('error' in response.data) {
-        setError(response.data.error);
-        setLoading(false);
-      } else {
-        setAccessToken(response.data.access_token);
-        setRefreshToken(response.data.refresh_token);
-        localStorage.setItem('accessToken', response.data.access_token);
-        localStorage.setItem('refreshToken', response.data.refresh_token);
-        if (socket) {
-          socket.off('connect');
-          socket.off('disconnect');
-          socket.off('message');
-          setSocket(null);
-          setAccount(null);
-        }
-        setIsFirstLogin(true);
-        localStorage.setItem('isFirstLogin', true);
-        navigate(response.data.follow.link,
-                 { replace: response.data.follow.replace });
-      }
-    } catch (error) {
-      alert(error.message);
-      setError(error.message);
-    }
-  };
-
-  const refreshAccessToken = async () => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_ENDPOINT}/refresh`, null, {
-        headers: {
-          Authorization: "Bearer " + refreshToken
-        }
-      });
-      setAccessToken(response.data.access_token);
-      setRefreshToken(response.data.refresh_token);
-      localStorage.setItem('accessToken', response.data.access_token);
-      localStorage.setItem('refreshToken', response.data.refresh_token);
-    } catch (error) {
-      setError(error.message);
-      logout();
-    }
-  };
-
-  const logout = (navigate) => {
-    setLoading(false);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setAccessToken(null);
-    setRefreshToken(null);
-    if (socket) {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('message');
-      setSocket(null);
-    }
-    if (navigate) {
-      navigate('/', {replace: true});
-    }
-    setIsFirstLogin(true);
-    localStorage.setItem('isFirstLogin', true);
-  }
-
-  // useEffect(() => {
-  //   if (!socket) {
-  //     setSocket(io(process.env.REACT_APP_SERVER_ENDPOINT.replace("http", "ws"), {
-  //       transportOptions: {
-  //         polling: {
-  //           maxHttpBufferSize: 1e8,
-  //           extraHeaders: accessToken ? {
-  //             Authorization: "Bearer " + accessToken
-  //           } : null
-  //         },
-  //       }
-  //     }));
-  //   }
-  // }, [socket]);
+  const [ cartItems, setCartItems ] = useState([]);
 
   useEffect(() => {
-    const handleRefresh = async () => {
-      await refreshAccessToken();
-    };
-    if (message) {
-      if (message[0] === 'user') {
-        if (message[1] === 'me') {
-          setAccount(message[2]);
-          if (!message[2]?.username && !message[2]?.name && accessToken && refreshToken) {
-            if (isFirstLogin) {
-              console.log(isFirstLogin)
-              setLoadUserInfo(true);
-            }
-          } else if (message[2]?.username && message[2]?.name && accessToken && refreshToken) {
-            setLoadUserInfo(false);
-          }
-          const timeoutId = setTimeout(() => {
-            setLoading(false);
-          }, 1200);
-          setIsFirstLogin(false);
-          localStorage.setItem('isFirstLogin', false);  
-          return () => clearTimeout(timeoutId);
-        } else if (message[1] === 'list') {
-          setUsers(message[2]);
+    if (!socket) {
+      setSocket(io("https://127.0.0.1:5000", {
+        transportOptions: {
+          polling: {
+            maxHttpBufferSize: 1e8,
+          },
         }
-      } else if (message[0] === 'posts') {
-        if (message[1] === 'create') {
-          setPostId(message[2]);
-          setLoading(false);
-        } else if (message[1] === 'list') {
-          setPosts(message[2].reverse());
-          setLoading(false);
-        }
-      } else if (message[0] === 'error') {
-        if (message[1] === 'Token has expired') {
-          handleRefresh();
-        } else {
-          setLoading(false);
-          alert(message);
-        }
-      }
-      setMessage(null);
-    };
-  }, [message]);
+      }));
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (socket) {
       socket.on('connect', () => {
         console.log('Подключились к серверу');
-        if (!accessToken && !refreshToken) {
-          const timeoutId = setTimeout(() => {
-            setLoading(false);
-          }, 1200);
-          return () => clearTimeout(timeoutId);
-        };
-        if (!account && accessToken && refreshToken) {
-          sendMessage(JSON.stringify(["user", "me"]));
-        }
+        setLoading(false);
       });
-
       socket.on('disconnect', () => {
         console.log('Отключились от сервера');
       });
-
       socket.on('message', (msg) => {
-        if (!JSON.parse(msg)['error']) {
-          setMessages(prevMessages => [...prevMessages, JSON.parse(msg)]);
-        } else {
-          if (JSON.parse(msg)['error'] === 'Token has expired') {
-            setSocket(null);
-          };
-        };
+        setMessages(prevMessages => [...prevMessages, JSON.parse(msg)]);
       });
-
       return () => {
         socket.off('connect');
         socket.off('disconnect');
@@ -287,13 +138,10 @@ const SocketProvider = ({ children }) => {
 
                                      handleClickBackButton, setHandleClickBackButton,
                                      openPost, setOpenPost,
+                                     cartItems, setCartItems,
 
                                      error,
-                                     setError,
-
-                                     login,
-                                     verify,
-                                     logout}}>
+                                     setError}}>
       {children}
     </SocketContext.Provider>
   );

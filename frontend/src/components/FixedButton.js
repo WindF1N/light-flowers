@@ -29,7 +29,7 @@ const FixedButton = (props) => {
   const [ isProButtonVisible, setIsProButtonVisible ] = useState(true);
   const [ canGoBack, setCanGoBack ] = useState(false);
   const [ canScrollUp, setCanScrollUp ] = useState(false);
-  const { accessToken, refreshToken, account, handleClickBackButton } = useMainContext();
+  const { accessToken, refreshToken, account, handleClickBackButton, cartItems } = useMainContext();
 
   const scrollUp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -72,11 +72,13 @@ const FixedButton = (props) => {
 
   return (
     <div className={props.upper && 'upper' || props.send && 'send'}>
+      {account.user?.username !== "thecreatxr" &&
       <div className={`fixed-button add ${isProButtonVisible ? 'visible' : ''}`} onClick={() => navigate('/add')}>
         <img src={require("./images/plus.svg").default} className="" alt="plus" />
-      </div>
+      </div>}
       <div className={`fixed-button ${isProButtonVisible ? 'visible' : ''}`} onClick={() => navigate('/cart')}>
         <img src={require("./images/cart.svg").default} className="" alt="cart" style={{marginTop: 3, marginRight: 1}} />
+        {cartItems.length > 0 &&
         <div style={{position: "absolute", 
                      top: 1, 
                      right: 1, 
@@ -88,7 +90,7 @@ const FixedButton = (props) => {
                      alignItems: "center", 
                      justifyContent: "center",
                      fontSize: 11,
-                     fontWeight: 300}}>3</div>
+                     fontWeight: 300}}>{cartItems.length}</div>}
       </div>
       {canGoBack ?
         <div className="fixed-button-back" onClick={handleClickBackButton ? handleClickBackButton : goBack}>
@@ -101,7 +103,7 @@ const FixedButton = (props) => {
           <div>Здесь твоя корзина</div>
         </div>}
       {(canScrollUp || props.send) &&
-      <div className={`fixed-button-up ${isProButtonVisible ? 'visible' : ''}`} onClick={!props.send ? scrollUp : props.onDelete}>
+      <div className={`fixed-button-up ${isProButtonVisible ? 'visible' : ''} ${account.user?.username === "thecreatxr" ? 'dif' : ''}`} onClick={!props.send ? scrollUp : props.onDelete}>
         {!props.send ?
           <img src={require("./images/arrow-right.svg").default} alt="arrow" />
           : <img src={require("./images/close.svg").default} alt="arrow" style={{width: "100%"}}/> }

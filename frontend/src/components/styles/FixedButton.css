@@ -80,6 +80,10 @@
   backdrop-filter: blur(5px);
 }
 
+.fixed-button-up.dif {
+  bottom: 30px;
+}
+
 .fixed-button-up img {
   transform: rotate(-90deg);
   width: 7px;

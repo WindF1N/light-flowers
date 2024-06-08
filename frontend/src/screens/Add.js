@@ -14,23 +14,23 @@ import * as Yup from 'yup';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
 const validationSchema = Yup.object().shape({
-  "input1": Yup.string()
-    .max(100, 'Макс. длина 100')
+  "category": Yup.string()
+    .required("Обязательное поле"),
+  "title": Yup.string()
+    .required("Обязательное поле"),
+  "price": Yup.string()
     .required("Обязательное поле")
 });
 
 function Add() {
-
   const navigate = useNavigate();
-
-  const { state, setState, accessToken, refreshToken, sendMessage, setLoading, postId, setPostId, message, setMessage } = useMainContext();
-
-  const [ more, setMore ] = useState(false);
+  const { sendMessage, message, setMessage, account } = useMainContext();
   const imagesDivRef = useRef();
   const [ images, setImages ] = useState([]);
   const [ activeImage, setActiveImage ] = useState(0);
   const [ photosError, setPhotosError ] = useState(null);
-  const [ images2, setImages2 ] = useState([]);
+  const indexOfLoadedImage = useRef(-1);
+  const [ cardId, setCardId ] = useState(null);
   const [ inputs, setInputs ] = useState({
     "category": {
       value: null,
@@ -90,40 +90,53 @@ function Add() {
     },
   });
   const [ saving, setSaving ] = useState(false);
-
   useEffect(() => {
     window.scrollTo({top: 0});
   }, [])
-
-  // useEffect(() => {
-  //   if (!postId) {
-  //     sendMessage(JSON.stringify(["posts", "create"]));
-  //   }
-  // }, [postId])
-
   const handleSubmit = (values) => {
     if (images.length === 0) {
       setPhotosError("Добавьте хотя бы 1 фотографию");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return
     }
-    images.forEach((image, index) => {
-      sendMessage(JSON.stringify(["images", "add", postId, image.file, "main", index]));
-    });
-    sendMessage(JSON.stringify(["posts", "update", postId, {...values, status: 1}]));
+    if (values["category"] === "Розы с любовью") {
+      values["colors"] = selectedColors;
+      values["counts"] = selectedCounts;
+      values["packages"] = selectedPackages;
+      values["sizes"] = selectedSizes;
+      values["prices"] = prices;
+    } else {
+      delete values["colors"];
+      delete values["counts"];
+      delete values["packages"];
+      delete values["sizes"];
+      delete values["prices"];
+    }
+    sendMessage(JSON.stringify(["cards", "create", values, account]));
     setSaving(true);
   }
-
   useEffect(() => {
     if (message) {
-      if (message[0] === 'posts') {
-        if (message[1] === 'new') {
-          navigate("/posts/" + postId, {replace: true});
+      if (message[0] === "cards") {
+        if (message[1] === "created") {
+          setCardId(message[2]);
+        }
+      } else if (message[0] === "images") {
+        if (message[1] === "added") {
+          indexOfLoadedImage.current = message[2];
         }
       }
       setMessage(null);
     };
   }, [message]);
-
+  useEffect(() => {
+    if (cardId && indexOfLoadedImage.current + 1 <= images.length && images[indexOfLoadedImage.current + 1]) {
+      sendMessage(JSON.stringify(["images", "add", cardId, indexOfLoadedImage.current + 1, images[indexOfLoadedImage.current + 1].file]));
+    } else if (cardId) {
+      setSaving(false);
+      navigate("/search?id=" + cardId, { replace: true });
+    }
+  }, [cardId, indexOfLoadedImage.current])
   const colors = [
     "Белые",
     "Красные",
@@ -157,7 +170,7 @@ function Add() {
     "Классика"
   ]
   const [ selectedPackages, setSelectedPackages ] = useState([]);
-
+  const [ prices, setPrices ] = useState([]);
   return (
     <div className="view">
       <div className={styles.wrapper} style={{marginBottom: 20}}>
@@ -183,7 +196,9 @@ function Add() {
       <Formik
         initialValues={{
           "category": "Розы с любовью",
-          "title": ""
+          "title": "",
+          "price": "",
+          "oldPrice": ""
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -195,38 +210,38 @@ function Add() {
             <FormLIGHT inputs={Object.entries(inputs).slice(1, 2)} setInputs={setInputs} errors={errors} touched={touched} />
             {values.category === "Розы с любовью" &&
             <>
-              <div>
-                <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступные цвета</div>
-                <div style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 10
-                }}>
-                  {colors.map((color, index) => (
-                    <div key={"color" + index} 
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "4px 7px",
-                          borderRadius: 4,
-                          background: selectedColors.includes(color) ? "#fff" : "rgb(24, 24, 26)",
-                          fontSize: 14,
-                          fontWeight: 300,
-                          color: selectedColors.includes(color) ? "#000" : "#fff"
-                        }}
-                        onClick={() => {
-                          if (selectedColors.includes(color)) {
-                            setSelectedColors(prevState => prevState.filter((selectedColor) => color !== selectedColor))
-                          } else {
-                            setSelectedColors(prevState => [...prevState, color])
-                          }
-                        }}
-                    >
-                      {color}
-                    </div>
-                  ))}
-                </div>
+            <div>
+              <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступные цвета</div>
+              <div style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 10
+              }}>
+                {colors.map((color, index) => (
+                  <div key={"color" + index} 
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "4px 7px",
+                        borderRadius: 4,
+                        background: selectedColors.includes(color) ? "#fff" : "rgb(24, 24, 26)",
+                        fontSize: 14,
+                        fontWeight: 300,
+                        color: selectedColors.includes(color) ? "#000" : "#fff"
+                      }}
+                      onClick={() => {
+                        if (selectedColors.includes(color)) {
+                          setSelectedColors(prevState => prevState.filter((selectedColor) => color !== selectedColor))
+                        } else {
+                          setSelectedColors(prevState => [...prevState, color])
+                        }
+                      }}
+                  >
+                    {color}
+                  </div>
+                ))}
+              </div>
             </div>
             <div>
               <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступное количество цветов</div>
@@ -330,8 +345,8 @@ function Add() {
             </>}
             <FormLIGHT inputs={Object.entries(inputs).slice(2)} setInputs={setInputs} errors={errors} touched={touched} />
             {values.category === "Розы с любовью" &&
-            <AddPrice />}
-            <Button text="Сохранить" />
+            <AddPrice prices={prices} setPrices={setPrices} />}
+            <Button text="Сохранить" handleClick={handleSubmit} />
           </div>
           <ScrollToError/>
         </Form>

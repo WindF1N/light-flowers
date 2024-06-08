@@ -1,14 +1,19 @@
 import styles from '../screens/styles/Post.module.css';
 import styles2 from '../screens/styles/Main.module.css';
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSpringRef, animated, useSpring, config } from '@react-spring/web';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import Slider from './Slider';
 import MiniSlider from './MiniSlider';
 import Button from './Button';
 import Hint from './Hint';
+import { useMainContext } from '../context';
 
-function Post({ data, type, parent }) {
+function Post({ postData, type, parent, basePathUrl }) {
+  const navigate = useNavigate();
+  const [ data, setData ] = useState(postData);
+  const { sendMessage, message, setMessage, cartItems, setCartItems } = useMainContext();
   const postDivRef = useRef();
   const [ isOpenPost, setIsOpenPost ] = useState(false);
   const api = useSpringRef();
@@ -34,6 +39,9 @@ function Post({ data, type, parent }) {
   })
   const scrollY = useRef();
   const toggle = () => {
+    window.history.replaceState({}, '', '/card/' + data._id);
+    sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью" }, 6]))
+    sendMessage(JSON.stringify(["cards", "filter", {"category": "Подарки"}, 6]))
     api.start({ transform: "scale(1.05)", config: { duration: 200 } });
     setTimeout(() => {
       api.start({ transform: "scale(1)", config: { duration: 200 } });
@@ -58,154 +66,15 @@ function Post({ data, type, parent }) {
   }
   const imagesDivRef = useRef();
   const [ activeImage, setActiveImage ] = useState(null);
-  const colors = [
-    "Белые",
-    "Красные",
-    "Черные",
-    "Синие",
-    "Желтые", 
-    "Оранжевые",
-    "Розовые",
-    "Микс"
-  ]
-  const [ selectedColors, setSelectedColors ] = useState([]);
-  const counts = [
-    "19 роз",
-    "29 роз",
-    "51 роза",
-    "101 роза"
-  ]
-  const [ selectedCounts, setSelectedCounts ] = useState([]);
-  const sizes = [
-    "50 см",
-    "60 см",
-    "70 см",
-    "80 см"
-  ]
-  const [ selectedSizes, setSelectedSizes ] = useState([]);
-  const packages = [
-    "Лента",
-    "Коробка",
-    "Корзина",
-    "Подарочной упаковка",
-    "Классика"
-  ]
-  const [ selectedPackages, setSelectedPackages ] = useState([]);
-  const [ posts, setPosts ] = useState([
-    {
-      _id: "1",
-      images: [
-        {
-          _id: "i-1",
-          file: require("../screens/images/flowers.avif"),
-          file_lazy: require("../screens/images/flowers.avif")
-        },
-        {
-          _id: "i-2",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        },
-        {
-          _id: "i-3",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        },
-        {
-          _id: "i-4",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        },
-        {
-          _id: "i-5",
-          file: require("../screens/images/flowers.avif"),
-          file_lazy: require("../screens/images/flowers.avif")
-        },
-        {
-          _id: "i-6",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        },
-        {
-          _id: "i-7",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        },
-        {
-          _id: "i-8",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        }
-      ],
-      title: "Букет из 19 роз",
-      price: "2 700,00 ₽",
-      oldPrice: "4 400,00 ₽"
-    },
-    {
-      _id: "2",
-      images: [
-        {
-          _id: "i-2",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        }
-      ],
-      title: "Букет из 29 роз",
-      price: "5 100,00 ₽",
-      oldPrice: "7 500,00 ₽"
-    },
-    {
-      _id: "3",
-      images: [
-        {
-          _id: "i-3",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        }
-      ],
-      title: "Букет из 51 розы",
-      price: "8 700,00 ₽",
-      oldPrice: "10 100,00 ₽"
-    },
-    {
-      _id: "4",
-      images: [
-        {
-          _id: "i-4",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    },
-    {
-      _id: "5",
-      images: [
-        {
-          _id: "i-5",
-          file: require("../screens/images/flowers5.avif"),
-          file_lazy: require("../screens/images/flowers5.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    },
-    {
-      _id: "6",
-      images: [
-        {
-          _id: "i-6",
-          file: require("../screens/images/flowers5.avif"),
-          file_lazy: require("../screens/images/flowers5.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    }
-  ]);
+  const colors = data.colors || [];
+  const [ selectedColor, setSelectedColor ] = useState(null);
+  const counts = data.counts || [];
+  const [ selectedCount, setSelectedCount ] = useState(null);
+  const sizes = data.sizes || [];
+  const [ selectedSize, setSelectedSize ] = useState(null);
+  const packages = data.packages || [];
+  const [ selectedPackage, setSelectedPackage ] = useState(null);
+  const [ posts, setPosts ] = useState([]);
   const [ touchStartY, setTouchStartY ] = useState(null);
   const [ modalMainTopOffset, setModalMainTopOffset ] = useState(null);
   const closing = useRef(false);
@@ -220,6 +89,12 @@ function Post({ data, type, parent }) {
       if (touchStartY < e.touches[0].screenY) {
         modalMainRef.current.style.top = `${e.touches[0].screenY - touchStartY}px`;
         if (modalMainRef.current?.getBoundingClientRect().top > window.innerHeight * .4) {
+          if (!parent) {
+            window.history.replaceState({}, '', basePathUrl);
+          } else {
+            window.history.replaceState({}, '', '/card/' + parent._id);
+          }
+          setPosts([]);
           closing.current = true;
           modalApiMain.set({ top: `${e.touches[0].screenY - touchStartY}px`})
           modalApi.start({ backdropFilter: "blur(0vh)", WebkitBackdropFilter: "blur(0vh)", background: "rgba(0, 0, 0, 0)", config: { duration: 300 } });
@@ -252,28 +127,163 @@ function Post({ data, type, parent }) {
       }, 100)
     }
   }
+  const [ newPrice, setNewPrice ] = useState(null);
+  useEffect(() => {
+    setData(prevState => ({...prevState, selectedColor: selectedColor, selectedCount: selectedCount, selectedPackage: selectedPackage, selectedSize: selectedSize }))
+    for (let i = 0; i < data.prices?.length; i++) {
+      const price = data.prices[i];
+      let checked = [0, 0, 0, 0]
+      if (price.colors.length > 0) {
+        if (price.colors.includes(selectedColor)) {
+          checked[0] = 1;
+        }
+      } else {
+        checked[0] = 1;
+      };
+      if (price.counts.length > 0) {
+        if (price.counts.includes(selectedCount)) {
+          checked[1] = 1;
+        }
+      } else {
+        checked[1] = 1;
+      };
+      if (price.packages.length > 0) {
+        if (price.packages.includes(selectedPackage)) {
+          checked[2] = 1;
+        }
+      } else {
+        checked[2] = 1;
+      };
+      if (price.sizes.length > 0) {
+        if (price.sizes.includes(selectedSize)) {
+          checked[3] = 1;
+        }
+      } else {
+        checked[3] = 1;
+      };
+      if (JSON.stringify(checked) === JSON.stringify([1, 1, 1, 1])) {
+        setNewPrice(price);
+        return
+      }
+    }
+    setNewPrice(null)
+  }, [selectedColor, selectedCount, selectedPackage, selectedSize]);
+  useEffect(() => {
+    if (message && window.location.pathname === '/card/' + data._id) {
+      if (message[0] === 'cards') {
+        if (message[1] === 'filter') {
+          setPosts(prevState => [...prevState.filter(item => {
+            const isInMessage = message[2].some(msgItem => msgItem._id === item._id);
+            return !isInMessage;
+          }), ...message[2]]);
+        }
+      }
+      setMessage(null);
+    };
+  }, [message]);
+  const apiRemoveFromCart = useSpringRef();
+  const propsRemoveFromCart = useSpring({
+    ref: apiRemoveFromCart,
+    from: { right: 0, left: 0 },
+  })
+  const apiAddFromCart = useSpringRef();
+  const propsAddFromCart = useSpring({
+    ref: apiAddFromCart,
+    from: { right: 0, left: 0 },
+  })
+  const divCountItemsCartRef = useRef();
+  const apiCountItemsCart = useSpringRef();
+  const propsCountItemsCart = useSpring({
+    ref: apiCountItemsCart,
+    from: { opacity: 0 },
+  })
+  const handleCart = (e, type) => {
+    e.stopPropagation();
+    if (type === 1) {
+      setCartItems(prevState => {
+        // Ищем индекс элемента в массиве, который мы хотим обновить
+        const index = prevState.findIndex(item => JSON.stringify(item.product) === JSON.stringify(data));
+        // Если элемент найден, увеличиваем его count на 1
+        if (index !== -1) {
+          return prevState.map((item, i) => {
+            if (i === index && item.count !== 100) {
+              return { ...item, count: item.count + 1 };
+            }
+            return item;
+          });
+        }
+        // Если элемент не найден, добавляем новый элемент в массив с count равным 1
+        return [...prevState, { product: data, count: 1 }];
+      });
+      if (divCountItemsCartRef.current) {
+        apiRemoveFromCart.start({right: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+        apiAddFromCart.start({left: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+        apiCountItemsCart.start({opacity: 1, config: {duration: 400}});
+      }
+    } else if (type === 0) {
+      setCartItems(prevState => {
+        // Ищем индекс элемента в массиве, который мы хотим обновить
+        const index = prevState.findIndex(item => JSON.stringify(item.product) === JSON.stringify(data));
+        // Если элемент найден, уменьшаем его count на 1
+        if (index !== -1) {
+          const updatedItem = { ...prevState[index], count: prevState[index].count - 1 };
+          if (updatedItem.count === 0) {
+            if (divCountItemsCartRef.current) {
+              apiRemoveFromCart.start({right: 0, config: {duration: 200}});
+              apiAddFromCart.start({left: 0, config: {duration: 200}});
+              apiCountItemsCart.start({opacity: 0, config: {duration: 200}});
+            }
+            // Если количество стало равным 0, удаляем элемент из массива
+            return prevState.filter((_, i) => i !== index);
+          } else {
+            if (divCountItemsCartRef.current) {
+              apiRemoveFromCart.start({right: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+              apiAddFromCart.start({left: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+              apiCountItemsCart.start({opacity: 1, config: {duration: 400}});
+            }
+            // Иначе обновляем количество
+            return prevState.map((item, i) => i === index ? updatedItem : item);
+          }
+        }
+        if (divCountItemsCartRef.current) {
+          apiRemoveFromCart.start({right: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+          apiAddFromCart.start({left: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+          apiCountItemsCart.start({opacity: 1, config: {duration: 400}});
+        }
+        // Если элемент не найден, возвращаем предыдущее состояние
+        return prevState;
+      });
+    };
+  }
+  useEffect(() => {
+    if (divCountItemsCartRef.current) {
+      if (cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0) {
+        apiRemoveFromCart.start({right: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+        apiAddFromCart.start({left: divCountItemsCartRef.current.clientWidth, config: {duration: 200}});
+        apiCountItemsCart.start({opacity: 1, config: {duration: 400}});
+      }
+    };
+    setData(prevState => ({...prevState, selectedColor: selectedColor, selectedCount: selectedCount, selectedPackage: selectedPackage, selectedSize: selectedSize }))
+  }, [divCountItemsCartRef.current])
   return (
     <>
       {type === "block" &&
         <animated.div style={{width: "calc(50vw - 20px)", position: "relative", height: "100%", zIndex: 1, ...props}}>
           <div ref={postDivRef} onClick={toggle} style={{position: "relative", display: "flex", flexFlow: "column", rowGap: 10, height: "100%"}}>
-            <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <img src={data.images[0].file} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+            <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(50vw - 20px)"}}>
+              <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
-            <div style={{width: 28, height: 28, position: "absolute", top: "calc(50vw - 53px)", right: 0, left: 0, margin: "auto", opacity: .75}}>
-              <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)", height: 28}}>
+              <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
+                <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              </animated.div>
+              <animated.div ref={divCountItemsCartRef} style={{borderRadius: 4, padding: "0 28px", height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0, ...propsCountItemsCart}}>
+                <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
+              </animated.div>
+              <animated.div onClick={(e) => handleCart(e, 1)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsAddFromCart}}>
+                <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              </animated.div>
             </div>
-            {/* <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)"}}>
-              <div style={{width: 28, height: 28, marginRight: -3, zIndex: 1}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{width: 34, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
-                <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              </div>
-              <div style={{width: 28, height: 28, marginLeft: -3, zIndex: 1}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div> */}
             <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 5px 5px 5px"}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
               <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
@@ -284,7 +294,7 @@ function Post({ data, type, parent }) {
         <animated.div style={{width: "calc(40vw - 20px)", position: "relative", height: "100%", zIndex: 1, ...props}}>
           <div ref={postDivRef} onClick={toggle} style={{position: "relative", display: "flex", flexFlow: "column", rowGap: 10, height: "100%"}}>
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <img src={data.images[0].file} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <LazyLoadImage visibleByDefault={true} src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 5px 5px 5px"}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
@@ -294,7 +304,7 @@ function Post({ data, type, parent }) {
         </animated.div>}
       {type === "line" &&
         <div onClick={toggle}>
-          <animated.div ref={postDivRef} style={{display: "flex", columnGap: 14, alignItems: "center", ...props}}>
+          <animated.div ref={postDivRef} style={{display: "flex", columnGap: 14, alignItems: "center", position: "relative", ...props}}>
             <div style={{minHeight: 80}}>
               <div style={{width: 80, height: 80, flexShrink: 0, overflow: "hidden", borderRadius: 9}}>
                 <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
@@ -304,28 +314,27 @@ function Post({ data, type, parent }) {
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
               <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
             </div>
-            <div style={{marginLeft: "auto"}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+            <div style={{marginLeft: "auto", height: 28, width: 86, position: "relative", flexShrink: 0}}>
+              <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0, width: "100%"}}>
+                <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
+                  <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                </animated.div>
+                <animated.div ref={divCountItemsCartRef} style={{width: "67.5%", height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0, ...propsCountItemsCart}}>
+                  <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
+                </animated.div>
+                <animated.div onClick={(e) => handleCart(e, 1)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsAddFromCart}}>
+                  <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                </animated.div>
               </div>
             </div>
-            {/* <div style={{marginLeft: "auto", display: "flex", alignItems: "center", columnGap: 10}}>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-              <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>1</div>
-              <div style={{width: 28, height: 28}}>
-                <img src={require("./images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-              </div>
-            </div> */}
           </animated.div>
         </div>}
       {type === "old-normal" &&
         <animated.div onClick={toggle} ref={postDivRef} style={{width: "calc(50vw - 20px)", position: "relative", height: "100%", borderRadius: 9, overflow: "hidden", ...props}}>
           <div>
             <div style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10, height: "100%", borderRadius: 9}}>
-              <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-                <img src={data.images[0].file} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(50vw - 20px)"}}>
+                <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </div>
               <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
                 <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{data.title}</div>
@@ -338,7 +347,7 @@ function Post({ data, type, parent }) {
         <animated.div onClick={toggle} ref={postDivRef} style={{width: "calc(100vw - 30px)", height: "calc(60vw - 30px)", position: "relative", borderRadius: 9, overflow: "hidden", ...props}}>
           <div style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10, height: "100%", borderRadius: 9}}>
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <img src={data.images[0].file} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
               <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{data.title}</div>
@@ -350,7 +359,7 @@ function Post({ data, type, parent }) {
         <animated.div onClick={toggle} ref={postDivRef} style={{width: "calc(33.3333vw - 17px)", height: "calc(33.3333vw - 15px)", position: "relative", borderRadius: 9, overflow: "hidden", ...props}}>
           <div style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10, height: "100%", borderRadius: 9}}>
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <img src={data.images[0].file} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
               <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{data.title}</div>
@@ -397,7 +406,7 @@ function Post({ data, type, parent }) {
                   <MiniSlider images={data.images} imagesDivRef={imagesDivRef} activeImage={activeImage} />
                 </div>}
               <div className={styles.price} style={{padding: data.images.length > 1 ? "30px 15px 10px 15px" : "10px 15px 10px 15px"}}>
-                <div style={{fontSize: 20, fontWeight: 300}}>{data.title} </div>
+                <div className={styles.title}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
                 <div className={styles.actions}>
                   <div className={styles.action} style={{color: "#8F8E93"}}>
                     <img src={require("../screens/images/compare.svg").default} alt="" />
@@ -413,7 +422,8 @@ function Post({ data, type, parent }) {
                   </div>
                 </div>
               </div>
-              <div className={styles.title} style={{padding: "0 15px"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>{data.oldPrice}</span></div>
+              <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px"}}>{data.title} </div>
+              {colors.length > 0 &&
               <div style={{padding: "20px 15px 30px 15px"}}>
                 <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
                 <div style={{
@@ -429,16 +439,16 @@ function Post({ data, type, parent }) {
                           justifyContent: "center",
                           padding: "4px 7px",
                           borderRadius: 4,
-                          background: selectedColors.includes(color) ? "#fff" : "rgb(24, 24, 26)",
+                          background: selectedColor === color ? "#fff" : "rgb(24, 24, 26)",
                           fontSize: 14,
                           fontWeight: 300,
-                          color: selectedColors.includes(color) ? "#000" : "#fff"
+                          color: selectedColor === color ? "#000" : "#fff"
                         }}
                         onClick={() => {
-                          if (selectedColors.includes(color)) {
-                            setSelectedColors(prevState => prevState.filter((selectedColor) => color !== selectedColor))
+                          if (selectedColor === color) {
+                            setSelectedColor(null);
                           } else {
-                            setSelectedColors(prevState => [...prevState, color])
+                            setSelectedColor(color);
                           }
                         }}
                     >
@@ -446,7 +456,8 @@ function Post({ data, type, parent }) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div>}
+              {counts.length > 0 &&    
               <div style={{padding: "0 15px 30px 15px"}}>
                 <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Количество цветов</div>
                 <div style={{
@@ -462,16 +473,16 @@ function Post({ data, type, parent }) {
                           justifyContent: "center",
                           padding: "4px 7px",
                           borderRadius: 4,
-                          background: selectedCounts.includes(count) ? "#fff" : "rgb(24, 24, 26)",
+                          background: selectedCount === count ? "#fff" : "rgb(24, 24, 26)",
                           fontSize: 14,
                           fontWeight: 300,
-                          color: selectedCounts.includes(count) ? "#000" : "#fff"
+                          color: selectedCount === count ? "#000" : "#fff"
                         }}
                         onClick={() => {
-                          if (selectedCounts.includes(count)) {
-                            setSelectedCounts(prevState => prevState.filter((selectedCount) => count !== selectedCount))
+                          if (selectedCount === count) {
+                            setSelectedCount(null)
                           } else {
-                            setSelectedCounts(prevState => [...prevState, count])
+                            setSelectedCount(count)
                           }
                         }}
                     >
@@ -479,7 +490,8 @@ function Post({ data, type, parent }) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div>}
+              {sizes.length > 0 &&
               <div style={{padding: "0 15px 30px 15px"}}>
                 <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Размер букета</div>
                 <div style={{
@@ -495,16 +507,16 @@ function Post({ data, type, parent }) {
                           justifyContent: "center",
                           padding: "4px 7px",
                           borderRadius: 4,
-                          background: selectedSizes.includes(size) ? "#fff" : "rgb(24, 24, 26)",
+                          background: selectedSize === size ? "#fff" : "rgb(24, 24, 26)",
                           fontSize: 14,
                           fontWeight: 300,
-                          color: selectedSizes.includes(size) ? "#000" : "#fff"
+                          color: selectedSize === size ? "#000" : "#fff"
                         }}
                         onClick={() => {
-                          if (selectedSizes.includes(size)) {
-                            setSelectedSizes(prevState => prevState.filter((selectedSize) => size !== selectedSize))
+                          if (selectedSize === size) {
+                            setSelectedSize(null)
                           } else {
-                            setSelectedSizes(prevState => [...prevState, size])
+                            setSelectedSize(size)
                           }
                         }}
                     >
@@ -512,8 +524,9 @@ function Post({ data, type, parent }) {
                     </div>
                   ))}
                 </div>
-              </div>
-              <div style={{padding: "0 15px 30px 15px"}}>
+              </div>}
+              {sizes.length > 0 &&
+              <div style={{padding: "0 15px 0px 15px"}}>
                 <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Упаковка</div>
                 <div style={{
                   display: "flex",
@@ -528,16 +541,16 @@ function Post({ data, type, parent }) {
                           justifyContent: "center",
                           padding: "4px 7px",
                           borderRadius: 4,
-                          background: selectedPackages.includes(pckg) ? "#fff" : "rgb(24, 24, 26)",
+                          background: selectedPackage === pckg ? "#fff" : "rgb(24, 24, 26)",
                           fontSize: 14,
                           fontWeight: 300,
-                          color: selectedPackages.includes(pckg) ? "#000" : "#fff"
+                          color: selectedPackage === pckg ? "#000" : "#fff"
                         }}
                         onClick={() => {
-                          if (selectedPackages.includes(pckg)) {
-                            setSelectedPackages(prevState => prevState.filter((selectedPackage) => pckg !== selectedPackage))
+                          if (selectedPackage === pckg) {
+                            setSelectedPackage(null)
                           } else {
-                            setSelectedPackages(prevState => [...prevState, pckg])
+                            setSelectedPackage(pckg)
                           }
                         }}
                     >
@@ -545,8 +558,8 @@ function Post({ data, type, parent }) {
                     </div>
                   ))}
                 </div>
-              </div>
-              <div style={{padding: "0 15px", display: "flex", alignItems: "center"}}>
+              </div>}
+              <div style={{padding: "30px 15px 0 15px", display: "flex", alignItems: "center"}}>
                 <div style={{marginLeft: -12, display: "flex", alignItems: "center"}}>
                   <img src={require("../screens/images/clock.svg").default} alt="" height={50} />
                 </div>
@@ -566,46 +579,54 @@ function Post({ data, type, parent }) {
                 </div>
               </div>
               <Hint />
-              <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
-                Смотрите также
-              </div>
-              <div style={{overflowX: "auto", width: "100vw"}} className="no-scrollbar">
-                <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
-                  {posts.map((post, index) => (
-                    <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
-                      <Post data={post} type="block-small" parent={
-                        {
-                          api,
-                          modalApi,
-                          modalApiMain,
-                          modalApiCart,
-                          setIsOpenPost
-                        }
-                      } />
-                    </div>
-                  ))}
+              {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).length > 0 &&
+              <>
+                <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
+                  Смотрите также
                 </div>
-              </div>
-              <div style={{padding: "15px", fontSize: 16, fontWeight: 300}}>
-                Рекомендуем дополнить букет
-              </div>
-              <div style={{overflowX: "auto", width: "100vw"}} className="no-scrollbar">
-                <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
-                  {posts.map((post, index) => (
-                    <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
-                      <Post data={post} type="block-small" parent={
-                        {
-                          api,
-                          modalApi,
-                          modalApiMain,
-                          modalApiCart,
-                          setIsOpenPost
-                        }
-                      } />
-                    </div>
-                  ))}
+                <div style={{overflowX: "auto", width: "100vw"}} className="no-scrollbar">
+                  <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
+                    {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).map((post, index) => (
+                      <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
+                        <Post postData={post} type="block-small" parent={
+                          {
+                            api,
+                            modalApi,
+                            modalApiMain,
+                            modalApiCart,
+                            setIsOpenPost,
+                            _id: data._id
+                          }
+                        } />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </>}
+              {(posts.filter((post) => post.category === "Подарки" && post._id !== data._id).length > 0) &&
+              <>
+                <div style={{padding: "15px", fontSize: 16, fontWeight: 300}}>
+                  Рекомендуем дополнить букет
+                </div>
+                <div style={{overflowX: "auto", width: "100vw"}} className="no-scrollbar">
+                  <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
+                    {posts.filter((post) => post.category === "Подарки" && post._id !== data._id).map((post, index) => (
+                      <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
+                        <Post postData={post} type="block-small" parent={
+                          {
+                            api,
+                            modalApi,
+                            modalApiMain,
+                            modalApiCart,
+                            setIsOpenPost,
+                            _id: data._id
+                          }
+                        } />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>}
               <footer className={styles2.footer} style={{minHeight: "0", marginTop: 20}}>
                 <div style={{display: "flex", flexFlow: "column", padding: "20px 15px 10px 15px"}}>
                   <div style={{fontSize: 16, fontWeight: 300, color: "#fff", paddingBottom: 5}}>Не нашли что искали?</div>
@@ -635,14 +656,36 @@ function Post({ data, type, parent }) {
                                     alignItems: "center",
                                     justifyContent: "space-between",
                                     paddingBottom: 5,
+                                    gap: 10,
                                     ...modalPropsCart}}>
                 <div style={{display: "flex", flexFlow: "column"}}>
-                  <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{data.price} <span style={{display: "inline-block", color: "#8F8E93", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
+                  <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", color: "#8F8E93", textDecoration: "line-through", transform: "scale(.8)"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
                   <div style={{fontSize: 14, fontWeight: 300, marginTop: 5}}>{data.title}</div>
                   <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>
                 </div>
-                <div>
-                  <Button text="В корзину" small={true} />
+                <div style={{flexShrink: 0}}>
+                  {cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ?
+                  <div style={{display: "flex", alignItems: "flex-end", flexFlow: "column", gap: 10}}>
+                    <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0}}>
+                      <div onClick={(e) => handleCart(e, 0)} style={{marginRight: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                        <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                      </div>
+                      <div style={{width: 44, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
+                        <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
+                      </div>
+                      <div onClick={(e) => handleCart(e, 1)} style={{marginLeft: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                        <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                      </div>
+                    </div>
+                    <Button text="Оформить" small={true} handleClick={(e) => {
+                      document.querySelector("html").style.overflow = "auto";
+                      document.querySelector("body").style.overflow = "auto";
+                      document.querySelector("body").style.position = "relative";
+                      document.querySelector("body").style.top = "0px";
+                      navigate("/cart")
+                    }} />
+                  </div>
+                  : <Button text="В корзину" small={true} handleClick={(e) => handleCart(e, 1)} />}
                 </div>
               </animated.div>
             </animated.div>

@@ -8,125 +8,11 @@ import { useMainContext } from '../context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 function Search() {
-
+  const { sendMessage, message, setMessage } = useMainContext();
   const navigate = useNavigate();
   const [ view, setView ] = useState("grid");
   const [ sortBy, setSortBy ] = useState("Сначала недорогие");
-  const [ posts, setPosts ] = useState([
-    {
-      _id: "1",
-      images: [
-        {
-          _id: "i-1",
-          file: require("../screens/images/flowers.avif"),
-          file_lazy: require("../screens/images/flowers.avif")
-        },
-        {
-          _id: "i-2",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        },
-        {
-          _id: "i-3",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        },
-        {
-          _id: "i-4",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        },
-        {
-          _id: "i-5",
-          file: require("../screens/images/flowers.avif"),
-          file_lazy: require("../screens/images/flowers.avif")
-        },
-        {
-          _id: "i-6",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        },
-        {
-          _id: "i-7",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        },
-        {
-          _id: "i-8",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        }
-      ],
-      title: "Букет из 19 роз",
-      price: "2 700,00 ₽",
-      oldPrice: "4 400,00 ₽"
-    },
-    {
-      _id: "2",
-      images: [
-        {
-          _id: "i-2",
-          file: require("../screens/images/flowers2.avif"),
-          file_lazy: require("../screens/images/flowers2.avif")
-        }
-      ],
-      title: "Букет из 29 роз",
-      price: "5 100,00 ₽",
-      oldPrice: "7 500,00 ₽"
-    },
-    {
-      _id: "3",
-      images: [
-        {
-          _id: "i-3",
-          file: require("../screens/images/flowers3.avif"),
-          file_lazy: require("../screens/images/flowers3.avif")
-        }
-      ],
-      title: "Букет из 51 розы",
-      price: "8 700,00 ₽",
-      oldPrice: "10 100,00 ₽"
-    },
-    {
-      _id: "4",
-      images: [
-        {
-          _id: "i-4",
-          file: require("../screens/images/flowers4.avif"),
-          file_lazy: require("../screens/images/flowers4.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    },
-    {
-      _id: "5",
-      images: [
-        {
-          _id: "i-5",
-          file: require("../screens/images/flowers5.avif"),
-          file_lazy: require("../screens/images/flowers5.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    },
-    {
-      _id: "6",
-      images: [
-        {
-          _id: "i-6",
-          file: require("../screens/images/flowers5.avif"),
-          file_lazy: require("../screens/images/flowers5.avif")
-        }
-      ],
-      title: "Букет кустовых роз Лав Лидия",
-      price: "8 700,00 ₽",
-      oldPrice: "9 900,00 ₽"
-    }
-  ]);
+  const [ posts, setPosts ] = useState([]);
   useEffect(() => {
     window.scrollTo({top: 0, smooth: "behavior"});
   }, [])
@@ -155,6 +41,22 @@ function Search() {
     "Подарки"
   ]
   const [ selectedCategory, setSelectedCategory ] = useState("Розы с любовью");
+  useEffect(() => {
+    if (message && window.location.pathname === "/search") {
+      if (message[0] === 'cards') {
+        if (message[1] === 'filter') {
+          setPosts(prevState => [...prevState.filter(item => {
+            const isInMessage = message[2].some(msgItem => msgItem._id === item._id);
+            return !isInMessage;
+          }), ...message[2]]);
+        }
+      }
+      setMessage(null);
+    };
+  }, [message]);
+  useEffect(() => {
+    sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25]))
+  }, [selectedCategory])
   return (
     <>
       <div className="view">
@@ -219,19 +121,32 @@ function Search() {
         </div>
         {view === "grid" &&
         <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
-          {posts.map((post) => (
+          {posts.filter((post) => post.category === selectedCategory).map((post) => (
             <div key={post._id}>
-              <Post data={post} type="block" />
+              <Post postData={post} type="block" basePathUrl="/search" />
             </div>
           ))}
         </div>}
         {view === "list" && 
         <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
-          {posts.map((post) => (
+          {posts.filter((post) => post.category === selectedCategory).map((post) => (
             <div key={post._id}>
-              <Post data={post} type="line" />
+              <Post postData={post} type="line" basePathUrl="/search" />
             </div>
           ))}
+        </div>}
+        {posts.filter((post) => post.category === selectedCategory).length === 0 &&
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100vw",
+          fontSize: 16,
+          color: "#bbb",
+          fontWeight: 300
+        }}>
+          Список товаров пуст  
         </div>}
       </div>
       {isOpenFilter &&
