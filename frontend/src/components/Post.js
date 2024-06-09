@@ -13,7 +13,7 @@ import { useMainContext } from '../context';
 function Post({ postData, type, parent, basePathUrl }) {
   const navigate = useNavigate();
   const [ data, setData ] = useState(postData);
-  const { sendMessage, message, setMessage, cartItems, setCartItems } = useMainContext();
+  const { sendMessage, message, setMessage, cartItems, setCartItems, account } = useMainContext();
   const postDivRef = useRef();
   const [ isOpenPost, setIsOpenPost ] = useState(false);
   const api = useSpringRef();
@@ -415,18 +415,31 @@ function Post({ postData, type, parent, basePathUrl }) {
               <div className={styles.price} style={{padding: data.images.length > 1 ? "30px 15px 10px 15px" : "10px 15px 10px 15px"}}>
                 <div className={styles.title}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
                 <div className={styles.actions}>
-                  <div className={styles.action} style={{color: "#8F8E93"}}>
+                  {/* <div className={styles.action} style={{color: "#8F8E93"}}>
                     <img src={require("../screens/images/compare.svg").default} alt="" />
                     Сравнить
                   </div>
                   <div className={styles.action} style={{color: "#8F8E93"}}>
                     <img src={require("../components/images/like.svg").default} alt="" />
                     Избранное
-                  </div>
-                  <div className={styles.action} style={{color: "#8F8E93"}}>
+                  </div> */}
+                  <div className={styles.action} style={{color: "#8F8E93"}} onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: data.title,
+                        url: window.location.href
+                      })
+                        .then(() => console.log('Successful share'))
+                        .catch((error) => console.log('Error sharing', error));
+                    } else {
+                      // Если Web Share API не поддерживается, вы можете предложить пользователю скопировать ссылку в буфер обмена или использовать другие методы общения.
+                      console.log('Web Share API не поддерживается в вашем браузере');
+                    }
+                  }}>
                     <img src={require("../screens/images/share.svg").default} alt="" />
                     Поделиться
                   </div>
+                  {(account.user?.username === "thecreatxr" || account.user?.username === "Mr_Romadanov") &&
                   <div className={styles.action} style={{color: "#8F8E93"}} onClick={() => {
                     window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
                     setPosts([]);
@@ -439,7 +452,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   }}>
                     <img src={require("./images/settings.svg").default} alt="" />
                     Настройки
-                  </div>
+                  </div>}
                 </div>
               </div>
               <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px 20px 15px"}}>{data.title} </div>
