@@ -116,13 +116,14 @@ def handle_message(message):
     if message[0] == "cards":
         if message[1] == "filter":
             sort_order = []
-            # Определяем порядок сортировки в зависимости от message[4]
-            if message[4] == 0:
-                sort_order.append(('views_count', -1))  # Популярные - по убыванию views_count
-            elif message[4] == 1:
-                sort_order.append(('price_number', 1))  # Дорогие - по возрастанию price_number
-            elif message[4] == 2:
-                sort_order.append(('price_number', -1))  # Недорогие - по убыванию price_number
+            if message[4]:
+                # Определяем порядок сортировки в зависимости от message[4]
+                if message[4] == 0:
+                    sort_order.append(('views_count', -1))  # Популярные - по убыванию views_count
+                elif message[4] == 1:
+                    sort_order.append(('price_number', 1))  # Дорогие - по возрастанию price_number
+                elif message[4] == 2:
+                    sort_order.append(('price_number', -1))  # Недорогие - по убыванию price_number
             # Добавляем сортировку по умолчанию, если не выбрано иное
             if not sort_order:
                 sort_order.append(('_id', 1))  # Сортировка по умолчанию - по возрастанию _id
