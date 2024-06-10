@@ -21,8 +21,8 @@ function Filter({
   selectedPackages,
   setSelectedPackages,
   selectedCategory,
-  price,
-  setPrice
+  defaultPrice,
+  setDefaultPrice
  }) {
   const { setHandleClickBackButton } = useMainContext();
   const api = useSpringRef();
@@ -35,7 +35,7 @@ function Filter({
     api.start({ top: "0", left: "0vw", config: { duration: 200, tension: 280, friction: 60 } });
     setHandleClickBackButton(() => handleBack);
   }, [])
-  
+  const [ price, setPrice ] = useState(defaultPrice.length > 0 ? defaultPrice : [0, 6000])
   const handleChange = (event, value) => {
     setPrice(value);
   };
@@ -69,6 +69,18 @@ function Filter({
     "Классика"
   ]
   const handleBack = () => {
+    api.start({ top: "0", left: "100vw", config: { duration: 200, tension: 280, friction: 60 } })
+    setTimeout(() => {
+      document.querySelector("html").style.overflow = "auto";
+      document.querySelector("body").style.overflow = "auto";
+      document.querySelector("body").style.position = "relative";
+      document.querySelector("body").style.top = "0px";
+      setHandleClickBackButton(null);
+      setIsOpenFilter(false);
+    }, 200)
+  }
+  const handleSave = () => {
+    setDefaultPrice(price);
     api.start({ top: "0", left: "100vw", config: { duration: 200, tension: 280, friction: 60 } })
     setTimeout(() => {
       document.querySelector("html").style.overflow = "auto";
@@ -303,7 +315,7 @@ function Filter({
           </div>
         </>}
         <div>
-          <Button text="Применить" handleClick={handleBack} />
+          <Button text="Применить" handleClick={handleSave} />
         </div>
       </div>
     </animated.div>

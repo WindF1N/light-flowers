@@ -42,7 +42,7 @@ function Search() {
   const [ selectedColors, setSelectedColors ] = useState([]);
   const [ selectedSizes, setSelectedSizes ] = useState([]);
   const [ selectedPackages, setSelectedPackages ] = useState([]);
-  const [ price, setPrice ] = useState([1000, 5000]);
+  const [ price, setPrice ] = useState([]);
   const categories = [
     "Розы с любовью",
     "Подарки"
@@ -92,7 +92,7 @@ function Search() {
     if (cardId) {
       sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
     }
-  }, [selectedCounts, selectedColors, selectedSizes, selectedPackages, selectedCategory, sortBy])
+  }, [selectedCounts, selectedColors, selectedSizes, selectedPackages, selectedCategory, sortBy, price])
   return (
     <>
       <div className="view">
@@ -158,7 +158,7 @@ function Search() {
         </div>}
         {view === "grid" &&
         <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
-          {posts.filter((post) => post.category === selectedCategory).sort((a, b) => {
+          {posts.filter((post) => post.category === selectedCategory && post.price_number >= price[0] && post.price_number <= price[1]).sort((a, b) => {
             if (sortBy === "Сначала дорогие") {
               return b.price_number - a.price_number
             } else if (sortBy === "Сначала недорогие") {
@@ -172,13 +172,19 @@ function Search() {
         </div>}
         {view === "list" && 
         <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
-          {posts.filter((post) => post.category === selectedCategory).sort((a, b) => b.price_number - a.price_number).map((post) => (
+          {posts.filter((post) => post.category === selectedCategory && post.price_number >= price[0] && post.price_number <= price[1]).sort((a, b) => {
+            if (sortBy === "Сначала дорогие") {
+              return b.price_number - a.price_number
+            } else if (sortBy === "Сначала недорогие") {
+              return a.price_number - b.price_number
+            }
+          }).map((post) => (
             <div key={post._id}>
               <Post postData={post} type="line" basePathUrl="/search" />
             </div>
           ))}
         </div>}
-        {posts.filter((post) => post.category === selectedCategory).length === 0 &&
+        {posts.filter((post) => post.category === selectedCategory && post.price_number >= price[0] && post.price_number <= price[1]).length === 0 &&
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -203,8 +209,8 @@ function Search() {
                 selectedPackages={selectedPackages}
                 setSelectedPackages={setSelectedPackages}
                 selectedCategory={selectedCategory}
-                price={price}
-                setPrice={setPrice} />}
+                defaultPrice={price}
+                setDefaultPrice={setPrice} />}
     </>
   );
 }

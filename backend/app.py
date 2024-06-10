@@ -126,7 +126,7 @@ def handle_message(message):
             # Добавляем сортировку по умолчанию, если не выбрано иное
             if not sort_order:
                 sort_order.append(('_id', 1))  # Сортировка по умолчанию - по возрастанию _id
-            min_max_prices_match = {}
+            min_max_prices_match = None
             if message[5]:
                 try:
                     min_max_prices_match = {
@@ -145,6 +145,8 @@ def handle_message(message):
                 {"$sort": SON(sort_order)},
                 {"$limit": message[3]}
             ]
+            if min_max_prices_match == None:
+                pipeline.remove(2)
             # Выполняем агрегацию
             cards = list(mongo.db.cards.aggregate(pipeline))
             for card in cards:
