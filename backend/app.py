@@ -130,16 +130,16 @@ def handle_message(message):
             if not sort_order:
                 sort_order.append(('_id', 1))  # Сортировка по умолчанию - по возрастанию _id
             min_max_prices_match = None
-            if message[5] and isinstance(message[5], list) and len(message[5]) >= 2:
-                try:
+            try:
+                if message[5] and isinstance(message[5], list) and len(message[5]) >= 2:
                     min_max_prices_match = {
                         "price_number": {
                             "$gte": int(message[5][0]),  # Минимальная цена
                             "$lte": int(message[5][1])  # Максимальная цена
                         }
                     }
-                except ValueError:
-                    pass
+            except ValueError:
+                pass
             # Формируем агрегацию
             pipeline = [
                 {"$match": reverse_prepare_data(message[2])},  # Фильтрация по message[2]
