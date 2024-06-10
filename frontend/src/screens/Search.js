@@ -158,7 +158,7 @@ function Search() {
         </div>}
         {view === "grid" &&
         <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
-          {posts.filter((post) => post.category === selectedCategory && post.price_number >= price[0] && post.price_number <= price[1]).sort((a, b) => {
+          {posts.filter((post) => post.category === selectedCategory && (!price[0] || post.price_number >= price[0]) && (!price[1] || post.price_number <= price[1])).sort((a, b) => {
             if (sortBy === "Сначала дорогие") {
               return b.price_number - a.price_number
             } else if (sortBy === "Сначала недорогие") {
@@ -172,7 +172,7 @@ function Search() {
         </div>}
         {view === "list" && 
         <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
-          {posts.filter((post) => post.category === selectedCategory && post.price_number >= price[0] && post.price_number <= price[1]).sort((a, b) => {
+          {posts.filter((post) => post.category === selectedCategory && (!price[0] || post.price_number >= price[0]) && (!price[1] || post.price_number <= price[1])).sort((a, b) => {
             if (sortBy === "Сначала дорогие") {
               return b.price_number - a.price_number
             } else if (sortBy === "Сначала недорогие") {
@@ -184,7 +184,7 @@ function Search() {
             </div>
           ))}
         </div>}
-        {posts.filter((post) => post.category === selectedCategory && post.price_number >= price[0] && post.price_number <= price[1]).length === 0 &&
+        {posts.filter((post) => post.category === selectedCategory && (!price[0] | post.price_number >= price[0]) && (!price[1] | post.price_number <= price[1])).length === 0 &&
         <div style={{
           display: "flex",
           alignItems: "center",

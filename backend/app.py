@@ -139,13 +139,15 @@ def handle_message(message):
                     pass
             # Формируем агрегацию
             pipeline = [
-                {"$match": reverse_prepare_data(message[2])}  # Фильтрация по message[2]
+                {"$match": reverse_prepare_data(message[2])},  # Фильтрация по message[2]
             ]
+            # Добавляем $addFields после первого $match
+            pipeline.append({"$addFields": {"price_number": {"$toInt": {"$replaceAll": {"input": {"$replaceAll": {"input": "$price", "find": "₽", "replacement": ""}}, "find": " ", "replacement": ""}}}}})
             # Добавляем фильтрацию по цене, если она определена
             if min_max_prices_match is not None:
                 pipeline.append({"$match": min_max_prices_match})
+            # Добавляем сортировку и ограничение
             pipeline.extend([
-                {"$addFields": {"price_number": {"$toInt": {"$replaceAll": {"input": {"$replaceAll": {"input": "$price", "find": "₽", "replacement": ""}}, "find": " ", "replacement": ""}}}}},
                 {"$sort": SON(sort_order)},
                 {"$limit": message[3]}
             ])
