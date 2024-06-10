@@ -127,26 +127,28 @@ def handle_message(message):
             if not sort_order:
                 sort_order.append(('_id', 1))  # Сортировка по умолчанию - по возрастанию _id
             min_max_prices_match = None
-            if message[5]:
+            if message[5] and isinstance(message[5], list) and len(message[5]) >= 2:
                 try:
                     min_max_prices_match = {
                         "price_number": {
-                            "$gte": int(message[5][0]),  # Минимальная цена - 0
-                            "$lte": int(message[5][1])  # Максимальная цена - 1000
+                            "$gte": int(message[5][0]),  # Минимальная цена
+                            "$lte": int(message[5][1])  # Максимальная цена
                         }
                     }
-                except:
+                except ValueError:
                     pass
             # Формируем агрегацию
             pipeline = [
-                {"$match": reverse_prepare_data(message[2])},  # Фильтрация по message[2]
+                {"$match": reverse_prepare_data(message[2])}  # Фильтрация по message[2]
+            ]
+            # Добавляем фильтрацию по цене, если она определена
+            if min_max_prices_match is not None:
+                pipeline.append({"$match": min_max_prices_match})
+            pipeline.extend([
                 {"$addFields": {"price_number": {"$toInt": {"$replaceAll": {"input": {"$replaceAll": {"input": "$price", "find": "₽", "replacement": ""}}, "find": " ", "replacement": ""}}}}},
-                {"$match": min_max_prices_match},
                 {"$sort": SON(sort_order)},
                 {"$limit": message[3]}
-            ]
-            if min_max_prices_match == None:
-                pipeline.remove(2)
+            ])
             # Выполняем агрегацию
             cards = list(mongo.db.cards.aggregate(pipeline))
             for card in cards:
