@@ -138,7 +138,7 @@ def handle_message(message):
                             "$lte": int(message[5][1])  # Максимальная цена
                         }
                     }
-            except ValueError:
+            except:
                 pass
             # Формируем агрегацию
             pipeline = [
