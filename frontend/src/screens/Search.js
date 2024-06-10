@@ -42,6 +42,7 @@ function Search() {
   const [ selectedColors, setSelectedColors ] = useState([]);
   const [ selectedSizes, setSelectedSizes ] = useState([]);
   const [ selectedPackages, setSelectedPackages ] = useState([]);
+  const [ price, setPrice ] = useState([1000, 5000]);
   const categories = [
     "Розы с любовью",
     "Подарки"
@@ -84,14 +85,14 @@ function Search() {
         }
       }
       setPosts(prevState => prevState.filter((item) => item.category !== selectedCategory))
-      sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory, ...filter_query}, 25, sort]));
+      sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory, ...filter_query}, 25, sort, price]));
     } else {
-      sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25, sort]));
+      sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25, sort, price]));
     }
     if (cardId) {
       sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
     }
-  }, [selectedCounts, selectedColors, selectedSizes, selectedPackages, selectedCategory])
+  }, [selectedCounts, selectedColors, selectedSizes, selectedPackages, selectedCategory, sortBy])
   return (
     <>
       <div className="view">
@@ -157,7 +158,13 @@ function Search() {
         </div>}
         {view === "grid" &&
         <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
-          {posts.filter((post) => post.category === selectedCategory).map((post) => (
+          {posts.filter((post) => post.category === selectedCategory).sort((a, b) => {
+            if (sortBy === "Сначала дорогие") {
+              return b.price_number - a.price_number
+            } else if (sortBy === "Сначала недорогие") {
+              return a.price_number - b.price_number
+            }
+          }).map((post) => (
             <div key={post._id}>
               <Post postData={post} type="block" basePathUrl="/search" />
             </div>
@@ -165,7 +172,7 @@ function Search() {
         </div>}
         {view === "list" && 
         <div style={{display: "flex", flexFlow: "column", rowGap: 20, marginTop: 5}}>
-          {posts.filter((post) => post.category === selectedCategory).map((post) => (
+          {posts.filter((post) => post.category === selectedCategory).sort((a, b) => b.price_number - a.price_number).map((post) => (
             <div key={post._id}>
               <Post postData={post} type="line" basePathUrl="/search" />
             </div>
@@ -195,7 +202,9 @@ function Search() {
                 setSelectedSizes={setSelectedSizes}
                 selectedPackages={selectedPackages}
                 setSelectedPackages={setSelectedPackages}
-                selectedCategory={selectedCategory} />}
+                selectedCategory={selectedCategory}
+                price={price}
+                setPrice={setPrice} />}
     </>
   );
 }

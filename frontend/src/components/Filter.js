@@ -20,7 +20,9 @@ function Filter({
   setSelectedSizes,
   selectedPackages,
   setSelectedPackages,
-  selectedCategory
+  selectedCategory,
+  price,
+  setPrice
  }) {
   const { setHandleClickBackButton } = useMainContext();
   const api = useSpringRef();
@@ -33,7 +35,7 @@ function Filter({
     api.start({ top: "0", left: "0vw", config: { duration: 200, tension: 280, friction: 60 } });
     setHandleClickBackButton(() => handleBack);
   }, [])
-  const [price, setPrice] = useState([1000, 5000]);
+  
   const handleChange = (event, value) => {
     setPrice(value);
   };

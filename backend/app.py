@@ -126,10 +126,22 @@ def handle_message(message):
             # Добавляем сортировку по умолчанию, если не выбрано иное
             if not sort_order:
                 sort_order.append(('_id', 1))  # Сортировка по умолчанию - по возрастанию _id
+            min_max_prices_match = {}
+            if message[5]:
+                try:
+                    min_max_prices_match = {
+                        "price_number": {
+                            "$gte": int(message[5][0]),  # Минимальная цена - 0
+                            "$lte": int(message[5][1])  # Максимальная цена - 1000
+                        }
+                    }
+                except:
+                    pass
             # Формируем агрегацию
             pipeline = [
                 {"$match": reverse_prepare_data(message[2])},  # Фильтрация по message[2]
                 {"$addFields": {"price_number": {"$toInt": {"$replaceAll": {"input": {"$replaceAll": {"input": "$price", "find": "₽", "replacement": ""}}, "find": " ", "replacement": ""}}}}},
+                {"$match": min_max_prices_match},
                 {"$sort": SON(sort_order)},
                 {"$limit": message[3]}
             ]
