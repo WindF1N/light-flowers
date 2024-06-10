@@ -10,7 +10,18 @@ function valuetext(value) {
   return `${value} ₽`;
 }
 
-function Filter({ setIsOpenFilter }) {
+function Filter({ 
+  setIsOpenFilter,
+  selectedColors,
+  setSelectedColors,
+  selectedCounts,
+  setSelectedCounts,
+  selectedSizes,
+  setSelectedSizes,
+  selectedPackages,
+  setSelectedPackages,
+  selectedCategory
+ }) {
   const { setHandleClickBackButton } = useMainContext();
   const api = useSpringRef();
   const props = useSpring({
@@ -36,21 +47,18 @@ function Filter({ setIsOpenFilter }) {
     "Розовые",
     "Микс"
   ]
-  const [ selectedColors, setSelectedColors ] = useState([]);
   const counts = [
     "19 роз",
     "29 роз",
     "51 роза",
     "101 роза"
   ]
-  const [ selectedCounts, setSelectedCounts ] = useState([]);
   const sizes = [
     "50 см",
     "60 см",
     "70 см",
     "80 см"
   ]
-  const [ selectedSizes, setSelectedSizes ] = useState([]);
   const packages = [
     "Лента",
     "Коробка",
@@ -58,7 +66,6 @@ function Filter({ setIsOpenFilter }) {
     "Подарочной упаковка",
     "Классика"
   ]
-  const [ selectedPackages, setSelectedPackages ] = useState([]);
   const handleBack = () => {
     api.start({ top: "0", left: "100vw", config: { duration: 200, tension: 280, friction: 60 } })
     setTimeout(() => {
@@ -158,138 +165,141 @@ function Filter({ setIsOpenFilter }) {
             </Box>
           </div>
         </div>
-        <div style={{paddingBottom: 30}}>
-          <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Цвет</div>
-          <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10
-          }}>
-            {colors.map((color, index) => (
-              <div key={"color" + index} 
-                   style={{
-                     display: "flex",
-                     alignItems: "center",
-                     justifyContent: "center",
-                     padding: "4px 7px",
-                     borderRadius: 4,
-                     background: selectedColors.includes(color) ? "#fff" : "rgb(24, 24, 26)",
-                     fontSize: 15,
-                     fontWeight: 300,
-                     color: selectedColors.includes(color) ? "#000" : "#fff"
-                   }}
-                   onClick={() => {
-                    if (selectedColors.includes(color)) {
-                      setSelectedColors(prevState => prevState.filter((selectedColor) => color !== selectedColor))
-                    } else {
-                      setSelectedColors(prevState => [...prevState, color])
-                    }
-                   }}
-              >
-                {color}
-              </div>
-            ))}
+        {selectedCategory === "Розы с любовью" &&
+        <>
+          <div style={{paddingBottom: 30}}>
+            <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Цвет</div>
+            <div style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10
+            }}>
+              {colors.map((color, index) => (
+                <div key={"color" + index} 
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "4px 7px",
+                      borderRadius: 4,
+                      background: selectedColors.includes(color) ? "#fff" : "rgb(24, 24, 26)",
+                      fontSize: 15,
+                      fontWeight: 300,
+                      color: selectedColors.includes(color) ? "#000" : "#fff"
+                    }}
+                    onClick={() => {
+                      if (selectedColors.includes(color)) {
+                        setSelectedColors(prevState => prevState.filter((selectedColor) => color !== selectedColor))
+                      } else {
+                        setSelectedColors(prevState => [...prevState, color])
+                      }
+                    }}
+                >
+                  {color}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div style={{paddingBottom: 30}}>
-          <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Количество цветов</div>
-          <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10
-          }}>
-            {counts.map((count, index) => (
-              <div key={"count" + index} 
-                   style={{
-                     display: "flex",
-                     alignItems: "center",
-                     justifyContent: "center",
-                     padding: "4px 7px",
-                     borderRadius: 4,
-                     background: selectedCounts.includes(count) ? "#fff" : "rgb(24, 24, 26)",
-                     fontSize: 15,
-                     fontWeight: 300,
-                     color: selectedCounts.includes(count) ? "#000" : "#fff"
-                   }}
-                   onClick={() => {
-                    if (selectedCounts.includes(count)) {
-                      setSelectedCounts(prevState => prevState.filter((selectedCount) => count !== selectedCount))
-                    } else {
-                      setSelectedCounts(prevState => [...prevState, count])
-                    }
-                   }}
-              >
-                {count}
-              </div>
-            ))}
+          <div style={{paddingBottom: 30}}>
+            <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Количество цветов</div>
+            <div style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10
+            }}>
+              {counts.map((count, index) => (
+                <div key={"count" + index} 
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "4px 7px",
+                      borderRadius: 4,
+                      background: selectedCounts.includes(count) ? "#fff" : "rgb(24, 24, 26)",
+                      fontSize: 15,
+                      fontWeight: 300,
+                      color: selectedCounts.includes(count) ? "#000" : "#fff"
+                    }}
+                    onClick={() => {
+                      if (selectedCounts.includes(count)) {
+                        setSelectedCounts(prevState => prevState.filter((selectedCount) => count !== selectedCount))
+                      } else {
+                        setSelectedCounts(prevState => [...prevState, count])
+                      }
+                    }}
+                >
+                  {count}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div style={{paddingBottom: 30}}>
-          <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Размер букета</div>
-          <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10
-          }}>
-            {sizes.map((size, index) => (
-              <div key={"size" + index} 
-                   style={{
-                     display: "flex",
-                     alignItems: "center",
-                     justifyContent: "center",
-                     padding: "4px 7px",
-                     borderRadius: 4,
-                     background: selectedSizes.includes(size) ? "#fff" : "rgb(24, 24, 26)",
-                     fontSize: 15,
-                     fontWeight: 300,
-                     color: selectedSizes.includes(size) ? "#000" : "#fff"
-                   }}
-                   onClick={() => {
-                    if (selectedSizes.includes(size)) {
-                      setSelectedSizes(prevState => prevState.filter((selectedSize) => size !== selectedSize))
-                    } else {
-                      setSelectedSizes(prevState => [...prevState, size])
-                    }
-                   }}
-              >
-                {size}
-              </div>
-            ))}
+          <div style={{paddingBottom: 30}}>
+            <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Размер букета</div>
+            <div style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10
+            }}>
+              {sizes.map((size, index) => (
+                <div key={"size" + index} 
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "4px 7px",
+                      borderRadius: 4,
+                      background: selectedSizes.includes(size) ? "#fff" : "rgb(24, 24, 26)",
+                      fontSize: 15,
+                      fontWeight: 300,
+                      color: selectedSizes.includes(size) ? "#000" : "#fff"
+                    }}
+                    onClick={() => {
+                      if (selectedSizes.includes(size)) {
+                        setSelectedSizes(prevState => prevState.filter((selectedSize) => size !== selectedSize))
+                      } else {
+                        setSelectedSizes(prevState => [...prevState, size])
+                      }
+                    }}
+                >
+                  {size}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div style={{paddingBottom: 30}}>
-          <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Упаковка</div>
-          <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10
-          }}>
-            {packages.map((pckg, index) => (
-              <div key={"package" + index} 
-                   style={{
-                     display: "flex",
-                     alignItems: "center",
-                     justifyContent: "center",
-                     padding: "4px 7px",
-                     borderRadius: 4,
-                     background: selectedPackages.includes(pckg) ? "#fff" : "rgb(24, 24, 26)",
-                     fontSize: 15,
-                     fontWeight: 300,
-                     color: selectedPackages.includes(pckg) ? "#000" : "#fff"
-                   }}
-                   onClick={() => {
-                    if (selectedPackages.includes(pckg)) {
-                      setSelectedPackages(prevState => prevState.filter((selectedPackage) => pckg !== selectedPackage))
-                    } else {
-                      setSelectedPackages(prevState => [...prevState, pckg])
-                    }
-                   }}
-              >
-                {pckg}
-              </div>
-            ))}
+          <div style={{paddingBottom: 30}}>
+            <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10}}>Упаковка</div>
+            <div style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10
+            }}>
+              {packages.map((pckg, index) => (
+                <div key={"package" + index} 
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "4px 7px",
+                      borderRadius: 4,
+                      background: selectedPackages.includes(pckg) ? "#fff" : "rgb(24, 24, 26)",
+                      fontSize: 15,
+                      fontWeight: 300,
+                      color: selectedPackages.includes(pckg) ? "#000" : "#fff"
+                    }}
+                    onClick={() => {
+                      if (selectedPackages.includes(pckg)) {
+                        setSelectedPackages(prevState => prevState.filter((selectedPackage) => pckg !== selectedPackage))
+                      } else {
+                        setSelectedPackages(prevState => [...prevState, pckg])
+                      }
+                    }}
+                >
+                  {pckg}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </>}
         <div>
           <Button text="Применить" handleClick={handleBack} />
         </div>

@@ -456,143 +456,145 @@ function Post({ postData, type, parent, basePathUrl }) {
                 </div>
               </div>
               <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px 20px 15px"}}>{data.title} </div>
-              {colors.length > 0 &&
-              <div style={{padding: "0px 15px 30px 15px"}}>
-                <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
-                <div style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 10
-                }}>
-                  {colors.map((color, index) => (
-                    <div key={"color" + index} 
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "4px 7px",
-                          borderRadius: 4,
-                          background: selectedColor === color ? "#fff" : "rgb(24, 24, 26)",
-                          fontSize: 14,
-                          fontWeight: 300,
-                          color: selectedColor === color ? "#000" : "#fff"
-                        }}
-                        onClick={() => {
-                          if (selectedColor === color) {
-                            setSelectedColor(null);
-                          } else {
-                            setSelectedColor(color);
-                          }
-                        }}
-                    >
-                      {color}
-                    </div>
-                  ))}
-                </div>
-              </div>}
-              {counts.length > 0 &&    
-              <div style={{padding: "0 15px 30px 15px"}}>
-                <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Количество цветов</div>
-                <div style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 10
-                }}>
-                  {counts.map((count, index) => (
-                    <div key={"count" + index} 
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "4px 7px",
-                          borderRadius: 4,
-                          background: selectedCount === count ? "#fff" : "rgb(24, 24, 26)",
-                          fontSize: 14,
-                          fontWeight: 300,
-                          color: selectedCount === count ? "#000" : "#fff"
-                        }}
-                        onClick={() => {
-                          if (selectedCount === count) {
-                            setSelectedCount(null)
-                          } else {
-                            setSelectedCount(count)
-                          }
-                        }}
-                    >
-                      {count}
-                    </div>
-                  ))}
-                </div>
-              </div>}
-              {sizes.length > 0 &&
-              <div style={{padding: "0 15px 30px 15px"}}>
-                <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Размер букета</div>
-                <div style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 10
-                }}>
-                  {sizes.map((size, index) => (
-                    <div key={"size" + index} 
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "4px 7px",
-                          borderRadius: 4,
-                          background: selectedSize === size ? "#fff" : "rgb(24, 24, 26)",
-                          fontSize: 14,
-                          fontWeight: 300,
-                          color: selectedSize === size ? "#000" : "#fff"
-                        }}
-                        onClick={() => {
-                          if (selectedSize === size) {
-                            setSelectedSize(null)
-                          } else {
-                            setSelectedSize(size)
-                          }
-                        }}
-                    >
-                      {size}
-                    </div>
-                  ))}
-                </div>
-              </div>}
-              {sizes.length > 0 &&
-              <div style={{padding: "0 15px 0px 15px"}}>
-                <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Упаковка</div>
-                <div style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 10
-                }}>
-                  {packages.map((pckg, index) => (
-                    <div key={"package" + index} 
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "4px 7px",
-                          borderRadius: 4,
-                          background: selectedPackage === pckg ? "#fff" : "rgb(24, 24, 26)",
-                          fontSize: 14,
-                          fontWeight: 300,
-                          color: selectedPackage === pckg ? "#000" : "#fff"
-                        }}
-                        onClick={() => {
-                          if (selectedPackage === pckg) {
-                            setSelectedPackage(null)
-                          } else {
-                            setSelectedPackage(pckg)
-                          }
-                        }}
-                    >
-                      {pckg}
-                    </div>
-                  ))}
-                </div>
-              </div>}
-              <div style={{padding: "30px 15px 0 15px", display: "flex", alignItems: "center"}}>
+              <div style={{paddingBottom: (colors.length > 0 && counts.length > 0 && sizes.length > 0 && packages.length > 0) ? 30 : 0}}>
+                {colors.length > 0 &&
+                <div style={{padding: "0px 15px 30px 15px"}}>
+                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
+                  <div style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 10
+                  }}>
+                    {colors.map((color, index) => (
+                      <div key={"color" + index} 
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "4px 7px",
+                            borderRadius: 4,
+                            background: selectedColor === color ? "#fff" : "rgb(24, 24, 26)",
+                            fontSize: 14,
+                            fontWeight: 300,
+                            color: selectedColor === color ? "#000" : "#fff"
+                          }}
+                          onClick={() => {
+                            if (selectedColor === color) {
+                              setSelectedColor(null);
+                            } else {
+                              setSelectedColor(color);
+                            }
+                          }}
+                      >
+                        {color}
+                      </div>
+                    ))}
+                  </div>
+                </div>}
+                {counts.length > 0 &&    
+                <div style={{padding: "0 15px 30px 15px"}}>
+                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Количество цветов</div>
+                  <div style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 10
+                  }}>
+                    {counts.map((count, index) => (
+                      <div key={"count" + index} 
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "4px 7px",
+                            borderRadius: 4,
+                            background: selectedCount === count ? "#fff" : "rgb(24, 24, 26)",
+                            fontSize: 14,
+                            fontWeight: 300,
+                            color: selectedCount === count ? "#000" : "#fff"
+                          }}
+                          onClick={() => {
+                            if (selectedCount === count) {
+                              setSelectedCount(null)
+                            } else {
+                              setSelectedCount(count)
+                            }
+                          }}
+                      >
+                        {count}
+                      </div>
+                    ))}
+                  </div>
+                </div>}
+                {sizes.length > 0 &&
+                <div style={{padding: "0 15px 30px 15px"}}>
+                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Размер букета</div>
+                  <div style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 10
+                  }}>
+                    {sizes.map((size, index) => (
+                      <div key={"size" + index} 
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "4px 7px",
+                            borderRadius: 4,
+                            background: selectedSize === size ? "#fff" : "rgb(24, 24, 26)",
+                            fontSize: 14,
+                            fontWeight: 300,
+                            color: selectedSize === size ? "#000" : "#fff"
+                          }}
+                          onClick={() => {
+                            if (selectedSize === size) {
+                              setSelectedSize(null)
+                            } else {
+                              setSelectedSize(size)
+                            }
+                          }}
+                      >
+                        {size}
+                      </div>
+                    ))}
+                  </div>
+                </div>}
+                {packages.length > 0 &&
+                <div style={{padding: "0 15px 0px 15px"}}>
+                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Упаковка</div>
+                  <div style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 10
+                  }}>
+                    {packages.map((pckg, index) => (
+                      <div key={"package" + index} 
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "4px 7px",
+                            borderRadius: 4,
+                            background: selectedPackage === pckg ? "#fff" : "rgb(24, 24, 26)",
+                            fontSize: 14,
+                            fontWeight: 300,
+                            color: selectedPackage === pckg ? "#000" : "#fff"
+                          }}
+                          onClick={() => {
+                            if (selectedPackage === pckg) {
+                              setSelectedPackage(null)
+                            } else {
+                              setSelectedPackage(pckg)
+                            }
+                          }}
+                      >
+                        {pckg}
+                      </div>
+                    ))}
+                  </div>
+                </div>}
+              </div>
+              <div style={{padding: "0px 15px 0 15px", display: "flex", alignItems: "center"}}>
                 <div style={{marginLeft: -12, display: "flex", alignItems: "center"}}>
                   <img src={require("../screens/images/clock.svg").default} alt="" height={50} />
                 </div>
@@ -694,7 +696,8 @@ function Post({ postData, type, parent, basePathUrl }) {
                 <div style={{display: "flex", flexFlow: "column"}}>
                   <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", color: "#8F8E93", textDecoration: "line-through", transform: "scale(.8)"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
                   <div style={{fontSize: 14, fontWeight: 300, marginTop: 5}}>{data.title}</div>
-                  <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>
+                  {data.category === "Розы с любовью" &&
+                  <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>}
                 </div>
                 <div style={{flexShrink: 0}}>
                   {cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ?

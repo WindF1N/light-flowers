@@ -46,14 +46,14 @@ function Main() {
   }, [message]);
   return (
     <div className="view">
-      <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15, marginBottom: 20}}>
+      <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15, marginBottom: 18}}>
         <div style={{display: "flex", alignItems: "center", gap: 15}}>
           <div>
-            <img src={require("./images/splash.svg").default} alt="" style={{width: 50}} />
+            <img src={require("./images/splash.svg").default} alt="" style={{width: 40}} />
           </div>
-          <div>
-            <div style={{fontSize: 24, fontWeight: 300}}>Студия <span>Роз</span></div>
-            <div style={{fontSize: 12, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
+          <div style={{marginBottom: 4}}>
+            <div style={{fontSize: 20, fontWeight: 300}}>Студия <span>Роз</span></div>
+            <div style={{fontSize: 11, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
           </div>
         </div>
       </div>
@@ -83,10 +83,10 @@ function Main() {
           </div>
         </div>
       </div> */}
-      <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 20}}>
-        Cвежие цветы | Доставка | Гарантия | Круглосуточно
+      <div style={{fontSize: 14, fontWeight: 300, textAlign: "center"}}>
+        Cвежие цветы <span style={{margin: "0 2px"}}>•</span> Доставка <span style={{margin: "0 2px"}}>•</span> Гарантия <span style={{margin: "0 2px"}}>•</span> Круглосуточно
       </div>
-      <div style={{position: "relative", width: "100%", height: "120px", borderRadius: 9, overflow: "hidden"}}>
+      {/* <div style={{position: "relative", width: "100%", height: "120px", borderRadius: 9, overflow: "hidden"}}>
         <img src={require("./images/woman.avif")} alt="" style={{borderRadius: 9, display: "flex", width: "100%", height: "100%", objectFit: "cover", position: "absolute", zIndex: 1}} />
         <div style={{position: "relative", 
                      boxSizing: "border-box", 
@@ -99,10 +99,10 @@ function Main() {
                      alignItems: "flex-end"}}>
           <div style={{zIndex: 1, display: "flex", flexFlow: "column", rowGap: 5}}>
             <div style={{fontSize: 16, fontWeight: 300}}>Вы приводите клиентов - мы за это платим</div>
-            <div style={{fontSize: 12, fontWeight: 300, color: "#bbb"}}>Рекомендуйте наши букеты и получаете до 5 000₽ за каждый букет, купленный по вашему промокоду</div>
+            <div style={{fontSize: 12, fontWeight: 300, color: "#bbb"}}>Рекомендуйте наши букеты и получаете до 2 000₽ за каждый букет, купленный по вашему промокоду</div>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* <div className={styles.posts}>
         {posts.map((post, index) => (
           <Post data={post} key={index}/>
@@ -136,74 +136,109 @@ function Main() {
         <div className={styles.informationblocks}>
           <div className={styles.informationblock}>
             <div className={styles.informationtitle} onClick={handleClick}>
-              <span>Доставка</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
+              <span style={{fontSize: 17}}>Доставка и оплата</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
             </div>
             <div className={styles.informationdescription}>
-              <Items items={[
-                {
-                  label: "Сочи",
-                  value: "Бесплатно"
-                },
-                {
-                  label: "Адлер",
-                  value: "Бесплатно"
-                },
-                {
-                  label: "Краснодар",
-                  value: "Бесплатно"
-                },
-              ]} />
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Доставка радости по Большому Сочи — круглосуточно!</span>
+              <ul style={{paddingLeft: 20}}>
+                <li style={{paddingBottom: 10}}>Стоимость доставки: Рассчитывается индивидуально, исходя из адреса получателя. Уточнить точную сумму можно при оформлении заказа.</li>
+                <li>Информация по телефону: По вопросам стоимости доставки в конкретный район звоните по номеру: <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a></li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Самовывоз:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li>Заказы доступны для самостоятельного получения в нашем салоне по адресу: г. Сочи, улица Горького, 89 Б.</li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Оплата:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li style={{paddingBottom: 10}}>Оплатить заказ можно онлайн банковской картой или через безналичный перевод.</li>
+                <li>При самовывозе доступна оплата банковской картой или наличными.</li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Изменение заказа:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li style={{paddingBottom: 10}}>К сожалению, мы не можем вносить изменения в уже собранные букеты или заказы, переданные курьеру.</li>
+                <li>В случае ошибки в адресе доставки, мы готовы обсудить изменения. Это может повлечь за собой перерасчет стоимости доставки.</li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Отмена заказа:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li>Отмена заказа возможна с полным возвратом средств, если вы уведомите нас заранее и заказ ещё не был принят в работу.</li>
+              </ul>
             </div>
           </div>
           <div className={styles.informationblock}>
             <div className={styles.informationtitle} onClick={handleClick}>
-              <span>Почему мы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
+              <span style={{fontSize: 17}}>Почему мы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
             </div>
             <div className={styles.informationdescription}>
-              <span className={styles.ptitle}>Доверие клиентов</span>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Гарантия качества</span>
               <p>
-                Наши клиенты остаются довольны сервисом и обращаются вновь, а так же рекомендуют нас своим друзьям и знакомым: Многие годы на рынке авто проката позволяют учесть все потребности и у удовлетворить все возникшие вопросы. 
+                Мы обещаем только свежесть! Если букет не вызовет восторг у получателя, сообщите нам в течение 24 часов, и мы без вопросов заменим его на новый.
               </p>
-              <span className={styles.ptitle}>Безупречная репутация</span>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Быстрая доставка</span>
               <p>
-                Годы успешной работы в сфере проката авто подтверждены высоким рейтингом на площадках Яндекс, Авито, 2ГИС
+                Время – это ценность. Готовые букеты доставляем в течение 60 минут, а индивидуальные авторские – в течение 2 часов с момента подтверждения заказа.
               </p>
-              <span className={styles.ptitle}>Широкий ассортимент</span>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Свежие цветы</span>
               <p>
-                Наш парк укомплектован автомобилями различных классов. Все фото и видео материалы сняты нашими фотографами, что гарантирует Вам аренду именно того авто, что вы выбрали на сайте.
+                Свежесть, которую можно почувствовать. Наши букеты комплектуются непосредственно перед доставкой, гарантируя свежесть каждого цветка.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Ищете что-то особенное?</span>
+              <p>
+                У нас есть широкий ассортимент сопутствующих товаров и открыток для идеального дополнения к вашему букету.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Сюрприз для получателя</span>
+              <p>
+                Подарите эмоции внезапности. Мы уточним время и адрес доставки у получателя, оставив в тайне детали сюрприза и ваше имя.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Фотография букета до отправки</span>
+              <p>
+                Ваша уверенность – наш приоритет. Вы получите фотографию букета до момента доставки, чтобы убедиться в его безупречном качестве.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Отчет о доставке</span>
+              <p>
+                Информирование без задержек. Мы мгновенно сообщим вам о доставке, чтобы вы были в курсе.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Фотография счастливого момента</span>
+              <p>
+                Радость, которой хочется поделиться. По вашему желанию мы пришлем фото момента вручения цветов, чтобы вы могли разделить этот волнующий момент с близкими.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Персонализированная открытка</span>
+              <p>
+                Ваши слова – наша забота. Каждый букет украсим открыткой с вашими пожеланиями, написанными от руки.
               </p>
             </div>
           </div>
           <div className={styles.informationblock}>
             <div className={styles.informationtitle} onClick={handleClick}>
-              <span>Часто задаваемые вопросы</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
+              <span style={{fontSize: 17}}>Часто задаваемые вопросы</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
             </div>
             <div className={styles.informationdescription}>
-              <div style={{backgroundColor: "#1C1C1E", borderRadius: 9, padding: 12, marginBottom: 20}}>
-                <span className={styles.ptitle}>Как я могу заказать цветы?</span>
-                <p style={{marginBottom: 0, fontSize: 14, fontWeight: 300}}>
-                Чтобы оформить заказ на букет цветов на нашем сайте, вам нужно выбрать понравившийся букет, нажать кнопку "В корзину", затем перейти в "корзину" и заполнить форму заказа, указав необходимую информацию, включая ваше имя, адрес доставки и контактную информацию. После этого вы сможете выбрать удобный способ оплаты и подтвердить заказ.
-                </p>
-              </div>
-              <div style={{backgroundColor: "#1C1C1E", borderRadius: 9, padding: 12, marginBottom: 20}}>
-                <span className={styles.ptitle}>Как выполняется и доставляется заказ?</span>
-                <p style={{marginBottom: 0, fontSize: 14, fontWeight: 300}}>
-                  Наша команда флористов соберет выбранный Вами букет . Менеджер свяжется с Вами и предоставит Вам фото собранного букета . После чего курьер привезёт букет в удобное для получателя время.
-                </p>
-              </div>
-              <div style={{backgroundColor: "#1C1C1E", borderRadius: 9, padding: 12, marginBottom: 20}}>
-                <span className={styles.ptitle}>Могу ли я что то изменить в выбранном букете?</span>
-                <p style={{marginBottom: 0, fontSize: 14, fontWeight: 300}}>
-                  Да, конечно. Свяжитесь с нами и мы с радостью внесем изменения в Ваш букет.
-                </p>
-              </div>
-              <div style={{backgroundColor: "#1C1C1E", borderRadius: 9, padding: 12, marginBottom: 20}}>
-                <span className={styles.ptitle}>Предоставляете ли вы бесплатную доставку?</span>
-                <p style={{marginBottom: 0, fontSize: 14, fontWeight: 300}}>
-                  Бесплатная доставка осуществляется для заказов от 2 500 ₽.
-                </p>
-              </div>
-              <div style={{marginTop: 10, paddingBottom: 20}}>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Как я могу заказать цветы?</span>
+              <ul style={{paddingLeft: 20, listStyleType: 'decimal'}}>
+                <li style={{paddingBottom: 10}}>Выбор букета:<br/>Найдите букет, который вам по душе, и добавьте его "В корзину".</li>
+                <li style={{paddingBottom: 10}}>Переход в корзину:<br/>После добавления букета в корзину, перейдите в неё, чтобы продолжить оформление заказа.</li>
+                <li style={{paddingBottom: 10}}>Заполнение формы заказа:<br/>Заполните форму заказа, указав все необходимые данные.</li>
+                <li style={{paddingBottom: 10}}>Выбор способа оплаты:<br/>Выберите предпочтительный способ оплаты из предложенных вариантов.</li>
+                <li style={{paddingBottom: 10}}>Подтверждение заказа:<br/>После оформления заказа наш специалист свяжется с вами для уточнения деталей заказа.</li>
+                <li style={{paddingBottom: 10}}>Создание букета:<br/>Флорист начнёт создавать букет согласно вашим пожеланиям, используя самые свежие цветы.</li>
+                <li style={{paddingBottom: 10}}>Доставка:<br/>Как только букет будет готов, курьер заберёт его и доставит указанному получателю.<br/>Вы получите фотоотчет о вручении и уведомление о доставке.</li>
+              </ul>
+              <p>
+                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a> или написать в WhatsApp, Telegram на этот же номер.<br/>
+                Мы доступны круглосуточно и всегда рады помочь
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>В какое время работает ваш интернет-магазин?</span>
+              <p>
+                Наш интернет-магазин открыт для вас 24 часа в сутки, 7 дней в неделю, без перерывов и праздничных дней. Вы можете разместить заказ непосредственно на нашем сайте в любое время или позвонить по номеру <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 966 77 57 966</a> для консультации и помощи в оформлении и оплате заказа.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Как быстро доставите заказ и можно ли заказать доставку на определенное время?</span>
+              <p>
+                Мы обеспечиваем доставку ваших заказов в течение 60 минут после их подтверждения. Вы можете указать предпочтительную дату и время доставки, и наш курьер свяжется с вами в назначенный день, чтобы доставить заказ точно в срок.
+              </p>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Если получатель отсутствует или отказывается от заказа:</span>
+              <p>
+                В случае, если получатель не будет на месте или откажется принять букет в момент доставки, мы предложим вам возможность повторной доставки по альтернативному адресу.
+              </p>
+              <div style={{paddingBottom: 10, paddingTop: 10}}>
                 <Button text="Задать свой вопрос" />
               </div>
             </div>
@@ -225,7 +260,7 @@ function Main() {
           </div>
         </div>
         <div className={styles.contacts}>
-          <div className={styles.telephone}>+7 966 775 79 66</div>
+          <div className={styles.telephone}><a href="tel:+79667757966" style={{ textDecoration: 'none', color: 'inherit' }}>+7 966 77 57 966</a></div>
           <div className={styles.icons}>
             <img src={require("./images/telegram.svg").default} className="" alt="telegram" />
             <img src={require("./images/whatsapp.svg").default} className="" alt="whatsapp" />

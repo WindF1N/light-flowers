@@ -3,6 +3,7 @@ import json
 import base64
 from bson import ObjectId
 from bson.json_util import dumps
+from bson.son import SON
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_pymongo import PyMongo
@@ -49,6 +50,13 @@ def reverse_prepare_data(data):
                 return data
     else:
         return data
+    
+# Функция для преобразования строки цены в число
+def convert_price_to_number(price_string):
+    # Удаляем все пробелы и символ ₽
+    cleaned_price = price_string.replace(' ', '').replace('₽', '')
+    # Преобразуем в число
+    return int(cleaned_price)
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
@@ -107,7 +115,26 @@ def handle_message(message):
 
     if message[0] == "cards":
         if message[1] == "filter":
-            cards = list(mongo.db.cards.find(reverse_prepare_data(message[2])).limit(message[3]))
+            sort_order = []
+            # Определяем порядок сортировки в зависимости от message[4]
+            if message[4] == 0:
+                sort_order.append(('views_count', -1))  # Популярные - по убыванию views_count
+            elif message[4] == 1:
+                sort_order.append(('price_number', 1))  # Дорогие - по возрастанию price_number
+            elif message[4] == 2:
+                sort_order.append(('price_number', -1))  # Недорогие - по убыванию price_number
+            # Добавляем сортировку по умолчанию, если не выбрано иное
+            if not sort_order:
+                sort_order.append(('_id', 1))  # Сортировка по умолчанию - по возрастанию _id
+            # Формируем агрегацию
+            pipeline = [
+                {"$match": reverse_prepare_data(message[2])},  # Фильтрация по message[2]
+                {"$addFields": {"price_number": {"$toInt": {"$replaceAll": {"input": {"$replaceAll": {"input": "$price", "find": "₽", "replacement": ""}}, "find": " ", "replacement": ""}}}}},
+                {"$sort": SON(sort_order)},
+                {"$limit": message[3]}
+            ]
+            # Выполняем агрегацию
+            cards = list(mongo.db.cards.aggregate(pipeline))
             for card in cards:
                 images = list(mongo.db.images.find({"card_id": card["_id"]}))
                 for image in images:

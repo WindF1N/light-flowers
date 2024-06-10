@@ -14,7 +14,7 @@ function Search() {
   const { sendMessage, message, setMessage } = useMainContext();
   const navigate = useNavigate();
   const [ view, setView ] = useState("grid");
-  const [ sortBy, setSortBy ] = useState("Сначала недорогие");
+  const [ sortBy, setSortBy ] = useState("Сначала популярные");
   const [ posts, setPosts ] = useState([]);
   useEffect(() => {
     window.scrollTo({top: 0, smooth: "behavior"});
@@ -39,6 +39,9 @@ function Search() {
     "101 роза"
   ]
   const [ selectedCounts, setSelectedCounts ] = useState([]);
+  const [ selectedColors, setSelectedColors ] = useState([]);
+  const [ selectedSizes, setSelectedSizes ] = useState([]);
+  const [ selectedPackages, setSelectedPackages ] = useState([]);
   const categories = [
     "Розы с любовью",
     "Подарки"
@@ -58,22 +61,48 @@ function Search() {
     };
   }, [message]);
   useEffect(() => {
-    sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25]));
+    let sort = 0;
+    if (sortBy === "Сначала недорогие") {
+      sort = 2
+    } else if (sortBy === "Сначала дорогие") {
+      sort = 1
+    };
+    if (selectedCounts.length > 0 || selectedColors.length > 0 || selectedSizes.length > 0 || selectedPackages.length > 0) {
+      let filter_query = {}
+      if (selectedCategory === "Розы с любовью") {
+        if (selectedCounts.length > 0) {
+          filter_query["counts"] = { $in: selectedCounts }
+        }
+        if (selectedColors.length > 0) {
+          filter_query["colors"] = { $in: selectedColors }
+        }
+        if (selectedColors.length > 0) {
+          filter_query["sizes"] = { $in: selectedSizes }
+        }
+        if (selectedColors.length > 0) {
+          filter_query["packages"] = { $in: selectedPackages }
+        }
+      }
+      setPosts(prevState => prevState.filter((item) => item.category !== selectedCategory))
+      sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory, ...filter_query}, 25, sort]));
+    } else {
+      sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25, sort]));
+    }
     if (cardId) {
       sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
     }
-  }, [selectedCategory])
+  }, [selectedCounts, selectedColors, selectedSizes, selectedPackages, selectedCategory])
   return (
     <>
       <div className="view">
         <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15}}>
           <div style={{display: "flex", alignItems: "center", gap: 15}}>
             <div>
-              <img src={require("./images/splash.svg").default} alt="" style={{width: 50}} />
+              <img src={require("./images/splash.svg").default} alt="" style={{width: 40}} />
             </div>
-            <div>
-              <div style={{fontSize: 24, fontWeight: 300}}>Студия <span>Роз</span></div>
-              <div style={{fontSize: 12, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
+            <div style={{marginBottom: 4}}>
+              <div style={{fontSize: 20, fontWeight: 300}}>Студия <span>Роз</span></div>
+              <div style={{fontSize: 11, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
             </div>
           </div>
         </div>
@@ -85,15 +114,16 @@ function Search() {
           }}>
             <div style={{fontSize: 15, fontWeight: 300}}>{sortBy}</div> <img id="arrow" src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
             <select id="sort" style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {document.getElementById(`arrow`).style.transform = "rotate(90deg)";setSortBy(e.target.value)}} onBlur={() => {document.getElementById(`arrow`).style.transform = "rotate(90deg)"}}>
-              <option value="Сначала недорогие">Сначала недорогие</option>
-              <option value="Сначала дорогие">Сначала дорогие</option>
-              <option value="Сначала популярные">Сначала популярные</option>
+              <option value="Сначала недорогие" selected={sortBy === "Сначала недорогие"}>Сначала недорогие</option>
+              <option value="Сначала дорогие" selected={sortBy === "Сначала дорогие"}>Сначала дорогие</option>
+              <option value="Сначала популярные" selected={sortBy === "Сначала популярные"}>Сначала популярные</option>
             </select>
           </div>
           <div style={{display: "flex", alignItems: "center", columnGap: 8}} onClick={openFilter}>
             <img src={require("../screens/images/compare.svg").default} alt="" style={{filter: "brightness(.6)"}} /> <div style={{fontSize: 15, fontWeight: 300}}>Фильтры</div>
           </div>
         </div>
+        {selectedCategory === "Розы с любовью" &&
         <div style={{
           display: "flex",
           flexWrap: "wrap",
@@ -102,29 +132,29 @@ function Search() {
         }}>
           {counts.map((count, index) => (
             <div key={"count" + index} 
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "4px 7px",
-                    borderRadius: 4,
-                    background: selectedCounts.includes(count) ? "#fff" : "rgb(24, 24, 26)",
-                    fontSize: 15,
-                    fontWeight: 300,
-                    color: selectedCounts.includes(count) ? "#000" : "#fff"
-                  }}
-                  onClick={() => {
+                 style={{
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center",
+                   padding: "4px 7px",
+                   borderRadius: 4,
+                   background: selectedCounts.includes(count) ? "#fff" : "rgb(24, 24, 26)",
+                   fontSize: 15,
+                   fontWeight: 300,
+                   color: selectedCounts.includes(count) ? "#000" : "#fff"
+                 }}
+                 onClick={() => {
                   if (selectedCounts.includes(count)) {
                     setSelectedCounts(prevState => prevState.filter((selectedCount) => count !== selectedCount))
                   } else {
                     setSelectedCounts(prevState => [...prevState, count])
                   }
-                  }}
+                 }}
             >
               {count}
             </div>
           ))}
-        </div>
+        </div>}
         {view === "grid" &&
         <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
           {posts.filter((post) => post.category === selectedCategory).map((post) => (
@@ -156,7 +186,16 @@ function Search() {
         </div>}
       </div>
       {isOpenFilter &&
-        <Filter setIsOpenFilter={setIsOpenFilter} />}
+        <Filter setIsOpenFilter={setIsOpenFilter} 
+                selectedColors={selectedColors} 
+                setSelectedColors={setSelectedColors}
+                selectedCounts={selectedCounts}
+                setSelectedCounts={setSelectedCounts}
+                selectedSizes={selectedSizes}
+                setSelectedSizes={setSelectedSizes}
+                selectedPackages={selectedPackages}
+                setSelectedPackages={setSelectedPackages}
+                selectedCategory={selectedCategory} />}
     </>
   );
 }
