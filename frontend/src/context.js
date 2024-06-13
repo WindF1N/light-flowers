@@ -1,10 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useSyncExternalStore } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
 const SocketContext = createContext();
 
 const SocketProvider = ({ children }) => {
+
+  const [ theme, setTheme ] = useState("Light");
 
   const [ state, setState ] = useState(null);
   const [ loading, setLoading ] = useState(true);
@@ -42,6 +44,15 @@ const SocketProvider = ({ children }) => {
   const [ openPost, setOpenPost ] = useState(null);
 
   const [ cartItems, setCartItems ] = useState([]);
+
+  useEffect(() => {
+    if (theme === "Light") {
+      document.body.className = "dark";
+    } else {
+      document.body.className = "light";
+    }
+    
+  }, [theme]);
 
   useEffect(() => {
     if (!socket) {
@@ -141,7 +152,9 @@ const SocketProvider = ({ children }) => {
                                      cartItems, setCartItems,
 
                                      error,
-                                     setError}}>
+                                     setError,
+                                     
+                                     theme, setTheme}}>
       {children}
     </SocketContext.Provider>
   );

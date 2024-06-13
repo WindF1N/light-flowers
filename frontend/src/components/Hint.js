@@ -116,7 +116,7 @@ function Hint({ data }) {
                 fontWeight: 400,
                 fontSize: 15
             }}>
-                Намекнуть о падарке
+                Намекнуть о подарке
             </div>
         </animated.div>
       {isOpen &&

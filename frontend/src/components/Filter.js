@@ -35,7 +35,7 @@ function Filter({
     api.start({ top: "0", left: "0vw", config: { duration: 200, tension: 280, friction: 60 } });
     setHandleClickBackButton(() => handleBack);
   }, [])
-  const [ price, setPrice ] = useState(defaultPrice.length > 0 ? defaultPrice : [0, 6000])
+  const [ price, setPrice ] = useState(defaultPrice.length > 0 ? defaultPrice : [0, 9000])
   const handleChange = (event, value) => {
     setPrice(value);
   };
@@ -91,6 +91,14 @@ function Filter({
       setIsOpenFilter(false);
     }, 200)
   }
+  const handleClear = () => {
+    setSelectedColors([]);
+    setSelectedCounts([]);
+    setSelectedSizes([]);
+    setSelectedPackages([]);
+    setDefaultPrice([0, 9000]);
+    setPrice([0, 9000]);
+  }
   return (
     <animated.div style={{
       position: "fixed",
@@ -103,7 +111,7 @@ function Filter({
       <div className="view">
         <div style={{borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw"}}>
             <div style={{padding: "0 15px"}}>
-                <Title text="Фильтры" canDelete={() => alert("Очищено")} deleteText={"Очистить фильтры"} />
+                <Title text="Фильтры" canDelete={handleClear} deleteText={"Очистить фильтры"} />
             </div>
         </div>
         <div style={{padding: "20px 0", display: "flex", flexFlow: "column", gap: 10}}>

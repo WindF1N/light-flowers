@@ -13,7 +13,7 @@ import { useMainContext } from '../context';
 function Post({ postData, type, parent, basePathUrl }) {
   const navigate = useNavigate();
   const [ data, setData ] = useState(postData);
-  const { sendMessage, message, setMessage, cartItems, setCartItems, account } = useMainContext();
+  const { sendMessage, message, setMessage, cartItems, setCartItems, account, theme } = useMainContext();
   const postDivRef = useRef();
   const [ isOpenPost, setIsOpenPost ] = useState(false);
   const api = useSpringRef();
@@ -280,7 +280,7 @@ function Post({ postData, type, parent, basePathUrl }) {
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(50vw - 20px)"}}>
               <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)", height: 28}}>
+            {/* <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)", height: 28}}>
               <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
                 <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </animated.div>
@@ -290,7 +290,7 @@ function Post({ postData, type, parent, basePathUrl }) {
               <animated.div onClick={(e) => handleCart(e, 1)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsAddFromCart}}>
                 <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </animated.div>
-            </div>
+            </div> */}
             <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 5px 5px 5px"}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
               <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
@@ -344,7 +344,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                 <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </div>
               <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
-                <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{data.title}</div>
+                <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
                 <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
               </div>
             </div>
@@ -357,7 +357,7 @@ function Post({ postData, type, parent, basePathUrl }) {
               <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
-              <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{data.title}</div>
+              <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
               <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
             </div>
           </div>
@@ -369,7 +369,7 @@ function Post({ postData, type, parent, basePathUrl }) {
               <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
-              <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{data.title}</div>
+              <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
               <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price}</div>
             </div>
           </div>
@@ -672,7 +672,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>
                 <div className={styles2.contacts} style={{padding: "0 15px"}}>
-                  <div className={styles2.telephone}>+7 966 775 79 66</div>
+                  <div className={styles2.telephone}><a href="tel:+79667757966" style={{ textDecoration: 'none', color: 'inherit' }}>+7 966 77 57 966</a></div>
                   <div className={styles2.icons}>
                     <img src={require("../screens/images/telegram.svg").default} className="" alt="telegram" />
                     <img src={require("../screens/images/whatsapp.svg").default} className="" alt="whatsapp" />

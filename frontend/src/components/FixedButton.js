@@ -77,7 +77,7 @@ const FixedButton = (props) => {
         <img src={require("./images/plus.svg").default} className="" alt="plus" />
       </div>}
       <div className={`fixed-button ${isProButtonVisible ? 'visible' : ''}`} onClick={() => navigate('/cart')}>
-        <img src={require("./images/cart.svg").default} className="" alt="cart" style={{marginTop: 3, marginRight: 1}} />
+        <img src={require("../screens/images/box.svg").default} className="" alt="cart" />
         {cartItems.length > 0 &&
         <div style={{position: "absolute", 
                      top: 1, 
@@ -92,15 +92,9 @@ const FixedButton = (props) => {
                      fontSize: 11,
                      fontWeight: 300}}>{cartItems.length}</div>}
       </div>
-      {canGoBack ?
+      {canGoBack &&
         <div className="fixed-button-back" onClick={handleClickBackButton ? handleClickBackButton : goBack}>
           <img src={require("./images/arrow-right.svg").default} className="" alt="arrow" />
-        </div>
-      :
-        <div className="fixed-message">
-          <div></div>
-          <div></div>
-          <div>Здесь твоя корзина</div>
         </div>}
       {(canScrollUp || props.send) &&
       <div className={`fixed-button-up ${isProButtonVisible ? 'visible' : ''} ${(account.user?.username !== "thecreatxr" || account.user?.username !== "Mr_Romadanov") ? 'dif' : ''}`} onClick={!props.send ? scrollUp : props.onDelete}>

@@ -5,13 +5,13 @@ import Title from '../components/Title';
 import Filter from '../components/Filter';
 import Post from '../components/Post';
 import { useMainContext } from '../context';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { useSpringRef, animated, useSpring } from '@react-spring/web';
 
 function Search() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const cardId = params.get('card_id');
-  const { sendMessage, message, setMessage } = useMainContext();
+  const { sendMessage, message, setMessage, theme, setTheme } = useMainContext();
   const navigate = useNavigate();
   const [ view, setView ] = useState("grid");
   const [ sortBy, setSortBy ] = useState("Сначала популярные");
@@ -20,6 +20,16 @@ function Search() {
     window.scrollTo({top: 0, smooth: "behavior"});
   }, [])
   const [ isOpenFilter, setIsOpenFilter ] = useState(false);
+  const wrapperApi = useSpringRef();
+  const wrapperProps = useSpring({
+    ref: wrapperApi,
+    from: { background: theme === "Dark" ? "#000" : "#fff" },
+  })
+  const divApi = useSpringRef();
+  const divProps = useSpring({
+    ref: divApi,
+    from: { transform: theme === "Dark" ? "translateX(20px)" : "translateX(0px)", background: theme === "Dark" ? "#fff" : "#000" },
+  })
   const openFilter = () => {
     setIsOpenFilter(true);
   }
@@ -96,14 +106,58 @@ function Search() {
   return (
     <>
       <div className="view">
-        <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15}}>
-          <div style={{display: "flex", alignItems: "center", gap: 15}}>
+        <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: theme === "Dark" ? "0.5px solid #e1e1e1" : "0.5px solid #18181A", marginLeft: -15, width: "100vw"}}>
+          <div style={{display: "flex", alignItems: "center", gap: 15, paddingLeft: 15, paddingRight: 15, boxSizing: "border-box"}}>
             <div>
-              <img src={require("./images/splash.svg").default} alt="" style={{width: 40}} />
+              <img src={require("./images/splash.svg").default} alt="" style={{width: 40, filter: theme === "Dark" ? "brightness(0)" : "brightness(1)"}} />
             </div>
             <div style={{marginBottom: 4}}>
-              <div style={{fontSize: 20, fontWeight: 300}}>Студия <span>Роз</span></div>
-              <div style={{fontSize: 11, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
+              <div style={{fontSize: 20, fontWeight: 300, color: theme === "Dark" ? "#000" : "#fff"}}>Студия <span>Роз</span></div>
+              <div style={{fontSize: 11, fontWeight: 300, color: theme === "Dark" ? "#444" : "#999999"}}>Нежность в каждом лепестке</div>
+            </div>
+            <div style={{marginLeft: "auto", display: "flex", alignItems: "center", gap: 8}}>
+              <div style={{fontSize: 11, fontWeight: 300, color: theme === "Dark" ? "#000" : "#fff"}}>{theme}</div>
+              <animated.div 
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  width: 46,
+                  height: 26,
+                  borderRadius: 26,
+                  background: "#fff",
+                  ...wrapperProps
+                }}
+                onClick={() => {
+                  setTheme(prevState => {
+                    if (prevState === "Light") {
+                      return "Dark"
+                    } else {
+                      return "Light"
+                    }
+                  })
+                  if (theme === "Light") {
+                    wrapperApi.start({ background: "#000", config: { duration: 200 } });
+                    wrapperApi.set({ background: "#000" });
+                    divApi.start({ transform: "translateX(20px)", background: "#fff", config: { duration: 200 } });
+                    divApi.set({ transform: "translateX(20px)", background: "#fff" });
+                  } else {
+                    wrapperApi.start({ background: "#fff", config: { duration: 200 } });
+                    wrapperApi.set({ background: "#fff" });
+                    divApi.start({ transform: "translateX(0px)", background: "#000", config: { duration: 200 } });
+                    divApi.set({ transform: "translateX(0px)", background: "#000" });
+                  }
+                }}
+              >
+                <animated.div style={{
+                  backgroundColor: "#000",
+                  borderRadius: 26,
+                  height: 22,
+                  margin: 2,
+                  transition: ".2s",
+                  width: 22,
+                  ...divProps
+                }}></animated.div>
+              </animated.div>
             </div>
           </div>
         </div>

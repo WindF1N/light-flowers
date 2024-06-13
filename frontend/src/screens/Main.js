@@ -3,14 +3,24 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Post from '../components/Post';
 import Button from '../components/Button';
-import Items from '../components/Items';
 import { useMainContext } from '../context';
+import { useSpringRef, animated, useSpring } from '@react-spring/web';
 
 function Main() {
+  const { sendMessage, message, setMessage, theme, setTheme } = useMainContext();
+  const wrapperApi = useSpringRef();
+  const wrapperProps = useSpring({
+    ref: wrapperApi,
+    from: { background: theme === "Dark" ? "#000" : "#fff" },
+  })
+  const divApi = useSpringRef();
+  const divProps = useSpring({
+    ref: divApi,
+    from: { transform: theme === "Dark" ? "translateX(20px)" : "translateX(0px)", background: theme === "Dark" ? "#fff" : "#000" },
+  })
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const cardId = params.get('card_id');
-  const { sendMessage, message, setMessage } = useMainContext();
   const navigate = useNavigate();
   const [ posts, setPosts ] = useState([]);
   const handleClick = (e) => {
@@ -46,14 +56,58 @@ function Main() {
   }, [message]);
   return (
     <div className="view">
-      <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: "0.5px solid #18181A", marginLeft: -15, width: "100vw", paddingLeft: 15, marginBottom: 18}}>
-        <div style={{display: "flex", alignItems: "center", gap: 15}}>
+      <div className={styles.header} style={{paddingBottom: 15, paddingTop: 15, borderBottom: theme === "Dark" ? "0.5px solid #e1e1e1" : "0.5px solid #18181A", marginLeft: -15, width: "100vw", marginBottom: 18}}>
+        <div style={{display: "flex", alignItems: "center", gap: 15, paddingLeft: 15, paddingRight: 15, boxSizing: "border-box"}}>
           <div>
-            <img src={require("./images/splash.svg").default} alt="" style={{width: 40}} />
+            <img src={require("./images/splash.svg").default} alt="" style={{width: 40, filter: theme === "Dark" ? "brightness(0)" : "brightness(1)"}} />
           </div>
           <div style={{marginBottom: 4}}>
-            <div style={{fontSize: 20, fontWeight: 300}}>Студия <span>Роз</span></div>
-            <div style={{fontSize: 11, fontWeight: 300, color: "#999999"}}>Нежность в каждом лепестке</div>
+            <div style={{fontSize: 20, fontWeight: 300, color: theme === "Dark" ? "#000" : "#fff"}}>Студия <span>Роз</span></div>
+            <div style={{fontSize: 11, fontWeight: 300, color: theme === "Dark" ? "#444" : "#999999"}}>Нежность в каждом лепестке</div>
+          </div>
+          <div style={{marginLeft: "auto", display: "flex", alignItems: "center", gap: 8}}>
+            <div style={{fontSize: 11, fontWeight: 300, color: theme === "Dark" ? "#000" : "#fff"}}>{theme}</div>
+            <animated.div 
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                width: 46,
+                height: 26,
+                borderRadius: 26,
+                background: theme === "Dark" ? "#000" : "#fff",
+                ...wrapperProps
+              }}
+              onClick={() => {
+                setTheme(prevState => {
+                  if (prevState === "Light") {
+                    return "Dark"
+                  } else {
+                    return "Light"
+                  }
+                })
+                if (theme === "Light") {
+                  wrapperApi.start({ background: "#000", config: { duration: 200 } });
+                  wrapperApi.set({ background: "#000" });
+                  divApi.start({ transform: "translateX(20px)", background: "#fff", config: { duration: 200 } });
+                  divApi.set({ transform: "translateX(20px)", background: "#fff" });
+                } else {
+                  wrapperApi.start({ background: "#fff", config: { duration: 200 } });
+                  wrapperApi.set({ background: "#fff" });
+                  divApi.start({ transform: "translateX(0px)", background: "#000", config: { duration: 200 } });
+                  divApi.set({ transform: "translateX(0px)", background: "#000" });
+                }
+              }}
+            >
+              <animated.div style={{
+                backgroundColor: theme === "Dark" ? "#fff" : "#000",
+                borderRadius: 26,
+                height: 22,
+                margin: 2,
+                transition: ".2s",
+                width: 22,
+                ...divProps
+              }}></animated.div>
+            </animated.div>
           </div>
         </div>
       </div>
@@ -83,7 +137,7 @@ function Main() {
           </div>
         </div>
       </div> */}
-      <div style={{fontSize: 14, fontWeight: 300, textAlign: "center"}}>
+      <div style={{fontSize: 14, fontWeight: 300, textAlign: "center", color: theme === "Dark" ? "#000" : "#fff"}}>
         Cвежие цветы <span style={{margin: "0 2px"}}>•</span> Доставка <span style={{margin: "0 2px"}}>•</span> Гарантия <span style={{margin: "0 2px"}}>•</span> Круглосуточно
       </div>
       {/* <div style={{position: "relative", width: "100%", height: "120px", borderRadius: 9, overflow: "hidden"}}>
@@ -108,7 +162,7 @@ function Main() {
           <Post data={post} key={index}/>
         ))}
       </div> */}
-      <div style={{display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 20, borderBottom: "0.5px solid rgb(24, 24, 26)", paddingBottom: 20}}>
+      <div style={{display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 20, borderBottom: theme === "Dark" ? "0.5px solid #e1e1e1" : "0.5px solid rgb(24, 24, 26)", paddingBottom: 20}}>
         {posts.length > 0 ?
           <>
             {posts.map((post, index) => (
@@ -124,49 +178,19 @@ function Main() {
           </>
           :
           <div style={{width: "100%", height: "50vw", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>Букеты отсутствуют</div>
+            <div style={{fontSize: 16, fontWeight: 300, color: theme === "Dark" ? "#444" : "#bbb"}}>Букеты отсутствуют</div>
           </div>
         }
       </div>
       {posts.length > 0 &&
-      <div style={{marginTop: 15, display: "flex", justifyContent: "center", color: "#bbb", fontWeight: 300, fontSize: 15, alignItems: "center", gap: 8}} onClick={() => navigate("/search")}>
-        Показать всё <img src={require("../components/images/arrow-right.svg").default} alt="" style={{display: "flex", marginTop: 1, filter: "brightness(.6)"}} />
+      <div style={{marginTop: 15, display: "flex", justifyContent: "center", color: theme === "Dark" ? "#666" : "#bbb", fontWeight: 300, fontSize: 15, alignItems: "center", gap: 8}} onClick={() => navigate("/search")}>
+        Показать всё <img src={require("../components/images/arrow-right.svg").default} alt="" style={{display: "flex", marginTop: 1, filter: theme === "Dark" ? "brightness(0.5)" : "brightness(.6)"}} />
       </div>}
       <div className={styles.information}>
         <div className={styles.informationblocks}>
-          <div className={styles.informationblock}>
+          <div className={styles.informationblock} style={theme === "Dark" ? {borderBottom: "0.5px solid #e1e1e1"} : null}>
             <div className={styles.informationtitle} onClick={handleClick}>
-              <span style={{fontSize: 17}}>Доставка и оплата</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
-            </div>
-            <div className={styles.informationdescription}>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Доставка радости по Большому Сочи — круглосуточно!</span>
-              <ul style={{paddingLeft: 20}}>
-                <li style={{paddingBottom: 10}}>Стоимость доставки: Рассчитывается индивидуально, исходя из адреса получателя. Уточнить точную сумму можно при оформлении заказа.</li>
-                <li>Информация по телефону: По вопросам стоимости доставки в конкретный район звоните по номеру: <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a></li>
-              </ul>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Самовывоз:</span>
-              <ul style={{paddingLeft: 20}}>
-                <li>Заказы доступны для самостоятельного получения в нашем салоне по адресу: г. Сочи, улица Горького, 89 Б.</li>
-              </ul>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Оплата:</span>
-              <ul style={{paddingLeft: 20}}>
-                <li style={{paddingBottom: 10}}>Оплатить заказ можно онлайн банковской картой или через безналичный перевод.</li>
-                <li>При самовывозе доступна оплата банковской картой или наличными.</li>
-              </ul>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Изменение заказа:</span>
-              <ul style={{paddingLeft: 20}}>
-                <li style={{paddingBottom: 10}}>К сожалению, мы не можем вносить изменения в уже собранные букеты или заказы, переданные курьеру.</li>
-                <li>В случае ошибки в адресе доставки, мы готовы обсудить изменения. Это может повлечь за собой перерасчет стоимости доставки.</li>
-              </ul>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Отмена заказа:</span>
-              <ul style={{paddingLeft: 20}}>
-                <li>Отмена заказа возможна с полным возвратом средств, если вы уведомите нас заранее и заказ ещё не был принят в работу.</li>
-              </ul>
-            </div>
-          </div>
-          <div className={styles.informationblock}>
-            <div className={styles.informationtitle} onClick={handleClick}>
-              <span style={{fontSize: 17}}>Почему мы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
+              <span style={{fontSize: 17}}>Почему мы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={theme === "Dark" ? {filter: "brightness(0)"} : null}/>
             </div>
             <div className={styles.informationdescription}>
               <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Гарантия качества</span>
@@ -207,26 +231,23 @@ function Main() {
               </p>
             </div>
           </div>
-          <div className={styles.informationblock}>
+          <div className={styles.informationblock} style={theme === "Dark" ? {borderBottom: "0.5px solid #e1e1e1"} : null}>
             <div className={styles.informationtitle} onClick={handleClick}>
-              <span style={{fontSize: 17}}>Часто задаваемые вопросы</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right"/>
+              <span style={{fontSize: 17}}>Как заказать цветы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={theme === "Dark" ? {filter: "brightness(0)"} : null}/>
             </div>
             <div className={styles.informationdescription}>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Как я могу заказать цветы?</span>
               <ul style={{paddingLeft: 20, listStyleType: 'decimal'}}>
-                <li style={{paddingBottom: 10}}>Выбор букета:<br/>Найдите букет, который вам по душе, и добавьте его "В корзину".</li>
-                <li style={{paddingBottom: 10}}>Переход в корзину:<br/>После добавления букета в корзину, перейдите в неё, чтобы продолжить оформление заказа.</li>
+                <li style={{paddingBottom: 10}}>Выбор букета:<br/>Найдите букет, который вам по душе.</li>
                 <li style={{paddingBottom: 10}}>Заполнение формы заказа:<br/>Заполните форму заказа, указав все необходимые данные.</li>
                 <li style={{paddingBottom: 10}}>Выбор способа оплаты:<br/>Выберите предпочтительный способ оплаты из предложенных вариантов.</li>
-                <li style={{paddingBottom: 10}}>Подтверждение заказа:<br/>После оформления заказа наш специалист свяжется с вами для уточнения деталей заказа.</li>
-                <li style={{paddingBottom: 10}}>Создание букета:<br/>Флорист начнёт создавать букет согласно вашим пожеланиям, используя самые свежие цветы.</li>
-                <li style={{paddingBottom: 10}}>Доставка:<br/>Как только букет будет готов, курьер заберёт его и доставит указанному получателю.<br/>Вы получите фотоотчет о вручении и уведомление о доставке.</li>
+                <li style={{paddingBottom: 10}}>Подтверждение заказа:<br/>После оформления заказа наш специалист свяжется с вами для уточнения деталей.</li>
+                <li style={{paddingBottom: 10}}>Доставка:<br/>Как только букет будет готов, курьер доставит его указанному получателю.<br/>Вы получите фотоотчет о вручении и уведомление о доставке.</li>
               </ul>
               <p>
-                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a> или написать в WhatsApp, Telegram на этот же номер.<br/>
+                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a>или написать в <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a>  для консультации и помощи в оформлении и оплате заказа.<br/><br/>
                 Мы доступны круглосуточно и всегда рады помочь
               </p>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>В какое время работает ваш интернет-магазин?</span>
+              {/* <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>В какое время работает ваш интернет-магазин?</span>
               <p>
                 Наш интернет-магазин открыт для вас 24 часа в сутки, 7 дней в неделю, без перерывов и праздничных дней. Вы можете разместить заказ непосредственно на нашем сайте в любое время или позвонить по номеру <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 966 77 57 966</a> для консультации и помощи в оформлении и оплате заказа.
               </p>
@@ -240,7 +261,37 @@ function Main() {
               </p>
               <div style={{paddingBottom: 10, paddingTop: 10}}>
                 <Button text="Задать свой вопрос" />
-              </div>
+              </div> */}
+            </div>
+          </div>
+          <div className={styles.informationblock} style={theme === "Dark" ? {borderBottom: "0.5px solid #e1e1e1"} : null}>
+            <div className={styles.informationtitle} onClick={handleClick}>
+              <span style={{fontSize: 17}}>Доставка и оплата</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={theme === "Dark" ? {filter: "brightness(0)"} : null}/>
+            </div>
+            <div className={styles.informationdescription}>
+              <ul style={{paddingLeft: 20}}>
+                <li style={{paddingBottom: 10}}>Стоимость доставки рассчитывается индивидуально, исходя из адреса получателя. Уточнить точную сумму можно при оформлении заказа.</li>
+                <li>По вопросам стоимости доставки вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a> или написать в <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a></li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Самовывоз:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li>Заказы доступны для самостоятельного получения в нашем салоне по адресу: г. Сочи, улица Горького, 89 Б.</li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Оплата:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li style={{paddingBottom: 10}}>Оплатить заказ можно онлайн банковской картой или через безналичный перевод.</li>
+                <li>При самовывозе доступна оплата банковской картой или наличными.</li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Изменение заказа:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li style={{paddingBottom: 10}}>Мы не можем вносить изменения в уже собранные букеты или заказы, переданные курьеру.</li>
+                <li style={{paddingBottom: 10}}>В случае ошибки в адресе доставки, мы готовы обсудить изменения. Это может повлечь за собой перерасчет стоимости доставки.</li>
+                <li>В случае, если получатель не будет на месте или откажется принять букет в момент доставки, мы предложим вам возможность повторной доставки по альтернативному адресу.</li>
+              </ul>
+              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Отмена заказа:</span>
+              <ul style={{paddingLeft: 20}}>
+                <li>Отмена заказа возможна с полным возвратом средств, если вы уведомите нас заранее и заказ ещё не был принят в работу.</li>
+              </ul>
             </div>
           </div>
           <div className={styles.informationblock}>
@@ -250,24 +301,24 @@ function Main() {
           </div>
         </div>
       </div>
-      <footer className={styles.footer}>
+      <footer className={styles.footer} style={theme === "Dark" ? {borderTop: ".5px solid #e1e1e1"} : null}>
         <div style={{display: "flex", flexFlow: "column", padding: "20px 0 10px 0"}}>
-          <div style={{fontSize: 16, fontWeight: 300, color: "#fff", paddingBottom: 5}}>Не нашли что искали?</div>
-          <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>
+          <div style={{fontSize: 16, fontWeight: 300, color: theme === "Dark" ? "#000" : "#fff", paddingBottom: 5}}>Не нашли что искали?</div>
+          <div style={{fontSize: 14, fontWeight: 300, color: theme === "Dark" ? "#444" : "#bbb"}}>
             Отправьте сообщение или позвоните
             подберем самый подходящий букет для
             вашего мероприятия
           </div>
         </div>
         <div className={styles.contacts}>
-          <div className={styles.telephone}><a href="tel:+79667757966" style={{ textDecoration: 'none', color: 'inherit' }}>+7 966 77 57 966</a></div>
+          <div className={styles.telephone} style={theme === "Dark" ? {color: "#000"} : null}><a href="tel:+79667757966" style={{ textDecoration: 'none', color: 'inherit' }}>+7 966 77 57 966</a></div>
           <div className={styles.icons}>
             <img src={require("./images/telegram.svg").default} className="" alt="telegram" />
             <img src={require("./images/whatsapp.svg").default} className="" alt="whatsapp" />
           </div>
         </div>
         <div className={styles.map}>
-          <div className={styles.mapaddress}>г.Сочи, ул. Горького, 89</div>
+          <div className={styles.mapaddress}>г.Сочи, ул. Горького, 89 Б.</div>
           <div className={styles.map_24124}>
             <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A324f2a829909632c05ad04a5f1cba2f0c66ffca76e9f9e47b9c030c9501a45b2&amp;source=constructor" width="100%" height="200" frameBorder="0"></iframe>
           </div>

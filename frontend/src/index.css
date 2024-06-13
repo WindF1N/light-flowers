@@ -14,6 +14,12 @@ body {
   color: var(--main-font-color);
   user-select: none;
   background-color: #000;
+  transition: .2s;
+}
+
+body.light {
+  background-color: #fff;
+  color: var(--main-bg-color);
 }
 
 body, html {

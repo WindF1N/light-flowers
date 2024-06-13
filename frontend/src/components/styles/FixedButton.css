@@ -23,8 +23,8 @@
 }
 
 .fixed-button img {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
 }
 
 .fixed-button-back {
@@ -206,12 +206,12 @@
 
 .fixed-message {
   position: fixed;
-  bottom: 27.5px;
+  bottom: 37.5px;
   right: 95px;
   
 
   display: flex;
-  height: 15px;
+  height: 10px;
   padding: 10px;
   justify-content: center;
   align-items: center;
