@@ -137,7 +137,7 @@ function Main() {
           </div>
         </div>
       </div> */}
-      <div style={{fontSize: 14, fontWeight: 300, textAlign: "center", color: theme === "Dark" ? "#000" : "#fff"}}>
+      <div style={{fontSize: 14, fontWeight: 300, textAlign: "center", marginBottom: 13, color: theme === "Dark" ? "#000" : "#fff"}}>
         Cвежие цветы <span style={{margin: "0 2px"}}>•</span> Доставка <span style={{margin: "0 2px"}}>•</span> Гарантия <span style={{margin: "0 2px"}}>•</span> Круглосуточно
       </div>
       {/* <div style={{position: "relative", width: "100%", height: "120px", borderRadius: 9, overflow: "hidden"}}>
@@ -193,10 +193,6 @@ function Main() {
               <span style={{fontSize: 17}}>Почему мы?</span>  <img src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={theme === "Dark" ? {filter: "brightness(0)"} : null}/>
             </div>
             <div className={styles.informationdescription}>
-              <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Гарантия качества</span>
-              <p>
-                Мы обещаем только свежесть! Если букет не вызовет восторг у получателя, сообщите нам в течение 24 часов, и мы без вопросов заменим его на новый.
-              </p>
               <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>Быстрая доставка</span>
               <p>
                 Время – это ценность. Готовые букеты доставляем в течение 60 минут, а индивидуальные авторские – в течение 2 часов с момента подтверждения заказа.
@@ -239,12 +235,11 @@ function Main() {
               <ul style={{paddingLeft: 20, listStyleType: 'decimal'}}>
                 <li style={{paddingBottom: 10}}>Выбор букета:<br/>Найдите букет, который вам по душе.</li>
                 <li style={{paddingBottom: 10}}>Заполнение формы заказа:<br/>Заполните форму заказа, указав все необходимые данные.</li>
-                <li style={{paddingBottom: 10}}>Выбор способа оплаты:<br/>Выберите предпочтительный способ оплаты из предложенных вариантов.</li>
                 <li style={{paddingBottom: 10}}>Подтверждение заказа:<br/>После оформления заказа наш специалист свяжется с вами для уточнения деталей.</li>
                 <li style={{paddingBottom: 10}}>Доставка:<br/>Как только букет будет готов, курьер доставит его указанному получателю.<br/>Вы получите фотоотчет о вручении и уведомление о доставке.</li>
               </ul>
               <p>
-                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a>или написать в <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a>  для консультации и помощи в оформлении и оплате заказа.<br/><br/>
+                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a> или написать в <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a>  для консультации и помощи в оформлении и оплате заказа.<br/><br/>
                 Мы доступны круглосуточно и всегда рады помочь
               </p>
               {/* <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>В какое время работает ваш интернет-магазин?</span>

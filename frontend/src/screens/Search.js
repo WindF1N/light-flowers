@@ -161,8 +161,8 @@ function Search() {
             </div>
           </div>
         </div>
-        <Title text={selectedCategory} allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view} canChangeTitle={true} choices={categories} selectedChoice={selectedCategory} setSelectedChoice={setSelectedCategory} />
-        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 20}}>
+        <Title text={selectedCategory} allowGrid={() => setView("grid")} allowBlocks={() => setView("list")} selected={view} canChangeTitle={false} choices={categories} selectedChoice={selectedCategory} setSelectedChoice={setSelectedCategory} />
+        {/* <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 20}}>
           <div style={{display: "flex", alignItems: "center", columnGap: 8}} onClick={() => {
             document.getElementById(`sort`).focus();
             document.getElementById(`arrow`).style.transform = "rotate(270deg)";
@@ -177,8 +177,8 @@ function Search() {
           <div style={{display: "flex", alignItems: "center", columnGap: 8}} onClick={openFilter}>
             <img src={require("../screens/images/compare.svg").default} alt="" style={{filter: "brightness(.6)"}} /> <div style={{fontSize: 15, fontWeight: 300}}>Фильтры</div>
           </div>
-        </div>
-        {selectedCategory === "Розы с любовью" &&
+        </div> */}
+        {/* {selectedCategory === "Розы с любовью" &&
         <div style={{
           display: "flex",
           flexWrap: "wrap",
@@ -209,7 +209,7 @@ function Search() {
               {count}
             </div>
           ))}
-        </div>}
+        </div>} */}
         {view === "grid" &&
         <div style={{display: "flex", flexWrap: "wrap", gap: 10}}>
           {posts.filter((post) => post.category === selectedCategory && (!price[0] || post.price_number >= price[0]) && (!price[1] || post.price_number <= price[1])).sort((a, b) => {

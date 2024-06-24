@@ -8,6 +8,7 @@ import Slider from './Slider';
 import MiniSlider from './MiniSlider';
 import Button from './Button';
 import Hint from './Hint';
+import Contact from './Contact';
 import { useMainContext } from '../context';
 
 function Post({ postData, type, parent, basePathUrl }) {
@@ -40,7 +41,7 @@ function Post({ postData, type, parent, basePathUrl }) {
   const scrollY = useRef();
   const toggle = () => {
     window.history.replaceState({}, '', '/card/' + data._id);
-    sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью" }, 6]))
+    // sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью" }, 6]))
     sendMessage(JSON.stringify(["cards", "filter", {"category": "Подарки"}, 6]))
     api.start({ transform: "scale(1.05)", config: { duration: 200 } });
     setTimeout(() => {
@@ -278,7 +279,7 @@ function Post({ postData, type, parent, basePathUrl }) {
         <animated.div style={{width: "calc(50vw - 20px)", position: "relative", height: "100%", zIndex: 1, ...props}}>
           <div ref={postDivRef} onClick={toggle} style={{position: "relative", display: "flex", flexFlow: "column", rowGap: 10, height: "100%"}}>
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(50vw - 20px)"}}>
-              <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <LazyLoadImage src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             {/* <div style={{display: "flex", justifyContent: "center", alignItems: "center", position: "absolute", top: "calc(50vw - 53px)", width: "calc(50vw - 20px)", height: 28}}>
               <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
@@ -299,9 +300,20 @@ function Post({ postData, type, parent, basePathUrl }) {
         </animated.div>}
       {type === "block-small" &&
         <animated.div style={{width: "calc(40vw - 20px)", position: "relative", height: "100%", zIndex: 1, ...props}}>
-          <div ref={postDivRef} onClick={toggle} style={{position: "relative", display: "flex", flexFlow: "column", rowGap: 10, height: "100%"}}>
-            <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <LazyLoadImage visibleByDefault={true} src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
+          <div ref={postDivRef} onClick={(e) => handleCart(e, 1)} style={{position: "relative", display: "flex", flexFlow: "column", rowGap: 10, height: "100%"}}>
+            <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(40vw - 20px)"}}>
+              <LazyLoadImage visibleByDefault={true} src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
+            </div>
+            <div style={{display: "flex", justifyContent: "flex-end", alignItems: "center", position: "absolute", top: "calc(40vw - 53px)", width: "calc(40vw - 30px)", height: 28, marginRight: 10}}>
+              <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
+                <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              </animated.div>
+              <animated.div ref={divCountItemsCartRef} style={{borderRadius: 4, padding: "0 28px", height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", marginRight: divCountItemsCartRef.current?.offsetWidth * 0.2 || 10, zIndex: 0, ...propsCountItemsCart}}>
+                <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
+              </animated.div>
+              <animated.div onClick={(e) => handleCart(e, 1)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsAddFromCart}}>
+                <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              </animated.div>
             </div>
             <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 5px 5px 5px"}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
@@ -314,14 +326,14 @@ function Post({ postData, type, parent, basePathUrl }) {
           <animated.div ref={postDivRef} style={{display: "flex", columnGap: 14, alignItems: "center", position: "relative", ...props}}>
             <div style={{minHeight: 80}}>
               <div style={{width: 80, height: 80, flexShrink: 0, overflow: "hidden", borderRadius: 9}}>
-                <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                <LazyLoadImage src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </div>
             </div>
             <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
               <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
             </div>
-            <div style={{marginLeft: "auto", height: 28, width: 86, position: "relative", flexShrink: 0}}>
+            {/* <div style={{marginLeft: "auto", height: 28, width: 86, position: "relative", flexShrink: 0}}>
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0, width: "100%"}}>
                 <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", left: 0, right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
                   <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
@@ -333,7 +345,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
                 </animated.div>
               </div>
-            </div>
+            </div> */}
           </animated.div>
         </div>}
       {type === "old-normal" &&
@@ -341,7 +353,7 @@ function Post({ postData, type, parent, basePathUrl }) {
           <div>
             <div style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10, height: "100%", borderRadius: 9}}>
               <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(50vw - 20px)"}}>
-                <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                <LazyLoadImage src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </div>
               <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
                 <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
@@ -354,7 +366,7 @@ function Post({ postData, type, parent, basePathUrl }) {
         <animated.div onClick={toggle} ref={postDivRef} style={{width: "calc(100vw - 30px)", height: "calc(60vw - 30px)", position: "relative", borderRadius: 9, overflow: "hidden", ...props}}>
           <div style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10, height: "100%", borderRadius: 9}}>
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <LazyLoadImage src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
               <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
@@ -366,7 +378,7 @@ function Post({ postData, type, parent, basePathUrl }) {
         <animated.div onClick={toggle} ref={postDivRef} style={{width: "calc(33.3333vw - 17px)", height: "calc(33.3333vw - 15px)", position: "relative", borderRadius: 9, overflow: "hidden", ...props}}>
           <div style={{position: "relative", background: "#1C1C1E", display: "flex", flexFlow: "column", rowGap: 10, height: "100%", borderRadius: 9}}>
             <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9}}>
-              <LazyLoadImage src={data.images[0].file} placeholderSrc={data.images[0].file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <LazyLoadImage src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
               <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
@@ -456,7 +468,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                 </div>
               </div>
               <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px 20px 15px"}}>{data.title} </div>
-              <div style={{paddingBottom: (colors.length > 0 && counts.length > 0 && sizes.length > 0 && packages.length > 0) ? 30 : 0}}>
+              <div style={{paddingBottom: [...colors, ...counts, ...sizes, ...packages].length > 0 ? 30 : 0}}>
                 {colors.length > 0 &&
                 <div style={{padding: "0px 15px 30px 15px"}}>
                   <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
@@ -594,27 +606,9 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>}
               </div>
-              <div style={{padding: "0px 15px 0 15px", display: "flex", alignItems: "center"}}>
-                <div style={{marginLeft: -12, display: "flex", alignItems: "center"}}>
-                  <img src={require("../screens/images/clock.svg").default} alt="" height={50} />
-                </div>
-                <div style={{fontSize: 15, fontWeight: 300}}>
-                  Купить в один клик
-                </div>
-              </div>
-              <div style={{padding: "0 15px", display: "flex", gap: 8}}>
-                <div style={{width: "100%"}}>
-                  <Button text={"Позвонить"} />
-                </div>
-                <div>
-                  <img src={require("../screens/images/telegram.svg").default} className="" alt="telegram" style={{height: 47}} />
-                </div>
-                <div>
-                  <img src={require("../screens/images/whatsapp.svg").default} className="" alt="whatsapp" style={{height: 47}} />
-                </div>
-              </div>
+              <Contact />
               <Hint />
-              {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).length > 0 &&
+              {/* {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).length > 0 &&
               <>
                 <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
                   Смотрите также
@@ -637,16 +631,16 @@ function Post({ postData, type, parent, basePathUrl }) {
                     ))}
                   </div>
                 </div>
-              </>}
+              </>} */}
               {(posts.filter((post) => post.category === "Подарки" && post._id !== data._id).length > 0) &&
               <>
-                <div style={{padding: "15px", fontSize: 16, fontWeight: 300}}>
+                <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
                   Рекомендуем дополнить букет
                 </div>
                 <div style={{overflowX: "auto", width: "100vw"}} className="no-scrollbar">
                   <div style={{padding: "0 15px", display: "flex", flexWrap: "nowrap", gap: 10}}>
                     {posts.filter((post) => post.category === "Подарки" && post._id !== data._id).map((post, index) => (
-                      <div key={post._id} style={{paddingRight: index === posts.length - 1 ? 15 : 0}}>
+                      <div key={post._id} style={{paddingRight: index === posts.filter((post) => post.category === "Подарки" && post._id !== data._id).length - 1 ? 15 : 0}}>
                         <Post postData={post} type="block-small" basePathUrl={basePathUrl} parent={
                           {
                             api,

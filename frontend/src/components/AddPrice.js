@@ -158,10 +158,11 @@ function AddPrice({ prices, setPrices }) {
   ]
   const [ selectedColors, setSelectedColors ] = useState([]);
   const counts = [
-    "19 роз",
-    "29 роз",
-    "51 роза",
-    "101 роза"
+    "9",
+    "19",
+    "29",
+    "51",
+    "101"
   ]
   const [ selectedCounts, setSelectedCounts ] = useState([]);
   const sizes = [
@@ -371,7 +372,7 @@ function AddPrice({ prices, setPrices }) {
                             ))}
                           </div>
                         </div>
-                        <div>
+                        {/* <div>
                           <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Выберите упаковку(-и)</div>
                           <div style={{
                             display: "flex",
@@ -404,7 +405,7 @@ function AddPrice({ prices, setPrices }) {
                               </div>
                             ))}
                           </div>
-                        </div>
+                        </div> */}
                         <FormLIGHT inputs={Object.entries(inputs).slice(0, 3)} setInputs={setInputs} errors={errors} touched={touched} />
                         <Button text="Сохранить" handleClick={() => {
                           if (selectedColors.length > 0 || selectedCounts.length > 0 || selectedPackages.length > 0 || selectedSizes.length > 0) {

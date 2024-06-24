@@ -171,6 +171,11 @@ def handle_message(message):
             card = mongo.db.cards.find_one(ObjectId(message[4]))
             mongo.db.cards.update_one({"_id": ObjectId(message[4])}, {"$set": message[2]})
             emit('message', dumps(['cards', 'updated', message[4]]))
+        elif message[1] == "delete":
+            card = mongo.db.cards.find_one(ObjectId(message[3]))
+            mongo.db.cards.delete_one({"_id": ObjectId(message[3])})
+            mongo.db.images.delete_many({"card_id": ObjectId(message[3])})
+            emit('message', dumps(['cards', 'deleted']))
     elif message[0] == "images":
         if message[1] == "add":
             card = mongo.db.cards.find_one({"_id": ObjectId(message[2])})

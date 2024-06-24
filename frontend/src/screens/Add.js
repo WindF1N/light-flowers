@@ -86,7 +86,7 @@ function Add() {
         integerLimit: 12, // максимальное количество цифр до запятой
         allowNegative: false,
         allowLeadingZeroes: false,
-      })
+      }) 
     },
   });
   const [ saving, setSaving ] = useState(false);
@@ -102,15 +102,23 @@ function Add() {
     if (values["category"] === "Розы с любовью") {
       values["colors"] = selectedColors;
       values["counts"] = selectedCounts;
-      values["packages"] = selectedPackages;
+      // values["packages"] = selectedPackages;
       values["sizes"] = selectedSizes;
       values["prices"] = prices;
+      values["image_color"] = [];
+      for (let i = 0; i < images?.length; i++) {
+        const image = images[i];
+        if (image.color) {
+          values["image_color"].append({index: i, color: image.color})
+        }
+      }
     } else {
       delete values["colors"];
       delete values["counts"];
       delete values["packages"];
       delete values["sizes"];
       delete values["prices"];
+      delete values["image_color"];
     }
     sendMessage(JSON.stringify(["cards", "create", values, account]));
     setSaving(true);
@@ -149,10 +157,11 @@ function Add() {
   ]
   const [ selectedColors, setSelectedColors ] = useState([]);
   const counts = [
-    "19 роз",
-    "29 роз",
-    "51 роза",
-    "101 роза"
+    "9",
+    "19",
+    "29",
+    "51",
+    "101"
   ]
   const [ selectedCounts, setSelectedCounts ] = useState([]);
   const sizes = [
@@ -173,26 +182,6 @@ function Add() {
   const [ prices, setPrices ] = useState([]);
   return (
     <div className="view">
-      <div className={styles.wrapper} style={{marginBottom: 20}}>
-        <Slider images={images}
-                imagesDivRef={imagesDivRef}
-                setActiveImage={setActiveImage}
-                canAdd={true}
-                activeImage={activeImage}
-                setImages={setImages}
-                maxImagesCount={10}
-                photosError={photosError}
-                setPhotosError={setPhotosError}
-                />
-        {images.length > 0 &&
-          <MiniSlider images={images}
-                      imagesDivRef={imagesDivRef}
-                      activeImage={activeImage}
-                      canAdd={true}
-                      setImages={setImages}
-                      maxImagesCount={10}
-                      />}
-      </div>
       <Formik
         initialValues={{
           "category": "Розы с любовью",
@@ -205,6 +194,27 @@ function Add() {
       >
       {({ errors, touched, handleSubmit, values }) => (
         <Form>
+          <div className={styles.wrapper} style={{marginBottom: 20}}>
+            <Slider images={images}
+                    imagesDivRef={imagesDivRef}
+                    setActiveImage={setActiveImage}
+                    canAdd={true}
+                    activeImage={activeImage}
+                    setImages={setImages}
+                    maxImagesCount={10}
+                    photosError={photosError}
+                    setPhotosError={setPhotosError}
+                    canChangeColor={values.category === "Розы с любовью"}
+                    />
+            {images.length > 0 &&
+              <MiniSlider images={images}
+                          imagesDivRef={imagesDivRef}
+                          activeImage={activeImage}
+                          canAdd={true}
+                          setImages={setImages}
+                          maxImagesCount={10}
+                          />}
+          </div>
           <div className={styles.flex20gap}>
             <FormLIGHT inputs={Object.entries(inputs).slice(0, 1)} setInputs={setInputs} errors={errors} touched={touched} />
             <FormLIGHT inputs={Object.entries(inputs).slice(1, 2)} setInputs={setInputs} errors={errors} touched={touched} />
@@ -244,7 +254,7 @@ function Add() {
               </div>
             </div>
             <div>
-              <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступное количество цветов</div>
+              <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступное кол-во стеблей</div>
               <div style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -309,7 +319,7 @@ function Add() {
                 ))}
               </div>
             </div>
-            <div>
+            {/* <div>
               <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступные упаковки</div>
               <div style={{
                 display: "flex",
@@ -341,7 +351,7 @@ function Add() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
             </>}
             <FormLIGHT inputs={Object.entries(inputs).slice(2)} setInputs={setInputs} errors={errors} touched={touched} />
             {values.category === "Розы с любовью" &&

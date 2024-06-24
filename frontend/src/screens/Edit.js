@@ -108,16 +108,27 @@ function Edit() {
       values["packages"] = selectedPackages;
       values["sizes"] = selectedSizes;
       values["prices"] = prices;
+      values["image_color"] = [];
+      for (let i = 0; i < images?.length; i++) {
+        const image = images[i];
+        if (image.color) {
+          values["image_color"].push({index: i, color: image.color})
+        }
+      }
     } else {
       delete values["colors"];
       delete values["counts"];
       delete values["packages"];
       delete values["sizes"];
       delete values["prices"];
+      delete values["image_color"];
     }
     for (let i = 0; i < card.images?.length; i++) {
       const image = card.images[i];
-      if (images.filter((img) => JSON.stringify(img) === JSON.stringify(image)).length === 0) {
+      if (images.filter((img) => {
+        delete img["color"]
+        return JSON.stringify(img) === JSON.stringify(image)
+      }).length === 0) {
         sendMessage(JSON.stringify(["images", "delete", image._id]));
       }
     }
@@ -131,6 +142,7 @@ function Edit() {
           setCardId(message[2]);
         } else if (message[1] === 'filter') {
           setCard(message[2][0]);
+          console.log(message[2][0]);
         }
       } else if (message[0] === "images") {
         if (message[1] === "added") {
@@ -156,7 +168,21 @@ function Edit() {
       setSelectedCounts(card.counts);
       setSelectedSizes(card.sizes);
       setSelectedPackages(card.packages);
-      setImages(card.images);
+      setImages(card.images.map(p => {
+        if (card.image_color) {
+          const foundColor = card.image_color.find(s => s.index === p.index);
+          if (foundColor) {
+            return { ...p, color: foundColor.color };
+          }
+          return p;
+          return p;
+        }
+        return p;
+      }));
+      console.log([
+        images,
+        card.images
+      ])
       setInputs(prevState => {
         return Object.keys(prevState).reduce((acc, key) => {
           const valueFromCard = card[key];
@@ -183,10 +209,11 @@ function Edit() {
   ]
   const [ selectedColors, setSelectedColors ] = useState([]);
   const counts = [
-    "19 роз",
-    "29 роз",
-    "51 роза",
-    "101 роза"
+    "9",
+    "19",
+    "29",
+    "51",
+    "101"
   ]
   const [ selectedCounts, setSelectedCounts ] = useState([]);
   const sizes = [
@@ -208,26 +235,6 @@ function Edit() {
   if (!saving && card) {
     return (
       <div className="view">
-        <div className={styles.wrapper} style={{marginBottom: 20}}>
-          <Slider images={images}
-                  imagesDivRef={imagesDivRef}
-                  setActiveImage={setActiveImage}
-                  canAdd={true}
-                  activeImage={activeImage}
-                  setImages={setImages}
-                  maxImagesCount={10}
-                  photosError={photosError}
-                  setPhotosError={setPhotosError}
-                  />
-          {images.length > 0 &&
-            <MiniSlider images={images}
-                        imagesDivRef={imagesDivRef}
-                        activeImage={activeImage}
-                        canAdd={true}
-                        setImages={setImages}
-                        maxImagesCount={10}
-                        />}
-        </div>
         <Formik
           initialValues={Object.keys(inputs).reduce((acc, key) => {
             acc[key] = inputs[key].value || ''; // Используем значение или пустую строку по умолчанию
@@ -238,6 +245,27 @@ function Edit() {
         >
         {({ errors, touched, handleSubmit, values }) => (
           <Form>
+            <div className={styles.wrapper} style={{marginBottom: 20}}>
+              <Slider images={images}
+                      imagesDivRef={imagesDivRef}
+                      setActiveImage={setActiveImage}
+                      canAdd={true}
+                      activeImage={activeImage}
+                      setImages={setImages}
+                      maxImagesCount={10}
+                      photosError={photosError}
+                      setPhotosError={setPhotosError}
+                      canChangeColor={values.category === "Розы с любовью"}
+                      />
+              {images.length > 0 &&
+                <MiniSlider images={images}
+                            imagesDivRef={imagesDivRef}
+                            activeImage={activeImage}
+                            canAdd={true}
+                            setImages={setImages}
+                            maxImagesCount={10}
+                            />}
+            </div>
             <div className={styles.flex20gap}>
               <FormLIGHT inputs={Object.entries(inputs).slice(1, 2)} setInputs={setInputs} errors={errors} touched={touched} />
               {values.category === "Розы с любовью" &&
@@ -341,7 +369,7 @@ function Edit() {
                   ))}
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Доступные упаковки</div>
                 <div style={{
                   display: "flex",
@@ -373,20 +401,30 @@ function Edit() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
               </>}
               <FormLIGHT inputs={Object.entries(inputs).slice(2)} setInputs={setInputs} errors={errors} touched={touched} />
               {values.category === "Розы с любовью" &&
               <AddPrice prices={prices} setPrices={setPrices} />}
               <Button text="Сохранить" handleClick={handleSubmit} />
+              <div style={{display: "flex", alignItems: "center", justifyContent: "center", color: "#EF0E37", padding: 20, marginTop: 50}} onClick={() => {
+                sendMessage(JSON.stringify(["cards", "delete", account, id]));
+                setSaving(true);
+              }}>
+                Удалить карточку
+              </div>
             </div>
             <ScrollToError/>
           </Form>
         )}
         </Formik>
-        {saving && <LoadingHover />}
+        
       </div>
     );
+  } else if (saving && card) {
+    return (
+      <LoadingHover />
+    )
   }
 }
 

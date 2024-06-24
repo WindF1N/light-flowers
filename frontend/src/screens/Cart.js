@@ -246,7 +246,7 @@ function Cart() {
                                             });
                                         }} onBlur={() => {document.getElementById(`arrow${index}`).style.transform = "rotate(90deg)"}}>
                                             <option value={null} selected={item.product.selectedCount === null}>Не выбрано</option>
-                                            {item.product.counts.map((count, index) => (
+                                            {item.product.counts?.map((count, index) => (
                                                 <option value={count} key={index} selected={item.product.selectedCount === count}>{count}</option>
                                             ))}
                                         </select>
@@ -268,7 +268,7 @@ function Cart() {
                                             });
                                         }} onBlur={() => {document.getElementById(`arrow${index}2`).style.transform = "rotate(90deg)"}}>
                                             <option value={null} selected={item.product.selectedSize === null}>Не выбрано</option>
-                                            {item.product.sizes.map((size, index) => (
+                                            {item.product.sizes?.map((size, index) => (
                                                 <option value={size} key={index} selected={item.product.selectedSize === size}>{size}</option>
                                             ))}
                                         </select>
@@ -290,7 +290,7 @@ function Cart() {
                                             });
                                         }} onBlur={() => {document.getElementById(`arrow${index}3`).style.transform = "rotate(90deg)"}}>
                                             <option value={null} selected={item.product.selectedColor === null}>Не выбрано</option>
-                                            {item.product.colors.map((color, index) => (
+                                            {item.product.colors?.map((color, index) => (
                                                 <option value={color} key={index} selected={item.product.selectedColor === color}>{color}</option>
                                             ))}
                                         </select>
@@ -312,7 +312,7 @@ function Cart() {
                                             });
                                         }} onBlur={() => {document.getElementById(`arrow${index}4`).style.transform = "rotate(90deg)"}}>
                                             <option value={null} selected={item.product.selectedPackage === null}>Не выбрано</option>
-                                            {item.product.packages.map((pckage, index) => (
+                                            {item.product.packages?.map((pckage, index) => (
                                                 <option value={pckage} key={index} selected={item.product.selectedPackage === pckage}>{pckage}</option>
                                             ))}
                                         </select>

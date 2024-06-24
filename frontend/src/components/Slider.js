@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import GosNumber from './GosNumber';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
-function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, setImages, maxImagesCount, photosError, setPhotosError, category }) {
+function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, setImages, maxImagesCount, photosError, setPhotosError, category, canChangeColor }) {
 
   const imagesCountDivRef = useRef();
   const imagesScrollBarDivRef = useRef();
@@ -84,6 +84,17 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
     imagesDivRef.current.scrollLeft = window.innerWidth * activeImage;
   }
 
+  const colors = [
+    "Белые",
+    "Красные",
+    "Черные",
+    "Синие",
+    "Желтые", 
+    "Оранжевые",
+    "Розовые",
+    "Микс"
+  ]
+
   return (
     <div className={styles.imagesWrapper} style={!canAdd ? {borderTopLeftRadius: 25, borderTopRightRadius: 25} : null}>
       { !canAdd ?
@@ -100,6 +111,17 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
                 {images.map((image, index) => (
                   <div className={styles.image} key={index}>
                     <img src={image.file} alt="" />
+                    {image.color &&
+                    <div style={{
+                      position: "absolute",
+                      left: 10,
+                      top: 10,
+                      borderRadius: 9,
+                      padding: 5,
+                      background: "#000",
+                      fontSize: 14,
+                      fontWeight: 300
+                    }}>{image.color}</div>}
                   </div>
                 ))}
               </div>
@@ -131,6 +153,30 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
       {(canAdd && images.length > 0) &&
         <div className={styles.removeImage} onClick={handleRemoveImage}>
           <img src={require("./images/remove.svg").default} alt="remove"/>
+        </div>}
+      {(canChangeColor && images.length > 0) &&
+        <div className={styles.removeImage} style={{right: 55, display: "flex", alignItems: "center", justifyContent: "center"}} onClick={() => {
+          if (canChangeColor) {
+            document.getElementById(`color`).focus();
+          }
+        }}>
+          <img src={require("./images/settings.svg").default} style={{width: "70%"}} alt=""/>
+          <select id="color" style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {
+            setImages(prevState => [...prevState.map((image, index) => {
+              if (index === Number(activeImage)) {
+                return {
+                  ...image,
+                  color: e.target.value === "Не выбрано" ? null : e.target.value
+                };
+              }
+              return image;
+            })])
+          }}>
+            <option>Не выбрано</option>
+            {colors.map((color, index) => (
+              <option value={color} key={index}>{color}</option>
+            ))}
+          </select>
         </div>}
     </div>
   );
