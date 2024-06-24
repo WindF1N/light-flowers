@@ -2,7 +2,7 @@ import styles from './styles/MiniSlider.module.css';
 import { useRef, useEffect, useState } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
-function MiniSlider({ images, imagesDivRef, activeImage, setActiveImage, canAdd, setImages, maxImagesCount, canDelete, style }) {
+function MiniSlider({ images, imagesDivRef, activeImage, setActiveImage, canAdd, setImages, maxImagesCount, canDelete, style, image_color, setSelectedColor, setSelectedCount }) {
 
   const activeImageRef = useRef();
   const sliderRef = useRef();
@@ -39,6 +39,16 @@ function MiniSlider({ images, imagesDivRef, activeImage, setActiveImage, canAdd,
   }
 
   useEffect(() => {
+    if (image_color) {
+      const result = image_color.find((o) => o.index === Number(activeImage));
+      if (result) {
+        if (result.color) {
+          setSelectedColor(result.color)
+        } else if (result.count) {
+          setSelectedCount(result.count)
+        }
+      }
+    }
     if (activeImageRef.current) {
       activeImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     };

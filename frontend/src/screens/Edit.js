@@ -114,6 +114,9 @@ function Edit() {
         if (image.color) {
           values["image_color"].push({index: i, color: image.color})
         }
+        if (image.count) {
+          values["image_color"].push({index: i, count: image.count})
+        }
       }
     } else {
       delete values["colors"];
@@ -127,6 +130,7 @@ function Edit() {
       const image = card.images[i];
       if (images.filter((img) => {
         delete img["color"]
+        delete img["count"]
         return JSON.stringify(img) === JSON.stringify(image)
       }).length === 0) {
         sendMessage(JSON.stringify(["images", "delete", image._id]));
@@ -143,6 +147,8 @@ function Edit() {
         } else if (message[1] === 'filter') {
           setCard(message[2][0]);
           console.log(message[2][0]);
+        } else if (message[1] === 'deleted') {
+          navigate("/")
         }
       } else if (message[0] === "images") {
         if (message[1] === "added") {
@@ -171,10 +177,13 @@ function Edit() {
       setImages(card.images.map(p => {
         if (card.image_color) {
           const foundColor = card.image_color.find(s => s.index === p.index);
-          if (foundColor) {
+          if (foundColor.color) {
             return { ...p, color: foundColor.color };
           }
-          return p;
+          const foundCount = card.image_color.find(s => s.index === p.index);
+          if (foundCount.count) {
+            return { ...p, count: foundColor.count };
+          }
           return p;
         }
         return p;
@@ -205,7 +214,13 @@ function Edit() {
     "Желтые", 
     "Оранжевые",
     "Розовые",
-    "Микс"
+    "Микс",
+    "Персиковые",
+    "Красные & Белые",
+    "Белые & Розовые",
+    "Красные & Розовые",
+    "Белые & Розовые & Персиковые",
+    "Желтые & Красные & Розовые"
   ]
   const [ selectedColors, setSelectedColors ] = useState([]);
   const counts = [
@@ -256,6 +271,7 @@ function Edit() {
                       photosError={photosError}
                       setPhotosError={setPhotosError}
                       canChangeColor={values.category === "Розы с любовью"}
+                      canChangeCount={values.category === "Розы с любовью"}
                       />
               {images.length > 0 &&
                 <MiniSlider images={images}

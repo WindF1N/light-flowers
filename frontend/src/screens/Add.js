@@ -109,7 +109,10 @@ function Add() {
       for (let i = 0; i < images?.length; i++) {
         const image = images[i];
         if (image.color) {
-          values["image_color"].append({index: i, color: image.color})
+          values["image_color"].push({index: i, color: image.color})
+        }
+        if (image.count) {
+          values["image_color"].push({index: i, count: image.count})
         }
       }
     } else {
@@ -153,7 +156,13 @@ function Add() {
     "Желтые", 
     "Оранжевые",
     "Розовые",
-    "Микс"
+    "Микс",
+    "Персиковые",
+    "Красные & Белые",
+    "Белые & Розовые",
+    "Красные & Розовые",
+    "Белые & Розовые & Персиковые",
+    "Желтые & Красные & Розовые"
   ]
   const [ selectedColors, setSelectedColors ] = useState([]);
   const counts = [
@@ -205,6 +214,7 @@ function Add() {
                     photosError={photosError}
                     setPhotosError={setPhotosError}
                     canChangeColor={values.category === "Розы с любовью"}
+                    canChangeCount={values.category === "Розы с любовью"}
                     />
             {images.length > 0 &&
               <MiniSlider images={images}

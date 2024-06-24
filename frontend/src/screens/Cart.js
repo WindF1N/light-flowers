@@ -25,6 +25,15 @@ function Cart() {
     const navigate = useNavigate();
     const { cartItems, setCartItems } = useMainContext();
     const [ inputs, setInputs ] = useState({
+        "delivery": {
+            value: "Не выбрано",
+            error: null,
+            label: "Способ доставки",
+            type: "select",
+            choices: [
+                "Курьером", "Самовывоз"
+            ]
+        },
         "name": {
           value: null,
           isFocused: false,
@@ -48,21 +57,18 @@ function Cart() {
             label: "Оставаться анонимным для получателя",
             type: "radio"
         },
-        "delivery": {
-            value: "Не выбрано",
-            error: null,
-            label: "Способ доставки",
-            type: "select",
-            choices: [
-                "Курьером", "Самовывоз"
-            ]
-        },
         "address": {
             value: null,
             isFocused: false,
             error: null,
             label: "Адрес доставки *",
             type: "text",
+        },
+        "request_address": {
+            value: "Уточнить у получателя",
+            error: null,
+            label: "Уточнить у получателя",
+            type: "radio"
         },
         "date_of_post": {
             value: null,
@@ -217,11 +223,11 @@ function Cart() {
                     {cartItems.map((item, index) => (
                         <div style={{borderBottom: "0.5px solid #18181A", paddingBottom: 20, position: "relative", display: "flex", columnGap: 14, alignItems: "flex-start"}}>
                             <div style={{width: 80, height: 80, flexShrink: 0}}>
-                                <LazyLoadImage src={item.product.images[0].file} placeholderSrc={item.product.images[0].file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
+                                <LazyLoadImage src={item.product.images[item.product.image_color.find((o) => o.color === item.product.selectedColor || o.count === item.product.selectedCount).index || 0].file} placeholderSrc={item.product.images[0].file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
                             </div>
                             <div style={{position: "relative", width: "calc(100% - 94px)", display: "flex", flexFlow: "column", rowGap: 5, flexShrink: 0}}>
                                 <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexShrink: 1}}>
-                                    <div style={{fontSize: 14, fontWeight: 400, paddingBottom: 10}}>{item.product.title}</div>
+                                    <div style={{fontSize: 14, fontWeight: 400}}>{item.product.title}</div>
                                     <div onClick={() => {
                                         setCartItems(prevState => prevState.filter((_, i) => i !== index));
                                     }} style={{display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", right: -5, top: -5}}>
@@ -229,93 +235,11 @@ function Cart() {
                                     </div>
                                 </div>
                                 <div style={{display: "flex", justifyContent: "flex-start", alignItems: "center", columnGap: 10, rowGap: 10, width: "100%", flexShrink: 0, flexWrap: "wrap"}}>
-                                    <div style={{display: "flex", alignItems: "center", columnGap: 8, width: "auto", flexShrink: 1}} onClick={() => {
-                                        document.getElementById(`sort${index}`).focus();
-                                        document.getElementById(`arrow${index}`).style.transform = "rotate(270deg)";
-                                    }}>
-                                        <div style={{fontSize: 15, fontWeight: 300, color: "#bbb"}}>{item.product.selectedCount || "Количество"}</div> <img id={`arrow${index}`} src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
-                                        <select id={`sort${index}`} style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {
-                                            document.getElementById(`arrow${index}`).style.transform = "rotate(90deg)";
-                                            setCartItems(prevState => {
-                                                return prevState.map((cartItem, i) => {
-                                                    if (i === index) {
-                                                        return { ...cartItem, product: {...cartItem.product, selectedCount: e.target.value !== "Не выбрано" ? e.target.value : null} };
-                                                    }
-                                                    return cartItem;
-                                                });
-                                            });
-                                        }} onBlur={() => {document.getElementById(`arrow${index}`).style.transform = "rotate(90deg)"}}>
-                                            <option value={null} selected={item.product.selectedCount === null}>Не выбрано</option>
-                                            {item.product.counts?.map((count, index) => (
-                                                <option value={count} key={index} selected={item.product.selectedCount === count}>{count}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div style={{display: "flex", alignItems: "center", columnGap: 8, width: "auto", flexShrink: 1}} onClick={() => {
-                                        document.getElementById(`sort${index}2`).focus();
-                                        document.getElementById(`arrow${index}2`).style.transform = "rotate(270deg)";
-                                    }}>
-                                        <div style={{fontSize: 15, fontWeight: 300, color: "#bbb"}}>{item.product.selectedSize || "Размер"}</div> <img id={`arrow${index}2`} src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
-                                        <select id={`sort${index}2`} style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {
-                                            document.getElementById(`arrow${index}2`).style.transform = "rotate(90deg)";
-                                            setCartItems(prevState => {
-                                                return prevState.map((cartItem, i) => {
-                                                    if (i === index) {
-                                                        return { ...cartItem, product: {...cartItem.product, selectedSize: e.target.value !== "Не выбрано" ? e.target.value : null} };
-                                                    }
-                                                    return cartItem;
-                                                });
-                                            });
-                                        }} onBlur={() => {document.getElementById(`arrow${index}2`).style.transform = "rotate(90deg)"}}>
-                                            <option value={null} selected={item.product.selectedSize === null}>Не выбрано</option>
-                                            {item.product.sizes?.map((size, index) => (
-                                                <option value={size} key={index} selected={item.product.selectedSize === size}>{size}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div style={{display: "flex", alignItems: "center", columnGap: 8, width: "auto", flexShrink: 1}} onClick={() => {
-                                        document.getElementById(`sort${index}3`).focus();
-                                        document.getElementById(`arrow${index}3`).style.transform = "rotate(270deg)";
-                                    }}>
-                                        <div style={{fontSize: 15, fontWeight: 300, color: "#bbb"}}>{item.product.selectedColor || "Цвет"}</div> <img id={`arrow${index}3`} src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
-                                        <select id={`sort${index}3`} style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {
-                                            document.getElementById(`arrow${index}3`).style.transform = "rotate(90deg)";
-                                            setCartItems(prevState => {
-                                                return prevState.map((cartItem, i) => {
-                                                    if (i === index) {
-                                                        return { ...cartItem, product: {...cartItem.product, selectedColor: e.target.value !== "Не выбрано" ? e.target.value : null} };
-                                                    }
-                                                    return cartItem;
-                                                });
-                                            });
-                                        }} onBlur={() => {document.getElementById(`arrow${index}3`).style.transform = "rotate(90deg)"}}>
-                                            <option value={null} selected={item.product.selectedColor === null}>Не выбрано</option>
-                                            {item.product.colors?.map((color, index) => (
-                                                <option value={color} key={index} selected={item.product.selectedColor === color}>{color}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div style={{display: "flex", alignItems: "center", columnGap: 8, width: "auto", flexShrink: 1}} onClick={() => {
-                                        document.getElementById(`sort${index}4`).focus();
-                                        document.getElementById(`arrow${index}4`).style.transform = "rotate(270deg)";
-                                    }}>
-                                        <div style={{fontSize: 15, fontWeight: 300, color: "#bbb"}}>{item.product.selectedPackage || "Упаковка"}</div> <img id={`arrow${index}4`} src={require("../components/images/arrow-right.svg").default} alt="arrow right" style={{transition: ".2s", filter: "brightness(.6)", transform: "rotate(90deg)"}}/>
-                                        <select id={`sort${index}4`} style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {
-                                            document.getElementById(`arrow${index}4`).style.transform = "rotate(90deg)";
-                                            setCartItems(prevState => {
-                                                return prevState.map((cartItem, i) => {
-                                                    if (i === index) {
-                                                        return { ...cartItem, product: {...cartItem.product, selectedPackage: e.target.value !== "Не выбрано" ? e.target.value : null} };
-                                                    }
-                                                    return cartItem;
-                                                });
-                                            });
-                                        }} onBlur={() => {document.getElementById(`arrow${index}4`).style.transform = "rotate(90deg)"}}>
-                                            <option value={null} selected={item.product.selectedPackage === null}>Не выбрано</option>
-                                            {item.product.packages?.map((pckage, index) => (
-                                                <option value={pckage} key={index} selected={item.product.selectedPackage === pckage}>{pckage}</option>
-                                            ))}
-                                        </select>
+                                    <div style={{display: "flex", alignItems: "center", columnGap: 8, width: "auto", flexShrink: 1}}>
+                                        {item.product.selectedCount && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedCount} шт</div>}
+                                        {item.product.selectedSize && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedSize}</div>}
+                                        {item.product.selectedColor && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedColor}</div>}
+                                        {item.product.selectedPackage && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedPackage}</div>}
                                     </div>
                                 </div>
                                 <div style={{display: "flex", justifyContent: "flex-start", width: "100%", flexShrink: 1, marginTop: 5}}>
@@ -331,7 +255,7 @@ function Cart() {
                                         </div>
                                     </div>
                                     <div style={{marginLeft: "auto", display: "flex", flexFlow: "column", alignItems: "flex-end", marginTop: "auto", gap: 5}}>
-                                        <div style={{fontSize: 15, fontWeight: 300, color: "#fff"}}>{multiplyPrice(getPrice(index)[0], item.count)} ₽ <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", transformOrigin: "right center", color: "#8F8E93"}}>{multiplyPrice(getPrice(index)[1], item.count)} ₽</span></div>
+                                        <div style={{fontSize: 15, fontWeight: 300, color: "#fff"}}>{multiplyPrice(getPrice(index)[0], item.count)} ₽ {getPrice(index)[1] && <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", transformOrigin: "right center", color: "#8F8E93"}}>{multiplyPrice(getPrice(index)[1], item.count)} ₽</span>}</div>
                                         <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{getPrice(index)[0]} / шт</div>
                                     </div>
                                 </div>
@@ -363,17 +287,19 @@ function Cart() {
                             "text_of_postcard": "",
                             "with_comment": "Добавить комментарий",
                             "comment": "",
+                            "request_address": ""
                         }}
                         onSubmit={(values) => alert(JSON.stringify(values))}
                     >
                     {({ errors, touched, handleSubmit, values }) => (
                         <Form>
                             <div style={{display: "flex", gap: 20, flexFlow: "column"}}>
-                                <FormLIGHT inputs={Object.entries(inputs).slice(0, 3)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(3, 7)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(7, 9)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(9, 11)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(11, 13)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(0, 1)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(1, 4)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(6, 8)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(8, 10)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(10, 13)} setInputs={setInputs} errors={errors} touched={touched} />
                                 <div style={{display: "flex", flexFlow: "column", gap: 10}}>
                                     <div style={{display: "flex", justifyContent: "space-between"}}>
                                         <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>Сумма</div>
@@ -384,7 +310,7 @@ function Cart() {
                                         <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total[0]} ₽</div>
                                     </div>     
                                 </div>
-                                <Button text="Оплатить" />
+                                <Button text="Подтвердить заказ" />
                             </div>
                             <ScrollToError/>
                         </Form>

@@ -68,13 +68,13 @@ function Post({ postData, type, parent, basePathUrl }) {
   const imagesDivRef = useRef();
   const [ activeImage, setActiveImage ] = useState(null);
   const colors = data.colors || [];
-  const [ selectedColor, setSelectedColor ] = useState(null);
+  const [ selectedColor, setSelectedColor ] = useState(colors[0] || null);
   const counts = data.counts || [];
-  const [ selectedCount, setSelectedCount ] = useState(null);
+  const [ selectedCount, setSelectedCount ] = useState(counts[0] || null);
   const sizes = data.sizes || [];
-  const [ selectedSize, setSelectedSize ] = useState(null);
+  const [ selectedSize, setSelectedSize ] = useState(sizes[0] || null);
   const packages = data.packages || [];
-  const [ selectedPackage, setSelectedPackage ] = useState(null);
+  const [ selectedPackage, setSelectedPackage ] = useState(packages[0] || null);
   const [ posts, setPosts ] = useState([]);
   const [ touchStartY, setTouchStartY ] = useState(null);
   const [ modalMainTopOffset, setModalMainTopOffset ] = useState(null);
@@ -419,10 +419,10 @@ function Post({ postData, type, parent, basePathUrl }) {
               >
                 <div style={{marginTop: "auto", marginBottom: 20, width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
               </div>
-              <Slider images={data.images} imagesDivRef={imagesDivRef} setActiveImage={setActiveImage} />
+              <Slider images={data.images} imagesDivRef={imagesDivRef} setActiveImage={setActiveImage} image_color={data.image_color} setSelectedColor={setSelectedColor} setSelectedCount={setSelectedCount} />
               {data.images.length > 1 &&
                 <div style={{marginTop: "-18vw", position: "relative", zIndex: 3}}>
-                  <MiniSlider images={data.images} imagesDivRef={imagesDivRef} activeImage={activeImage} />
+                  <MiniSlider images={data.images} imagesDivRef={imagesDivRef} activeImage={activeImage} image_color={data.image_color} setSelectedColor={setSelectedColor} setSelectedCount={setSelectedCount} />
                 </div>}
               <div className={styles.price} style={{padding: data.images.length > 1 ? "30px 15px 10px 15px" : "10px 15px 10px 15px"}}>
                 <div className={styles.title}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
@@ -468,7 +468,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                 </div>
               </div>
               <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px 20px 15px"}}>{data.title} </div>
-              <div style={{paddingBottom: [...colors, ...counts, ...sizes, ...packages].length > 0 ? 30 : 0}}>
+              <div style={{paddingBottom: [...colors, ...counts, ...sizes, ...packages].length > 0 ? 0 : 30}}>
                 {colors.length > 0 &&
                 <div style={{padding: "0px 15px 30px 15px"}}>
                   <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
@@ -492,9 +492,15 @@ function Post({ postData, type, parent, basePathUrl }) {
                           }}
                           onClick={() => {
                             if (selectedColor === color) {
-                              setSelectedColor(null);
+                              // setSelectedColor(null);
                             } else {
                               setSelectedColor(color);
+                              if (data.image_color) {
+                                if (data.image_color.find((o, i) => o.color === color)) {
+                                  setActiveImage(data.image_color.find((o, i) => o.color === color).index);
+                                  imagesDivRef.current.scrollLeft = window.innerWidth * data.image_color.find((o, i) => o.color === color).index
+                                }
+                              }
                             }
                           }}
                       >
@@ -505,7 +511,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                 </div>}
                 {counts.length > 0 &&    
                 <div style={{padding: "0 15px 30px 15px"}}>
-                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Количество цветов</div>
+                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Кол-во стеблей</div>
                   <div style={{
                     display: "flex",
                     flexWrap: "wrap",
@@ -526,9 +532,15 @@ function Post({ postData, type, parent, basePathUrl }) {
                           }}
                           onClick={() => {
                             if (selectedCount === count) {
-                              setSelectedCount(null)
+                              // setSelectedCount(null)
                             } else {
                               setSelectedCount(count)
+                              if (data.image_color) {
+                                if (data.image_color.find((o, i) => o.count === count)) {
+                                  setActiveImage(data.image_color.find((o, i) => o.count === count).index);
+                                  imagesDivRef.current.scrollLeft = window.innerWidth * data.image_color.find((o, i) => o.count === count).index
+                                }
+                              }
                             }
                           }}
                       >
@@ -560,7 +572,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                           }}
                           onClick={() => {
                             if (selectedSize === size) {
-                              setSelectedSize(null)
+                              // setSelectedSize(null)
                             } else {
                               setSelectedSize(size)
                             }
@@ -572,7 +584,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>}
                 {packages.length > 0 &&
-                <div style={{padding: "0 15px 0px 15px"}}>
+                <div style={{padding: "0 15px 30px 15px"}}>
                   <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Упаковка</div>
                   <div style={{
                     display: "flex",
@@ -594,9 +606,9 @@ function Post({ postData, type, parent, basePathUrl }) {
                           }}
                           onClick={() => {
                             if (selectedPackage === pckg) {
-                              setSelectedPackage(null)
+                              // setSelectedPackage(null)
                             } else {
-                              setSelectedPackage(pckg)
+                              setSelectedPackage(pckg);
                             }
                           }}
                       >

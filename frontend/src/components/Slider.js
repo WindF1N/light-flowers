@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import GosNumber from './GosNumber';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
-function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, setImages, maxImagesCount, photosError, setPhotosError, category, canChangeColor }) {
+function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, setImages, maxImagesCount, photosError, setPhotosError, category, canChangeColor, canChangeCount }) {
 
   const imagesCountDivRef = useRef();
   const imagesScrollBarDivRef = useRef();
@@ -92,7 +92,21 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
     "Желтые", 
     "Оранжевые",
     "Розовые",
-    "Микс"
+    "Микс",
+    "Персиковые",
+    "Красные & Белые",
+    "Белые & Розовые",
+    "Красные & Розовые",
+    "Белые & Розовые & Персиковые",
+    "Желтые & Красные & Розовые"
+  ]
+
+  const counts = [
+    "9",
+    "19",
+    "29",
+    "51",
+    "101"
   ]
 
   return (
@@ -100,7 +114,7 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
       { !canAdd ?
           <div className={styles.images} ref={imagesDivRef}>
             {images.map((image, index) => (
-              <div className={styles.image} key={index}>
+              <div className={styles.image} key={index} id={"post_img" + index}>
                 <LazyLoadImage src={image.file} placeholderSrc={image.file_lazy} alt="" />
               </div>
             ))}
@@ -122,6 +136,17 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
                       fontSize: 14,
                       fontWeight: 300
                     }}>{image.color}</div>}
+                    {image.count &&
+                    <div style={{
+                      position: "absolute",
+                      left: 10,
+                      top: 10,
+                      borderRadius: 9,
+                      padding: 5,
+                      background: "#000",
+                      fontSize: 14,
+                      fontWeight: 300
+                    }}>{image.count}</div>}
                   </div>
                 ))}
               </div>
@@ -175,6 +200,30 @@ function Slider({ images, imagesDivRef, setActiveImage, canAdd, activeImage, set
             <option>Не выбрано</option>
             {colors.map((color, index) => (
               <option value={color} key={index}>{color}</option>
+            ))}
+          </select>
+        </div>}
+      {(canChangeCount && images.length > 0) &&
+        <div className={styles.removeImage} style={{right: 100, display: "flex", alignItems: "center", justifyContent: "center"}} onClick={() => {
+          if (canChangeCount) {
+            document.getElementById(`count`).focus();
+          }
+        }}>
+          <img src={require("./images/settings.svg").default} style={{width: "70%"}} alt=""/>
+          <select id="count" style={{opacity: 0, width: 0, height: 0, margin: 0, padding: 0}} onChange={(e) => {
+            setImages(prevState => [...prevState.map((image, index) => {
+              if (index === Number(activeImage)) {
+                return {
+                  ...image,
+                  count: e.target.value === "Не выбрано" ? null : e.target.value
+                };
+              }
+              return image;
+            })])
+          }}>
+            <option>Не выбрано</option>
+            {counts.map((count, index) => (
+              <option value={count} key={index}>{count}</option>
             ))}
           </select>
         </div>}
