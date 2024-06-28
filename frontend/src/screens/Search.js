@@ -66,6 +66,9 @@ function Search() {
             const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
             return !isInMessage;
           })]);
+          if (cardId) {
+            sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]));
+          }
         }
       }
       setMessage(null);
@@ -98,9 +101,6 @@ function Search() {
       sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory, ...filter_query}, 25, sort, price]));
     } else {
       sendMessage(JSON.stringify(["cards", "filter", {"category": selectedCategory}, 25, sort, price]));
-    }
-    if (cardId) {
-      sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
     }
   }, [selectedCounts, selectedColors, selectedSizes, selectedPackages, selectedCategory, sortBy, price])
   return (

@@ -147,7 +147,7 @@ function Contact() {
                 <div style={{padding: "20px", fontSize: 16, fontWeight: 300, borderBottom: "0.5px solid rgb(24, 24, 26)"}}>
                   8 (800) 700-70-70
                 </div>
-                <div style={{padding: "20px", fontSize: 16, fontWeight: 300, borderBottom: "0.5px solid rgb(24, 24, 26)"}}>
+                <div style={{padding: "20px", fontSize: 16, fontWeight: 300}}>
                   +7 966 77 57 966
                 </div>
               </div>}

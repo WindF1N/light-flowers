@@ -177,11 +177,11 @@ function Edit() {
       setImages(card.images.map(p => {
         if (card.image_color) {
           const foundColor = card.image_color.find(s => s.index === p.index);
-          if (foundColor.color) {
+          if (foundColor?.color) {
             return { ...p, color: foundColor.color };
           }
           const foundCount = card.image_color.find(s => s.index === p.index);
-          if (foundCount.count) {
+          if (foundCount?.count) {
             return { ...p, count: foundColor.count };
           }
           return p;

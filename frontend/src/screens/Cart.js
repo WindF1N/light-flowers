@@ -5,8 +5,10 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ScrollToError from '../components/ScrollToError';
 import { Formik, Form } from 'formik';
 import FormLIGHT from '../components/FormLIGHT';
+import SendedHover from '../components/SendedHover';
 import { useMainContext } from '../context';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 
 function multiplyPrice(priceString, multiplier) {
     // Удаляем все символы, кроме цифр и пробелов, из строки цены
@@ -21,18 +23,61 @@ function multiplyPrice(priceString, multiplier) {
     return `${formattedAmount}`;
 }
 
+function createValidationSchema(fields) {
+    const shape = {};
+
+    fields.forEach(field => {
+        shape[field.name] = Yup.string().required(field.requiredMessage || "Обязательное поле");
+    });
+
+    return Yup.object().shape(shape);
+}
+
 function Cart() {
     const navigate = useNavigate();
-    const { cartItems, setCartItems } = useMainContext();
+    const [ sended, setSended ] = useState(false);
+    const [ validationSchema, setValidationSchema ] = useState(createValidationSchema([
+        { name: "delivery" },
+        { name: "name" },
+        { name: "phone" },
+        { name: "address" },
+        { name: "date_of_post" },
+        { name: "time_of_post" },
+        { name: "receiver_name" },
+        { name: "receiver_phone" },
+    ]))
+    const { cartItems, setCartItems, sendMessage, message, setMessage } = useMainContext();
     const [ inputs, setInputs ] = useState({
         "delivery": {
-            value: "Не выбрано",
+            value: "Курьером",
             error: null,
             label: "Способ доставки",
             type: "select",
             choices: [
                 "Курьером", "Самовывоз"
-            ]
+            ],
+            handleChange: (val) => {
+                if (val === "Самовывоз") {
+                    setValidationSchema(createValidationSchema([
+                        { name: "delivery" },
+                        { name: "name" },
+                        { name: "phone" },
+                        { name: "receiver_name" },
+                        { name: "receiver_phone" },
+                    ]))
+                } else {
+                    setValidationSchema(createValidationSchema([
+                        { name: "delivery" },
+                        { name: "name" },
+                        { name: "phone" },
+                        { name: "address" },
+                        { name: "date_of_post" },
+                        { name: "time_of_post" },
+                        { name: "receiver_name" },
+                        { name: "receiver_phone" },
+                    ]))
+                }
+            }
         },
         "name": {
           value: null,
@@ -104,30 +149,18 @@ function Cart() {
                 '+', '7', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/
             ]
         },
-        "sign_the_postcard": {
-            value: "Подписать открытку",
-            error: null,
-            label: "Подписать открытку",
-            type: "radio"
-        },
         "text_of_postcard": {
             value: null,
             isFocused: false,
             error: null,
-            label: "Текст для открытки",
+            label: "Подписать открытку",
             type: "textarea"
-        },
-        "with_comment": {
-            value: "Добавить комментарий",
-            error: null,
-            label: "Добавить комментарий",
-            type: "radio"
         },
         "comment": {
             value: null,
             isFocused: false,
             error: null,
-            label: "Ваш комментарий",
+            label: "Добавить комментарий к заказу",
             type: "textarea"
         },
     });
@@ -211,6 +244,28 @@ function Cart() {
     useEffect(() => {
         setTotal(getTotal());
     }, [cartItems])
+    const handleSubmit = (values) => {
+        sendMessage(JSON.stringify(["order", "new", {...values, items: cartItems}]));
+    }
+    useEffect(() => {
+        if (sended) {
+            setTimeout(() => {
+                setSended(false);
+                setCartItems([]);
+                navigate("/");
+            }, 6000)
+        }
+    }, [sended])
+    useEffect(() => {
+        if (message) {
+          if (message[0] === 'order') {
+            if (message[1] === 'new') {
+                setSended(true);
+            }
+          }
+          setMessage(null);
+        };
+    }, [message]);
     if (cartItems.length > 0) {
         return (
             <div className="view">
@@ -223,7 +278,7 @@ function Cart() {
                     {cartItems.map((item, index) => (
                         <div style={{borderBottom: "0.5px solid #18181A", paddingBottom: 20, position: "relative", display: "flex", columnGap: 14, alignItems: "flex-start"}}>
                             <div style={{width: 80, height: 80, flexShrink: 0}}>
-                                <LazyLoadImage src={item.product.images[item.product.image_color.find((o) => o.color === item.product.selectedColor || o.count === item.product.selectedCount).index || 0].file} placeholderSrc={item.product.images[0].file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
+                                <LazyLoadImage src={item.product.images[item.product.image_color?.find((o) => o.color === item.product.selectedColor || o.count === item.product.selectedCount)?.index || 0].file} placeholderSrc={item.product.images[item.product.image_color?.find((o) => o.color === item.product.selectedColor || o.count === item.product.selectedCount)?.index || 0].file_lazy} alt="" style={{width: "100%", height: "100%", objectFit: "cover", borderRadius: 9}} />
                             </div>
                             <div style={{position: "relative", width: "calc(100% - 94px)", display: "flex", flexFlow: "column", rowGap: 5, flexShrink: 0}}>
                                 <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexShrink: 1}}>
@@ -277,27 +332,33 @@ function Cart() {
                             "name": "",
                             "phone": "",
                             "anonymous": "",
-                            "delivery": "Не выбрано",
+                            "delivery": "Курьером",
                             "address": "",
                             "date_of_post": "",
-                            "time_of_post": "Не выбрано",
+                            "time_of_post": "Уточнить у получателя",
                             "receiver_name": "",
                             "receiver_phone": "",
-                            "sign_the_postcard": "Подписать открытку",
                             "text_of_postcard": "",
-                            "with_comment": "Добавить комментарий",
                             "comment": "",
                             "request_address": ""
                         }}
-                        onSubmit={(values) => alert(JSON.stringify(values))}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
                     >
                     {({ errors, touched, handleSubmit, values }) => (
                         <Form>
                             <div style={{display: "flex", gap: 20, flexFlow: "column"}}>
                                 <FormLIGHT inputs={Object.entries(inputs).slice(0, 1)} setInputs={setInputs} errors={errors} touched={touched} />
+                                {values.delivery === "Самовывоз" &&
+                                <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>
+                                    Можно будет забрать по адресу: <span style={{color: "#fff"}}>г.Сочи, ул. Горького, 89 Б</span>    
+                                </div>}
+                                {values.delivery === "Курьером" &&
+                                <>
+                                    <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} />
+                                    <FormLIGHT inputs={Object.entries(inputs).slice(6, 8)} setInputs={setInputs} errors={errors} touched={touched} />
+                                </>}
                                 <FormLIGHT inputs={Object.entries(inputs).slice(1, 4)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(6, 8)} setInputs={setInputs} errors={errors} touched={touched} />
                                 <FormLIGHT inputs={Object.entries(inputs).slice(8, 10)} setInputs={setInputs} errors={errors} touched={touched} />
                                 <FormLIGHT inputs={Object.entries(inputs).slice(10, 13)} setInputs={setInputs} errors={errors} touched={touched} />
                                 <div style={{display: "flex", flexFlow: "column", gap: 10}}>
@@ -310,13 +371,18 @@ function Cart() {
                                         <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total[0]} ₽</div>
                                     </div>     
                                 </div>
-                                <Button text="Подтвердить заказ" />
+                                <Button text="Подтвердить заказ" handleClick={handleSubmit} />
                             </div>
                             <ScrollToError/>
                         </Form>
                     )}
                     </Formik>  
                 </div>
+                {sended && <SendedHover handleClose={() => {
+                    setSended(false);
+                    setCartItems([]);
+                    navigate("/");
+                }}/>}
             </div>
         );
     } else {

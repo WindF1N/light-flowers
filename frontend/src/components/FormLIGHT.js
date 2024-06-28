@@ -121,7 +121,12 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
                     {field.value}
                     <img src={require("./images/arrow-right.svg").default} alt="" />
                   </div>
-                  <select {...field} id={`select${key}`}>
+                  <select {...field} onChange={(e) => {
+                      field.onChange(e);
+                      if (value.handleChange) {
+                        value.handleChange(e.target.value);
+                      }
+                    }} id={`select${key}`}>
                     {value.choices?.map((val, index) => (
                       <option value={val} key={`select${key}${index}`}>{val}</option>
                     ))}
@@ -136,7 +141,7 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
             {value.type === "radio" &&
             <div className={`${styles.input} ${styles.radio} ${value.error || (errors[key] && touched[key]) ? styles.error : null}`} onClick={(e) => {
               e.stopPropagation();
-              document.getElementById(key).click()
+              document.getElementById(key).focus()
             }}>
               <Field name={key}>
                 {({ field }) => (
@@ -161,8 +166,23 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
                     <textarea
                       {...field}
                       id={key}
-                      onFocus={() => handleFocus(key)}
+                      onFocus={(e) => {
+                        e.target.style.height = 'auto';
+                        e.target.style.height = (e.target.scrollHeight) + 'px';
+                        handleFocus(key)
+                      }}
                       onBlur={() => handleBlur(key, field.value)}
+                      rows="1"
+                      maxLength={500}
+                      onChange={ev=>{ 
+                        ev.target.style.height = 'auto';
+                        ev.target.style.height = (ev.target.scrollHeight) + 'px';
+                        setFieldValue(key, ev.target.value)
+                      }}
+                      onLoad={ev=>{ 
+                        ev.target.style.height = 'auto';
+                        ev.target.style.height = (ev.target.scrollHeight) + 'px';
+                      }}
                     >
                     </textarea>
                   </>

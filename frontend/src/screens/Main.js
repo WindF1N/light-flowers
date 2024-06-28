@@ -37,9 +37,6 @@ function Main() {
   useEffect(() => {
     window.scrollTo({top: 0, smooth: "behavior"});
     sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью"}, 6]));
-    if (cardId) {
-      sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
-    }
   }, [])
   useEffect(() => {
     if (message && window.location.pathname === "/") {
@@ -49,6 +46,9 @@ function Main() {
             const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
             return !isInMessage;
           })]);
+          if (cardId) {
+            sendMessage(JSON.stringify(["cards", "filter", {"_id": cardId}, 1]))
+          }
         }
       }
       setMessage(null);

@@ -201,6 +201,17 @@ def handle_message(message):
                 emit("message", dumps(["images", "added", message[3]]))
         elif message[1] == "delete":
             mongo.db.images.delete_one(reverse_prepare_data({"_id": message[2]}))
+    elif message[0] == "hint":
+        if message[1] == "new":
+            message[2]["created_at"] = datetime.now()
+            new_hint_id = mongo.db.hints.insert_one(reverse_prepare_data(message[2])).inserted_id
+            emit("message", dumps(["hint", "new", str(new_hint_id)]))
+    elif message[0] == "order":
+        if message[1] == "new":
+            message[2]["created_at"] = datetime.now()
+            new_order_id = mongo.db.orders.insert_one(reverse_prepare_data(message[2])).inserted_id
+            emit("message", dumps(["order", "new", str(new_order_id)]))
+
 
 if __name__ == '__main__':
     socketio.run(app)

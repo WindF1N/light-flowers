@@ -8,8 +8,20 @@ import ScrollToError from './ScrollToError';
 import { Formik, Form } from 'formik';
 import Button from './Button';
 import FormLIGHT from './FormLIGHT';
+import * as Yup from 'yup';
 
-function Hint({ data }) {
+const validationSchema = Yup.object().shape({
+  "name": Yup.string()
+    .required("Обязательное поле"),
+  "receiver_name": Yup.string()
+    .required("Обязательное поле"),
+  "receiver_phone": Yup.string()
+    .required("Обязательное поле")
+});
+
+function Hint({ product, selectedColor, selectedCount, selectedPackage, selectedSize }) {
+  const { sendMessage, message, setMessage } = useMainContext();
+  const [ isSended, setIsSended ] = useState(false);
   const [ inputs, setInputs ] = useState({
     "name": {
         value: null,
@@ -91,6 +103,7 @@ function Hint({ data }) {
             closing.current = false;
             setIsOpen(false);
           }, 600)
+          setIsSended(false);
         }
       }
     }
@@ -103,6 +116,33 @@ function Hint({ data }) {
       }, 100)
     }
   }
+  const handleSubmit = (values) => {
+    console.log({...values, product, selectedColor, selectedCount, selectedPackage, selectedSize});
+    sendMessage(JSON.stringify(["hint", "new", values]));
+  }
+  useEffect(() => {
+    if (message) {
+      if (message[0] === 'hint') {
+        if (message[1] === 'new') {
+          console.log(message[2]);
+          setIsSended(true);
+          setTimeout(() => {
+            closing.current = true;
+            modalApi.start({ backdropFilter: "blur(0vh)", WebkitBackdropFilter: "blur(0vh)", background: "rgba(0, 0, 0, 0)", config: { duration: 300 } });
+            setTimeout(() => {
+              modalApiMain.start({ top: `${window.innerHeight}px`, config: { duration: 200 } });
+            }, 100)
+            setTimeout(() => {
+              closing.current = false;
+              setIsOpen(false);
+            }, 600)
+            setIsSended(false);
+          }, 3000)
+        }
+      }
+      setMessage(null);
+    };
+  }, [message]);
   return (
     <>
         <animated.div style={{padding: "0 15px", display: "flex", alignItems: "center", gap: 8, marginTop: 15, ...props}} onClick={toggle}>
@@ -151,34 +191,41 @@ function Hint({ data }) {
               >
                 <div style={{marginTop: "auto", marginBottom: 20, width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
               </div>
-              <div style={{padding: "30px 20px 15px 20px", fontSize: 16, fontWeight: 300}}>
-                Понравился букет и вы хотели бы получить<br/>
-                его в подарок от близкого человека?
-              </div>
-              <div style={{padding: "0px 20px 20px 20px", fontSize: 13, fontWeight: 300, color: "#bbb"}}>
-                Заполните его имя и номер телефона,
-                мы отправим сообщение с намеком.
-              </div>
-              <div style={{padding: "0px 20px 20px 20px"}}>
-                <Formik
-                    initialValues={{
-                        "name": "",
-                        "receiver_name": "",
-                        "receiver_phone": ""
-                    }}
-                    onSubmit={(values) => alert(JSON.stringify(values))}
-                >
-                {({ errors, touched, handleSubmit, values }) => (
-                    <Form>
-                        <div style={{display: "flex", gap: 20, flexFlow: "column"}}>
-                            <FormLIGHT inputs={Object.entries(inputs).slice(0, 3)} setInputs={setInputs} errors={errors} touched={touched} />
-                            <Button text="Отправить" />
-                        </div>
-                        <ScrollToError/>
-                    </Form>
-                )}
-                </Formik>  
-              </div>
+              {!isSended ? 
+              <>
+                <div style={{padding: "30px 20px 15px 20px", fontSize: 16, fontWeight: 300}}>
+                  Понравился букет и вы хотели бы получить<br/>
+                  его в подарок от близкого человека?
+                </div>
+                <div style={{padding: "0px 20px 20px 20px", fontSize: 13, fontWeight: 300, color: "#bbb"}}>
+                  Заполните его имя и номер телефона,
+                  мы отправим сообщение с намеком.
+                </div>
+                <div style={{padding: "0px 20px 20px 20px"}}>
+                  <Formik
+                      initialValues={{
+                          "name": "",
+                          "receiver_name": "",
+                          "receiver_phone": ""
+                      }}
+                      onSubmit={handleSubmit}
+                      validationSchema={validationSchema}
+                  >
+                  {({ errors, touched, handleSubmit }) => (
+                      <Form>
+                          <div style={{display: "flex", gap: 20, flexFlow: "column"}}>
+                              <FormLIGHT inputs={Object.entries(inputs).slice(0, 3)} setInputs={setInputs} errors={errors} touched={touched} />
+                              <Button text="Отправить" handleClick={handleSubmit} />
+                          </div>
+                          <ScrollToError/>
+                      </Form>
+                  )}
+                  </Formik>  
+                </div>
+              </> :
+              <div style={{padding: "30px 20px 15px 20px", fontSize: 16, fontWeight: 300, textAlign: "center"}}>
+                Готово, намёк ясен
+              </div>}
             </animated.div>
           </div>
         </animated.div>}

@@ -177,6 +177,7 @@ function Post({ postData, type, parent, basePathUrl }) {
             const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
             return !isInMessage;
           })]);
+          console.log(message[2])
         }
       }
       setMessage(null);
@@ -619,7 +620,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                 </div>}
               </div>
               <Contact />
-              <Hint />
+              <Hint product={data} selectedColor={selectedColor} selectedCount={selectedCount} selectedPackage={selectedPackage} selectedSize={selectedSize}/>
               {/* {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).length > 0 &&
               <>
                 <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
