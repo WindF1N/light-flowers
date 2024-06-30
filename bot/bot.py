@@ -134,7 +134,7 @@ async def background_task():
             # Обновление документа, добавление поля sended со значением True
             db.orders.update_one({"_id": document["_id"]}, {"$set": {"sended": True}})
             
-        await asyncio.sleep(30)  # Пауза в 30 секунд
+        await asyncio.sleep(10)  # Пауза в 30 секунд
 
 
 @dp.message_handler(commands=['start', 'help'])
