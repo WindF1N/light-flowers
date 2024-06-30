@@ -50,7 +50,7 @@ def get_price(data):
         else:
             checked[2] = 1
         if len(price["sizes"]) > 0:
-            if price["sizes"].includes(data["selectedSize"]):
+            if price["sizes"].contains(data["selectedSize"]):
                 checked[3] = 1
         else:
             checked[3] = 1
@@ -153,7 +153,7 @@ async def send_welcome(message: types.Message):
             'full_name': full_name,
             'start_date': message.date
         })
-        
+
     greeting = f"""{f"Привет, @{username}!" if username else "Привет!"} Это <b>Студия Роз | LIGHT Business</b>, переходи в приложение, чтобы порадовать своих любимых."""
     
     # Создаем кнопку
