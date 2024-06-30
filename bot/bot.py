@@ -35,22 +35,22 @@ def get_price(data):
     for price in data["prices"]:
         checked = [0, 0, 0, 0]
         if len(price["colors"]) > 0:
-            if price["colors"].contains(data["selectedColor"]):
+            if data["selectedColor"] in price["colors"]:
                 checked[0] = 1
         else:
             checked[0] = 1
         if len(price["counts"]) > 0:
-            if price["counts"].contains(data["selectedCount"]):
+            if data["selectedCount"] in price["counts"]:
                 checked[1] = 1
         else:
             checked[1] = 1
         if len(price["packages"]) > 0:
-            if price["packages"].contains(data["selectedPackage"]):
+            if data["selectedPackage"] in price["packages"]:
                 checked[2] = 1
         else:
             checked[2] = 1
         if len(price["sizes"]) > 0:
-            if price["sizes"].contains(data["selectedSize"]):
+            if data["selectedSize"] in price["sizes"]:
                 checked[3] = 1
         else:
             checked[3] = 1
