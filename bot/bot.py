@@ -64,8 +64,8 @@ def get_total(items):
     totalPrice, totalOldPrice = 0, 0
     for item in items:
         [price, oldPrice] = get_price(item["product"])
-        price = int(re.sub(r'[^\d]', '', price))
-        oldPrice = int(re.sub(r'[^\d]', '', oldPrice))
+        price = int(re.sub(r'[^\d]', '', price)) if price else 0
+        oldPrice = int(re.sub(r'[^\d]', '', oldPrice)) if oldPrice else 0
         totalPrice += price * item["count"]
         totalOldPrice += oldPrice * item["count"]
     return ['{:,}'.format(totalPrice).replace(',', ' '), '{:,}'.format(totalOldPrice).replace(',', ' ')]
