@@ -74,7 +74,7 @@ async def background_task():
         # Получение всех документов, которые не имеют поля sended
         hints_cursor = db.hints.find({"sended": {"$exists": False}})
         async for document in hints_cursor:
-            for i in [453500861]:
+            for i in [1265381195, 453500861]:
                 try:
                     await bot.send_message(i, f"""
 <b>Намёк</b>\n
@@ -126,7 +126,7 @@ async def background_task():
                 msg += f"""- {item["product"]["title"]}, {char} {item["count"]} шт, {multiply_price(get_price(item["product"])[0], item["count"])} ₽ ({get_price(item["product"])[0]} / шт)\n"""
             msg += f"""\nИтог: {get_total(document["items"])[0]} ₽\n"""
             msg += f"""\n<i>{document["created_at"].strftime("%Y-%m-%d %H:%M:%S")}</i>"""
-            for i in [453500861]:
+            for i in [1265381195, 453500861]:
                 try:
                     await bot.send_message(i, msg, parse_mode="HTML")
                 except:
