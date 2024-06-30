@@ -141,17 +141,27 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
             {value.type === "radio" &&
             <div className={`${styles.input} ${styles.radio} ${value.error || (errors[key] && touched[key]) ? styles.error : null}`} onClick={(e) => {
               e.stopPropagation();
-              document.getElementById(key).focus()
+              document.getElementById(key).checked = !document.getElementById(key).checked;
+              setFieldValue(key, document.getElementById(key).checked);
+              if (value.handleChange) {
+                value.handleChange(document.getElementById(key).checked);
+              }
             }}>
               <Field name={key}>
                 {({ field }) => (
                   <>
-                    <label htmlFor={key}>{value.label}</label>
+                    <label>{value.label}</label>
                     <input
                       {...field}
                       id={key}
                       type="checkbox"
-                      value={field.value}
+                      checked={document.getElementById(key)?.checked}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (value.handleChange) {
+                          value.handleChange(e.target.checked);
+                        }
+                      }}
                     />
                   </>
                 )}

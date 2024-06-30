@@ -113,7 +113,31 @@ function Cart() {
             value: "Уточнить у получателя",
             error: null,
             label: "Уточнить у получателя",
-            type: "radio"
+            type: "radio",
+            handleChange: (val) => {
+                if (val === true) {
+                    setValidationSchema(createValidationSchema([
+                        { name: "delivery" },
+                        { name: "name" },
+                        { name: "phone" },
+                        { name: "date_of_post" },
+                        { name: "time_of_post" },
+                        { name: "receiver_name" },
+                        { name: "receiver_phone" },
+                    ]))
+                } else {
+                    setValidationSchema(createValidationSchema([
+                        { name: "delivery" },
+                        { name: "name" },
+                        { name: "phone" },
+                        { name: "address" },
+                        { name: "date_of_post" },
+                        { name: "time_of_post" },
+                        { name: "receiver_name" },
+                        { name: "receiver_phone" },
+                    ]))
+                }
+            }
         },
         "date_of_post": {
             value: null,
@@ -355,7 +379,9 @@ function Cart() {
                                 </div>}
                                 {values.delivery === "Курьером" &&
                                 <>
-                                    <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} />
+                                    {values.request_address === true ?
+                                      <FormLIGHT inputs={Object.entries(inputs).slice(5, 6)} setInputs={setInputs} errors={errors} touched={touched} />
+                                    : <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} />}
                                     <FormLIGHT inputs={Object.entries(inputs).slice(6, 8)} setInputs={setInputs} errors={errors} touched={touched} />
                                 </>}
                                 <FormLIGHT inputs={Object.entries(inputs).slice(1, 4)} setInputs={setInputs} errors={errors} touched={touched} />
