@@ -32,31 +32,32 @@ def multiply_price(price_string, multiplier):
     return formatted_amount
 
 def get_price(data):
-    for price in data["prices"]:
-        checked = [0, 0, 0, 0]
-        if len(price["colors"]) > 0:
-            if data["selectedColor"] in price["colors"]:
+    if "prices" in data:
+        for price in data["prices"]:
+            checked = [0, 0, 0, 0]
+            if len(price["colors"]) > 0:
+                if data["selectedColor"] in price["colors"]:
+                    checked[0] = 1
+            else:
                 checked[0] = 1
-        else:
-            checked[0] = 1
-        if len(price["counts"]) > 0:
-            if data["selectedCount"] in price["counts"]:
+            if len(price["counts"]) > 0:
+                if data["selectedCount"] in price["counts"]:
+                    checked[1] = 1
+            else:
                 checked[1] = 1
-        else:
-            checked[1] = 1
-        if len(price["packages"]) > 0:
-            if data["selectedPackage"] in price["packages"]:
+            if len(price["packages"]) > 0:
+                if data["selectedPackage"] in price["packages"]:
+                    checked[2] = 1
+            else:
                 checked[2] = 1
-        else:
-            checked[2] = 1
-        if len(price["sizes"]) > 0:
-            if data["selectedSize"] in price["sizes"]:
+            if len(price["sizes"]) > 0:
+                if data["selectedSize"] in price["sizes"]:
+                    checked[3] = 1
+            else:
                 checked[3] = 1
-        else:
-            checked[3] = 1
 
-        if checked == [1, 1, 1, 1]:
-            return [price["price"], price["oldPrice"]]
+            if checked == [1, 1, 1, 1]:
+                return [price["price"], price["oldPrice"]]
     return [data["price"], data["oldPrice"]]
 
 def get_total(items):

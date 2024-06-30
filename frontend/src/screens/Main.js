@@ -315,7 +315,7 @@ function Main() {
         <div className={styles.map}>
           <div className={styles.mapaddress}>г.Сочи, ул. Горького, 89 Б.</div>
           <div className={styles.map_24124}>
-            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A324f2a829909632c05ad04a5f1cba2f0c66ffca76e9f9e47b9c030c9501a45b2&amp;source=constructor" width="100%" height="200" frameBorder="0"></iframe>
+            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Aaaf447bdbb779d61d8f9ff0bfe4c0678b2bc275dff9c32f8950c336ecc1ab18a&amp;source=constructor" width="100%" height="200" frameBorder="0"></iframe>
           </div>
         </div>
         <div className={styles.labelBy}>
