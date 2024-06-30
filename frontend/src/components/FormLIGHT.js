@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
-function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
+function FormLIGHT({ title, inputs, setInputs, errors, touched, values }) {
 
   const { setFieldValue } = useFormikContext();
 
@@ -155,7 +155,7 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched }) {
                       {...field}
                       id={key}
                       type="checkbox"
-                      checked={document.getElementById(key)?.checked}
+                      checked={(values && values[key]) || document.getElementById(key)?.checked}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (value.handleChange) {

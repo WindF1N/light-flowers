@@ -380,8 +380,8 @@ function Cart() {
                                 {values.delivery === "Курьером" &&
                                 <>
                                     {values.request_address === true ?
-                                      <FormLIGHT inputs={Object.entries(inputs).slice(5, 6)} setInputs={setInputs} errors={errors} touched={touched} />
-                                    : <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} />}
+                                      <FormLIGHT inputs={Object.entries(inputs).slice(5, 6)} setInputs={setInputs} errors={errors} touched={touched} values={values} />
+                                    : <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} values={values} />}
                                     <FormLIGHT inputs={Object.entries(inputs).slice(6, 8)} setInputs={setInputs} errors={errors} touched={touched} />
                                 </>}
                                 <FormLIGHT inputs={Object.entries(inputs).slice(1, 4)} setInputs={setInputs} errors={errors} touched={touched} />
