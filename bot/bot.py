@@ -101,7 +101,7 @@ async def background_task():
 имя получателя: {document["receiver_name"]}
 телефон получателя: {document["receiver_phone"]}\n
 
-- {document["product"]["title"]}, {char} {document["count"]} шт, {multiply_price(get_price(document["product"])[0], document["count"])} ₽ ({get_price(document["product"])[0]} / шт)
+- {document["product"]["title"]}, {char}, {get_price(document["product"])[0]} / шт
 
 <i>{document["created_at"].strftime("%Y-%m-%d %H:%M:%S")}</i>
         """, parse_mode="HTML")
