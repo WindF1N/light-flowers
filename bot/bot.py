@@ -75,6 +75,24 @@ async def background_task():
         # Получение всех документов, которые не имеют поля sended
         hints_cursor = db.hints.find({"sended": {"$exists": False}})
         async for document in hints_cursor:
+            char = ""
+            if document["product"]["selectedColor"]:
+                char += document["product"]["selectedColor"]
+            if document["product"]["selectedCount"]:
+                if len(char) > 0:
+                    char += f', {document["product"]["selectedCount"]}'
+                else:
+                    char += document["product"]["selectedCount"]
+            if document["product"]["selectedPackage"]:
+                if len(char) > 0:
+                    char += f', {document["product"]["selectedPackage"]}'
+                else:
+                    char += document["product"]["selectedPackage"]
+            if document["product"]["selectedSize"]:
+                if len(char) > 0:
+                    char += f', {document["product"]["selectedSize"]},'
+                else:
+                    char += f'{document["product"]["selectedSize"]},'
             for i in [1265381195, 453500861]:
                 try:
                     await bot.send_message(i, f"""
@@ -82,6 +100,9 @@ async def background_task():
 от: {document["name"]}
 имя получателя: {document["receiver_name"]}
 телефон получателя: {document["receiver_phone"]}\n
+
+- {document["product"]["title"]}, {char} {document["count"]} шт, {multiply_price(get_price(document["product"])[0], document["count"])} ₽ ({get_price(document["product"])[0]} / шт)
+
 <i>{document["created_at"].strftime("%Y-%m-%d %H:%M:%S")}</i>
         """, parse_mode="HTML")
                 except:

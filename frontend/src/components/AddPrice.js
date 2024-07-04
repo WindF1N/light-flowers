@@ -37,25 +37,25 @@ function AddPrice({ prices, setPrices }) {
         allowLeadingZeroes: false,
       })
     },
-    "oldPrice": {
-      value: null,
-      isFocused: false,
-      error: null,
-      label: "Старая цена, ₽",
-      type: "text",
-      mask: createNumberMask({
-        prefix: '',
-        suffix: ' ₽',
-        includeThousandsSeparator: true,
-        thousandsSeparatorSymbol: ' ',
-        allowDecimal: false,
-        decimalSymbol: null,
-        decimalLimit: 0, // количество знаков после запятой
-        integerLimit: 12, // максимальное количество цифр до запятой
-        allowNegative: false,
-        allowLeadingZeroes: false,
-      })
-    },
+    // "oldPrice": {
+    //   value: null,
+    //   isFocused: false,
+    //   error: null,
+    //   label: "Старая цена, ₽",
+    //   type: "text",
+    //   mask: createNumberMask({
+    //     prefix: '',
+    //     suffix: ' ₽',
+    //     includeThousandsSeparator: true,
+    //     thousandsSeparatorSymbol: ' ',
+    //     allowDecimal: false,
+    //     decimalSymbol: null,
+    //     decimalLimit: 0, // количество знаков после запятой
+    //     integerLimit: 12, // максимальное количество цифр до запятой
+    //     allowNegative: false,
+    //     allowLeadingZeroes: false,
+    //   })
+    // },
   });
   const [ isOpen, setIsOpen ] = useState(false);
   const api = useSpringRef();

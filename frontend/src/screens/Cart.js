@@ -40,6 +40,7 @@ function Cart() {
         { name: "delivery" },
         { name: "name" },
         { name: "phone" },
+        { name: "city" },
         { name: "address" },
         { name: "date_of_post" },
         { name: "time_of_post" },
@@ -70,6 +71,7 @@ function Cart() {
                         { name: "delivery" },
                         { name: "name" },
                         { name: "phone" },
+                        { name: "city" },
                         { name: "address" },
                         { name: "date_of_post" },
                         { name: "time_of_post" },
@@ -100,13 +102,22 @@ function Cart() {
             value: "Оставаться анонимным для получателя",
             error: null,
             label: "Оставаться анонимным для получателя",
-            type: "radio"
+            type: "radio",
+        },
+        "city": {
+            value: "Сочи",
+            error: null,
+            label: "Город",
+            type: "select",
+            choices: [
+                "Сочи", "Краснодар"
+            ],
         },
         "address": {
             value: null,
             isFocused: false,
             error: null,
-            label: "Адрес доставки *",
+            label: "Адрес доставки",
             type: "text",
         },
         "request_address": {
@@ -357,6 +368,7 @@ function Cart() {
                             "phone": "",
                             "anonymous": "",
                             "delivery": "Курьером",
+                            "city": "Сочи",
                             "address": "",
                             "date_of_post": "",
                             "time_of_post": "Уточнить у получателя",
@@ -380,13 +392,13 @@ function Cart() {
                                 {values.delivery === "Курьером" &&
                                 <>
                                     {values.request_address === true ?
-                                      <FormLIGHT inputs={Object.entries(inputs).slice(5, 6)} setInputs={setInputs} errors={errors} touched={touched} values={values} />
-                                    : <FormLIGHT inputs={Object.entries(inputs).slice(4, 6)} setInputs={setInputs} errors={errors} touched={touched} values={values} />}
-                                    <FormLIGHT inputs={Object.entries(inputs).slice(6, 8)} setInputs={setInputs} errors={errors} touched={touched} />
+                                      <FormLIGHT inputs={Object.entries(inputs).slice(5, 7).splice(1, 1)} setInputs={setInputs} errors={errors} touched={touched} values={values} />
+                                    : <FormLIGHT inputs={Object.entries(inputs).slice(4, 7)} setInputs={setInputs} errors={errors} touched={touched} values={values} />}
+                                    <FormLIGHT inputs={Object.entries(inputs).slice(7, 9)} setInputs={setInputs} errors={errors} touched={touched} />
                                 </>}
                                 <FormLIGHT inputs={Object.entries(inputs).slice(1, 4)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(8, 10)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(10, 13)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(9, 11)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(11, 14)} setInputs={setInputs} errors={errors} touched={touched} />
                                 <div style={{display: "flex", flexFlow: "column", gap: 10}}>
                                     <div style={{display: "flex", justifyContent: "space-between"}}>
                                         <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>Сумма</div>

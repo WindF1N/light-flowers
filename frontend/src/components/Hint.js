@@ -117,8 +117,7 @@ function Hint({ product, selectedColor, selectedCount, selectedPackage, selected
     }
   }
   const handleSubmit = (values) => {
-    console.log({...values, product, selectedColor, selectedCount, selectedPackage, selectedSize});
-    sendMessage(JSON.stringify(["hint", "new", values]));
+    sendMessage(JSON.stringify(["hint", "new", {...values, product, selectedColor, selectedCount, selectedPackage, selectedSize}]));
   }
   useEffect(() => {
     if (message) {
@@ -184,12 +183,12 @@ function Hint({ product, selectedColor, selectedCount, selectedPackage, selected
                                   ...modalPropsMain}}
                           ref={modalMainRef}>
               <div
-                style={{position: "absolute", top: "-50vh", height: "50vh", width: "100vw", display: "flex", justifyContent: "center"}}
+                style={{position: "absolute", top: "-50vh", height: "60vh", width: "100vw", display: "flex", justifyContent: "center"}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
               >
-                <div style={{marginTop: "auto", marginBottom: 20, width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
+                <div style={{marginTop: "auto", marginBottom: "calc(20px + 10vh)", width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
               </div>
               {!isSended ? 
               <>

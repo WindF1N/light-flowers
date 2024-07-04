@@ -36,7 +36,7 @@ function Post({ postData, type, parent, basePathUrl }) {
   })
   const modalPropsCart = useSpring({
     ref: modalApiCart,
-    from: { bottom: "-12vh" },
+    from: { bottom: "-40vh" },
   })
   const scrollY = useRef();
   const toggle = () => {
@@ -54,14 +54,14 @@ function Post({ postData, type, parent, basePathUrl }) {
       }, 100)
       setTimeout(() => {
         modalApiCart.start({ bottom: "0vh", config: { duration: 300 } });
+        if (!parent) {
+          scrollY.current = window.scrollY;
+          document.querySelector("body").style.top = `-${scrollY.current}px`
+          document.querySelector("html").style.overflow = "hidden";
+          document.querySelector("body").style.overflow = "hidden";
+          document.querySelector("body").style.position = "fixed";
+        }
       }, 300)
-      if (!parent) {
-        scrollY.current = window.scrollY;
-        document.querySelector("html").style.overflow = "hidden";
-        document.querySelector("body").style.overflow = "hidden";
-        document.querySelector("body").style.position = "fixed";
-        document.querySelector("body").style.top = `-${scrollY.current}px`
-      }
     }
     setIsOpenPost(!isOpenPost);
   }
@@ -101,11 +101,6 @@ function Post({ postData, type, parent, basePathUrl }) {
           modalApi.start({ backdropFilter: "blur(0vh)", WebkitBackdropFilter: "blur(0vh)", background: "rgba(0, 0, 0, 0)", config: { duration: 300 } });
           setTimeout(() => {
             modalApiMain.start({ top: `${window.innerHeight}px`, config: { duration: 200 } });
-          }, 100)
-          setTimeout(() => {
-            modalApiCart.start({ bottom: "-12vh", config: { duration: 100 } });
-          }, 300)
-          setTimeout(() => {
             if (!parent) {
               document.querySelector("html").style.overflow = "auto";
               document.querySelector("body").style.overflow = "auto";
@@ -113,6 +108,11 @@ function Post({ postData, type, parent, basePathUrl }) {
               document.querySelector("body").style.top = "0px";
               window.scrollTo({ top: scrollY.current })
             }
+          }, 100)
+          setTimeout(() => {
+            modalApiCart.start({ bottom: "-40vh", config: { duration: 100 } });
+          }, 300)
+          setTimeout(() => {
             closing.current = false;
             setIsOpenPost(false);
           }, 600)
@@ -177,7 +177,6 @@ function Post({ postData, type, parent, basePathUrl }) {
             const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
             return !isInMessage;
           })]);
-          console.log(message[2])
         }
       }
       setMessage(null);
@@ -295,7 +294,8 @@ function Post({ postData, type, parent, basePathUrl }) {
             </div> */}
             <div style={{height: "100%", display: "flex", flexFlow: "column", rowGap: 5, padding: "0 5px 5px 5px"}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
+              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price}</div> 
+              {/* <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span> */}
             </div>
           </div>
         </animated.div>}
@@ -332,7 +332,7 @@ function Post({ postData, type, parent, basePathUrl }) {
             </div>
             <div style={{display: "flex", flexFlow: "column", rowGap: 5}}>
               <div style={{fontSize: 14, fontWeight: 400}}>{data.title}</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
+              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{data.price}</div>
             </div>
             {/* <div style={{marginLeft: "auto", height: 28, width: 86, position: "relative", flexShrink: 0}}>
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0, width: "100%"}}>
@@ -358,7 +358,7 @@ function Post({ postData, type, parent, basePathUrl }) {
               </div>
               <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
                 <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
-                <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
+                <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price}</div>
               </div>
             </div>
           </div>
@@ -371,7 +371,7 @@ function Post({ postData, type, parent, basePathUrl }) {
             </div>
             <div style={{width: "calc(100% - 20px)", display: "flex", flexFlow: "column", rowGap: 5, padding: "60px 10px 10px 10px", position: "absolute", bottom: 0, left: 0, background: "linear-gradient(to top, rgba(24, 24, 26, .9) 10%, rgba(24, 24, 26, 0) 100%)"}}>
               <div style={{fontSize: 14, fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: theme === "Dark" ? "#fff" : "#fff"}}>{data.title}</div>
-              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)"}}>{data.oldPrice}</span></div>
+              <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93", marginTop: "auto"}}>{data.price}</div>
             </div>
           </div>
         </animated.div>}
@@ -413,12 +413,12 @@ function Post({ postData, type, parent, basePathUrl }) {
                                   ...modalPropsMain}}
                           ref={modalMainRef}>
               <div
-                style={{position: "absolute", top: "-10vh", height: "10vh", width: "100vw", display: "flex", justifyContent: "center"}}
+                style={{position: "absolute", top: "-10vh", height: "20vh", width: "100vw", display: "flex", justifyContent: "center", zIndex: 1}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
               >
-                <div style={{marginTop: "auto", marginBottom: 20, width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
+                <div style={{marginTop: "auto", marginBottom: "calc(10vh + 20px)", width: "40vw", height: 4, borderRadius: 2, backgroundColor: "#bbb"}}></div>
               </div>
               <Slider images={data.images} imagesDivRef={imagesDivRef} setActiveImage={setActiveImage} image_color={data.image_color} setSelectedColor={setSelectedColor} setSelectedCount={setSelectedCount} />
               {data.images.length > 1 &&
@@ -426,7 +426,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   <MiniSlider images={data.images} imagesDivRef={imagesDivRef} activeImage={activeImage} image_color={data.image_color} setSelectedColor={setSelectedColor} setSelectedCount={setSelectedCount} />
                 </div>}
               <div className={styles.price} style={{padding: data.images.length > 1 ? "30px 15px 10px 15px" : "10px 15px 10px 15px"}}>
-                <div className={styles.title}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", color: "#8F8E93"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
+                <div className={styles.title}>{!newPrice ? data.price : newPrice.price}</div>
                 <div className={styles.actions}>
                   {/* <div className={styles.action} style={{color: "#8F8E93"}}>
                     <img src={require("../screens/images/compare.svg").default} alt="" />
@@ -688,8 +688,8 @@ function Post({ postData, type, parent, basePathUrl }) {
               </footer>
               <animated.div style={{width: "100%",
                                     boxSizing: "border-box",
-                                    height: "110px",
-                                    padding: "0 20px",
+                                    minHeight: "90px",
+                                    padding: "20px 20px 25px 20px",
                                     background: "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(26, 24, 24, 1) 100%)", 
                                     position: "fixed",
                                     marginTop: 30, 
@@ -697,16 +697,23 @@ function Post({ postData, type, parent, basePathUrl }) {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "space-between",
-                                    paddingBottom: 5,
                                     gap: 10,
                                     ...modalPropsCart}}>
                 <div style={{display: "flex", flexFlow: "column"}}>
-                  <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price} <span style={{display: "inline-block", color: "#8F8E93", textDecoration: "line-through", transform: "scale(.8)"}}>{!newPrice ? data.oldPrice : newPrice.oldPrice}</span></div>
+                  {cartItems.filter((item) => item.product.category === "Подарки").length > 0 &&
+                  <div style={{display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 20}}>
+                    {cartItems.filter((item) => item.product.category === "Подарки").map((item, index) => (
+                      <span key={index} style={{fontSize: 12, fontWeight: 300, padding: 3, background: "#2C2C2E", borderRadius: 4}}>
+                        {item.product.title}, {item.count} шт {item.product.price}
+                      </span>
+                    ))}  
+                  </div>}
+                  <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price}</div>
                   <div style={{fontSize: 14, fontWeight: 300, marginTop: 5}}>{data.title}</div>
                   {data.category === "Розы с любовью" &&
                   <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>}
                 </div>
-                <div style={{flexShrink: 0}}>
+                <div style={{flexShrink: 0, marginTop: "auto", marginBottom: 10}}>
                   {cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ?
                   <div style={{display: "flex", alignItems: "flex-end", flexFlow: "column", gap: 10}}>
                     <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0}}>
