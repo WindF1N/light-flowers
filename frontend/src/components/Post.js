@@ -695,50 +695,56 @@ function Post({ postData, type, parent, basePathUrl }) {
                                     marginTop: 30, 
                                     zIndex: 10000,
                                     display: "flex",
-                                    alignItems: "center",
                                     justifyContent: "space-between",
-                                    gap: 10,
+                                    flexFlow: "column",
                                     ...modalPropsCart}}>
-                <div style={{display: "flex", flexFlow: "column"}}>
-                  {cartItems.filter((item) => item.product.category === "Подарки").length > 0 &&
-                  <div style={{display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 20}}>
-                    {cartItems.filter((item) => item.product.category === "Подарки").map((item, index) => (
-                      <span key={index} style={{fontSize: 12, fontWeight: 300, padding: 3, background: "#2C2C2E", borderRadius: 4}}>
-                        {item.product.title}, {item.count} шт {item.product.price}
-                      </span>
-                    ))}  
-                  </div>}
-                  <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price}</div>
-                  <div style={{fontSize: 14, fontWeight: 300, marginTop: 5}}>{data.title}</div>
-                  {data.category === "Розы с любовью" &&
-                  <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>}
-                </div>
-                <div style={{flexShrink: 0, marginTop: "auto", marginBottom: 10}}>
-                  {cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ?
-                  <div style={{display: "flex", alignItems: "flex-end", flexFlow: "column", gap: 10}}>
-                    <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0}}>
-                      <div onClick={(e) => handleCart(e, 0)} style={{marginRight: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
-                        <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-                      </div>
-                      <div style={{width: 44, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
-                        <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
-                      </div>
-                      <div onClick={(e) => handleCart(e, 1)} style={{marginLeft: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
-                        <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
-                      </div>
-                    </div>
-                    <Button text="Оформить" small={true} handleClick={(e) => {
-                      window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
-                      setPosts([]);
-                      document.querySelector("html").style.overflow = "auto";
-                      document.querySelector("body").style.overflow = "auto";
-                      document.querySelector("body").style.position = "relative";
-                      document.querySelector("body").style.top = "0px";
-                      setIsOpenPost(false);
-                      navigate("/cart");
-                    }} />
+                {cartItems.filter((item) => item.product.category === "Подарки").length > 0 &&
+                <div style={{position: "relative", display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 20}}>
+                  {cartItems.filter((item) => item.product.category === "Подарки").map((item, index) => (
+                    <span key={index} style={{fontSize: 12, fontWeight: 300, padding: 3, background: "#2C2C2E", borderRadius: 4}}>
+                      {item.product.title}, {item.count} шт {item.product.price}
+                    </span>
+                  ))}  
+                </div>}
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%"
+                }}>
+                  <div style={{display: "flex", flexFlow: "column"}}>
+                    <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price}</div>
+                    <div style={{fontSize: 14, fontWeight: 300, marginTop: 5}}>{data.title}</div>
+                    {data.category === "Розы с любовью" &&
+                    <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>}
                   </div>
-                  : <Button text="В корзину" small={true} handleClick={(e) => handleCart(e, 1)} />}
+                  <div style={{flexShrink: 0, marginTop: "auto", marginBottom: cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ? 0 : 10}}>
+                    {cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ?
+                    <div style={{display: "flex", alignItems: "flex-end", flexFlow: "column", gap: 10}}>
+                      <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0}}>
+                        <div onClick={(e) => handleCart(e, 0)} style={{marginRight: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                          <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                        </div>
+                        <div style={{width: 44, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
+                          <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
+                        </div>
+                        <div onClick={(e) => handleCart(e, 1)} style={{marginLeft: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                          <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+                        </div>
+                      </div>
+                      <Button text="Оформить" small={true} handleClick={(e) => {
+                        window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
+                        setPosts([]);
+                        document.querySelector("html").style.overflow = "auto";
+                        document.querySelector("body").style.overflow = "auto";
+                        document.querySelector("body").style.position = "relative";
+                        document.querySelector("body").style.top = "0px";
+                        setIsOpenPost(false);
+                        navigate("/cart");
+                      }} />
+                    </div>
+                    : <Button text="В корзину" small={true} handleClick={(e) => handleCart(e, 1)} />}
+                  </div>
                 </div>
               </animated.div>
             </animated.div>

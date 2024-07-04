@@ -400,11 +400,11 @@ function Cart() {
                                 <div style={{display: "flex", flexFlow: "column", gap: 10}}>
                                     <div style={{display: "flex", justifyContent: "space-between"}}>
                                         <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>Сумма</div>
-                                        <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>{total[0]} ₽</div>
+                                        <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>{total} ₽</div>
                                     </div>
                                     <div style={{display: "flex", justifyContent: "space-between"}}>
                                         <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>Итоговая сумма</div>
-                                        <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total[0]} ₽</div>
+                                        <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total} ₽</div>
                                     </div>     
                                 </div>
                                 <Button text="Подтвердить заказ" handleClick={handleSubmit} />
