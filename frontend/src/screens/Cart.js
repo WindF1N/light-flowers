@@ -259,21 +259,19 @@ function Cart() {
               checked[3] = 1;
             };
             if (JSON.stringify(checked) === JSON.stringify([1, 1, 1, 1])) {
-              return [price.price, price.oldPrice]
+              return price.price
             }
         }
-        return [data.price, data.oldPrice]
+        return data.price
     }
     const getTotal = () => {
-        let [ totalPrice, totalOldPrice ] = [0, 0];
+        let totalPrice = 0;
         for (let i = 0; i < cartItems?.length; i++) {
-            let [price, oldPrice] = getPrice(i);
+            let price = getPrice(i);
             price = parseInt(price.replace(/[^\d\s]/g, '').replace(' ', ''), 10);
-            oldPrice = parseInt(oldPrice.replace(/[^\d\s]/g, '').replace(' ', ''), 10);
             totalPrice += price * cartItems[i].count;
-            totalOldPrice += oldPrice * cartItems[i].count;
         }
-        return [totalPrice.toLocaleString('ru-RU'), totalOldPrice.toLocaleString('ru-RU')]
+        return totalPrice.toLocaleString('ru-RU')
     }
     const [ total, setTotal ] = useState(getTotal());
     useEffect(() => {
@@ -345,8 +343,8 @@ function Cart() {
                                         </div>
                                     </div>
                                     <div style={{marginLeft: "auto", display: "flex", flexFlow: "column", alignItems: "flex-end", marginTop: "auto", gap: 5}}>
-                                        <div style={{fontSize: 15, fontWeight: 300, color: "#fff"}}>{multiplyPrice(getPrice(index)[0], item.count)} ₽ {getPrice(index)[1] && <span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", transformOrigin: "right center", color: "#8F8E93"}}>{multiplyPrice(getPrice(index)[1], item.count)} ₽</span>}</div>
-                                        <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{getPrice(index)[0]} / шт</div>
+                                        <div style={{fontSize: 15, fontWeight: 300, color: "#fff"}}>{multiplyPrice(getPrice(index), item.count)} ₽</div>
+                                        <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{getPrice(index)} / шт</div>
                                     </div>
                                 </div>
                             </div>
@@ -355,7 +353,7 @@ function Cart() {
                 </div>
                 <div style={{display: "flex", justifyContent: "space-between", padding: "10px 0"}}>
                     <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>Сумма</div>
-                    <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}><span style={{display: "inline-block", textDecoration: "line-through", transform: "scale(.8)", transformOrigin: "left center", color: "#8F8E93"}}>{total[1]} ₽</span> {total[0]} ₽</div>
+                    <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total} ₽</div>
                 </div>
                 <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>
                     Минимальное время сборки и доставки - 2 часа.

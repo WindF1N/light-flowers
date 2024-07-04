@@ -57,18 +57,16 @@ def get_price(data):
                 checked[3] = 1
 
             if checked == [1, 1, 1, 1]:
-                return [price["price"], price["oldPrice"]]
-    return [data["price"], data["oldPrice"]]
+                return price["price"]
+    return data["price"]
 
 def get_total(items):
     totalPrice, totalOldPrice = 0, 0
     for item in items:
-        [price, oldPrice] = get_price(item["product"])
+        price = get_price(item["product"])
         price = int(re.sub(r'[^\d]', '', price)) if price else 0
-        oldPrice = int(re.sub(r'[^\d]', '', oldPrice)) if oldPrice else 0
         totalPrice += price * item["count"]
-        totalOldPrice += oldPrice * item["count"]
-    return ['{:,}'.format(totalPrice).replace(',', ' '), '{:,}'.format(totalOldPrice).replace(',', ' ')]
+    return '{:,}'.format(totalPrice).replace(',', ' ')
 
 async def background_task():
     while True:
@@ -101,7 +99,7 @@ async def background_task():
 имя получателя: {document["receiver_name"]}
 телефон получателя: {document["receiver_phone"]}\n
 
-- {document["product"]["title"]}, {char} {get_price(document["product"])[0]} / шт
+- {document["product"]["title"]}, {char} {get_price(document["product"])} / шт
 
 <i>{document["created_at"].strftime("%Y-%m-%d %H:%M:%S")}</i>
         """, parse_mode="HTML")
@@ -124,6 +122,9 @@ async def background_task():
 Комментарий: {document["comment"]}\n
 Способ доставки: {document["delivery"]}\n"""
             if document["delivery"] == "Курьером":
+                if "city" in document:
+                    if document["city"]:
+                        msg += f"""Город: {document["city"]}\n"""
                 msg += f"""Адрес доставки: {document["address"] if document["request_address"] != True else "Уточнить у получателя" }\nДата доставки: {document["date_of_post"]}\nВремя доставки: {document["time_of_post"]}\n"""
             msg += "\nТовары:\n"
             for item in document["items"]:
@@ -145,8 +146,8 @@ async def background_task():
                         char += f', {item["product"]["selectedSize"]},'
                     else:
                         char += f'{item["product"]["selectedSize"]},'
-                msg += f"""- {item["product"]["title"]}, {char} {item["count"]} шт, {multiply_price(get_price(item["product"])[0], item["count"])} ₽ ({get_price(item["product"])[0]} / шт)\n"""
-            msg += f"""\nИтог: {get_total(document["items"])[0]} ₽\n"""
+                msg += f"""- {item["product"]["title"]}, {char} {item["count"]} шт, {multiply_price(get_price(item["product"]), item["count"])} ₽ ({get_price(item["product"])} / шт)\n"""
+            msg += f"""\nИтог: {get_total(document["items"])} ₽\n"""
             msg += f"""\n<i>{document["created_at"].strftime("%Y-%m-%d %H:%M:%S")}</i>"""
             for i in [1265381195, 453500861]:
                 try:
