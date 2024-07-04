@@ -122,10 +122,10 @@ async def background_task():
 Комментарий: {document["comment"]}\n
 Способ доставки: {document["delivery"]}\n"""
             if document["delivery"] == "Курьером":
-                if "city" in document:
+                if "city" in document and document["request_address"] != True:
                     if document["city"]:
-                        msg += f"""Город: {document["city"]}\n"""
-                msg += f"""Адрес доставки: {document["address"] if document["request_address"] != True else "Уточнить у получателя" }\nДата доставки: {document["date_of_post"]}\nВремя доставки: {document["time_of_post"]}\n"""
+                        msg += f"""Город: {document["city"] if document["request_address"] != True else "Уточнить у получателя"}\n"""
+                msg += f"""Адрес доставки: {document["address"] if document["request_address"] != True else "Уточнить у получателя"}\nДата доставки: {document["date_of_post"]}\nВремя доставки: {document["time_of_post"]}\n"""
             msg += "\nТовары:\n"
             for item in document["items"]:
                 char = ""
