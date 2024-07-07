@@ -11,6 +11,19 @@ import Hint from './Hint';
 import Contact from './Contact';
 import { useMainContext } from '../context';
 
+function multiplyPrice(priceString, multiplier) {
+  // Удаляем все символы, кроме цифр и пробелов, из строки цены
+  const cleanedPriceString = priceString.replace(/[^\d\s]/g, '');
+  // Разбиваем очищенную строку на части: количество и валюту
+  const amount = cleanedPriceString.replace(' ', '');
+  // Умножаем количество на множитель и округляем до целого числа
+  const totalAmount = Math.round(parseInt(amount, 10) * multiplier);
+  // Форматируем сумму с разделением тысяч и добавляем валюту
+  const formattedAmount = totalAmount.toLocaleString('ru-RU');
+  // Возвращаем форматированную строку с суммой
+  return `${formattedAmount}`;
+}
+
 function Post({ postData, type, parent, basePathUrl }) {
   const navigate = useNavigate();
   const [ data, setData ] = useState(postData);
@@ -669,23 +682,6 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>
               </>}
-              <footer className={styles2.footer} style={{minHeight: "0", marginTop: 20}}>
-                <div style={{display: "flex", flexFlow: "column", padding: "20px 15px 10px 15px"}}>
-                  <div style={{fontSize: 16, fontWeight: 300, color: "#fff", paddingBottom: 5}}>Не нашли что искали?</div>
-                  <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>
-                    Отправьте сообщение или позвоните
-                    подберем самый подходящий букет для
-                    вашего мероприятия
-                  </div>
-                </div>
-                <div className={styles2.contacts} style={{padding: "0 15px"}}>
-                  <div className={styles2.telephone}><a href="tel:+79667757966" style={{ textDecoration: 'none', color: 'inherit' }}>+7 966 77 57 966</a></div>
-                  <div className={styles2.icons}>
-                    <img src={require("../screens/images/telegram.svg").default} className="" alt="telegram" />
-                    <img src={require("../screens/images/whatsapp.svg").default} className="" alt="whatsapp" />
-                  </div>
-                </div>
-              </footer>
               <animated.div style={{width: "100%",
                                     boxSizing: "border-box",
                                     minHeight: "90px",
@@ -702,7 +698,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                 <div style={{position: "relative", display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 20}}>
                   {cartItems.filter((item) => item.product.category === "Подарки").map((item, index) => (
                     <span key={index} style={{fontSize: 12, fontWeight: 300, padding: 3, background: "#2C2C2E", borderRadius: 4}}>
-                      {item.product.title}, {item.count} шт {item.product.price}
+                      {item.product.title}, {item.count} шт {multiplyPrice(item.product.price, item.count)} ₽
                     </span>
                   ))}  
                 </div>}

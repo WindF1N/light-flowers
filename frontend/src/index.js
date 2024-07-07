@@ -4,12 +4,16 @@ import './index.css';
 import Navigate from './navigate';
 import { SocketProvider } from './context';
 import { BrowserRouter as Router } from 'react-router-dom'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <SocketProvider>
     <Router>
-      <Navigate />
+      <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="de">
+        <Navigate />
+      </LocalizationProvider>
     </Router>
   </SocketProvider>
 );

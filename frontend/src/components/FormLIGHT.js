@@ -3,6 +3,7 @@ import { Field, useFormikContext } from 'formik';
 import { useEffect } from 'react';
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 function FormLIGHT({ title, inputs, setInputs, errors, touched, values }) {
 
@@ -101,6 +102,81 @@ function FormLIGHT({ title, inputs, setInputs, errors, touched, values }) {
                         ))}
                       </select>
                     </>}
+                  </>
+                )}
+              </Field>
+              {value.error || (errors[key] && touched[key]) && (
+                <div className={styles.errorLabel}>
+                    {value.error || errors[key]}
+                </div>
+              )}
+            </div>}
+            {value.type === "date" &&
+            <div className={styles.input} onClick={value.handleClick}>
+              <Field name={key}>
+                {({ field }) => (
+                  <>
+                    <label htmlFor={key} className={value.isFocused ? styles.focused : null} onClick={(e) => {
+                                          document.getElementsByClassName("MuiButtonBase-root")[0]?.click();
+                                        }}>{value.label}</label>
+                    <input {...field} type="text"
+                                        onFocus={() => !value.handleClick ? handleFocus(key) : null}
+                                        onBlur={() => !value.handleClick ? handleBlur(key, field.value) : null}
+                                        className={value.error || (errors[key] && touched[key]) ? styles.error : null}
+                                        value={field.value}
+                                        readOnly={value.handleClick ? true : false}
+                                        onClick={(e) => {
+                                          document.getElementsByClassName("MuiButtonBase-root")[0]?.click();
+                                        }}
+                    />
+                    <div style={{position: "absolute"}}>
+                      <DesktopDatePicker disablePast id={key} onChange={(newValue) => {
+                        const date = new Date(newValue);
+                        const formattedDate = date.toLocaleDateString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        });
+                        setFieldValue(key, formattedDate)
+                      }} slotProps={{
+                        textField: {
+                          sx: {
+                            visibility: "hidden",
+                            height: 0,
+                            width: 0
+                          }
+                        },
+                        layout: {
+                          sx: {
+                            color: '#fff',
+                            backgroundColor: '#111',
+                            '& .MuiDayCalendar-weekDayLabel': {
+                              color: '#bbb',
+                            },
+                          }
+                        },
+                        switchViewButton: {
+                          sx: {
+                            color: "#fff"
+                          }
+                        },
+                        leftArrowIcon: {
+                          sx: {
+                            color: "#fff"
+                          }
+                        },
+                        rightArrowIcon: {
+                          sx: {
+                            color: "#fff"
+                          }
+                        },
+                        day: {
+                          sx: {
+                            color: "#fff"
+                          }
+                        },
+                      }} />
+                    </div>
                   </>
                 )}
               </Field>

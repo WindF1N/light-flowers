@@ -23,6 +23,17 @@ function multiplyPrice(priceString, multiplier) {
     return `${formattedAmount}`;
 }
 
+const getNowDate = () => {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Январь это 0!
+    const yyyy = today.getFullYear();
+
+    const dateOfPost = dd + '.' + mm + '.' + yyyy;
+
+    return dateOfPost
+}
+
 function createValidationSchema(fields) {
     const shape = {};
 
@@ -152,20 +163,36 @@ function Cart() {
         },
         "date_of_post": {
             value: null,
-            isFocused: false,
+            isFocused: true,
             error: null,
             label: "Дата доставки",
-            type: "text",
-            mask: [/\d/, /\d/, '.', /\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/]
+            type: "date",
         },
         "time_of_post": {
-            value: "Не выбрано",
+            value: "16:00 - 18:00",
             error: null,
             label: "Интервал времени доставки",
             type: "select",
             choices: [
-                "09:00 - 12:00", "12:00 - 15:00", "15:00 - 18:00", "18:00 - 21:00", "Уточнить у получателя"
+                "00:00 - 02:00", 
+                "02:00 - 04:00", 
+                "04:00 - 06:00", 
+                "06:00 - 08:00", 
+                "08:00 - 10:00", 
+                "10:00 - 12:00", 
+                "12:00 - 14:00", 
+                "14:00 - 16:00", 
+                "16:00 - 18:00", 
+                "18:00 - 20:00",
+                "20:00 - 22:00", 
+                "22:00 - 00:00",
             ]
+        },
+        "request_datetime": {
+            value: "Уточнить у получателя",
+            error: null,
+            label: "Уточнить у получателя",
+            type: "radio"
         },
         "receiver_name": {
             value: null,
@@ -344,7 +371,8 @@ function Cart() {
                                     </div>
                                     <div style={{marginLeft: "auto", display: "flex", flexFlow: "column", alignItems: "flex-end", marginTop: "auto", gap: 5}}>
                                         <div style={{fontSize: 15, fontWeight: 300, color: "#fff"}}>{multiplyPrice(getPrice(index), item.count)} ₽</div>
-                                        <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{getPrice(index)} / шт</div>
+                                        {item.count > 1 &&
+                                        <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{getPrice(index)} / шт</div>}
                                     </div>
                                 </div>
                             </div>
@@ -368,8 +396,9 @@ function Cart() {
                             "delivery": "Курьером",
                             "city": "Сочи",
                             "address": "",
-                            "date_of_post": "",
-                            "time_of_post": "Уточнить у получателя",
+                            "date_of_post": getNowDate(),
+                            "time_of_post": "16:00 - 18:00",
+                            "request_datetime": "",
                             "receiver_name": "",
                             "receiver_phone": "",
                             "text_of_postcard": "",
@@ -392,18 +421,47 @@ function Cart() {
                                     {values.request_address === true ?
                                       <FormLIGHT inputs={Object.entries(inputs).slice(5, 7).splice(1, 1)} setInputs={setInputs} errors={errors} touched={touched} values={values} />
                                     : <FormLIGHT inputs={Object.entries(inputs).slice(4, 7)} setInputs={setInputs} errors={errors} touched={touched} values={values} />}
-                                    <FormLIGHT inputs={Object.entries(inputs).slice(7, 9)} setInputs={setInputs} errors={errors} touched={touched} />
+                                    <FormLIGHT inputs={Object.entries(inputs).slice(7, 10)} setInputs={setInputs} errors={errors} touched={touched} />
                                 </>}
                                 <FormLIGHT inputs={Object.entries(inputs).slice(1, 4)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(9, 11)} setInputs={setInputs} errors={errors} touched={touched} />
-                                <FormLIGHT inputs={Object.entries(inputs).slice(11, 14)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(10, 12)} setInputs={setInputs} errors={errors} touched={touched} />
+                                <FormLIGHT inputs={Object.entries(inputs).slice(12, 15)} setInputs={setInputs} errors={errors} touched={touched} />
                                 <div style={{display: "flex", flexFlow: "column", gap: 10}}>
                                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                                        <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>Сумма</div>
-                                        <div style={{fontSize: 16, fontWeight: 300, color: "#bbb"}}>{total} ₽</div>
-                                    </div>
+                                        <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>Ваш заказ</div>
+                                    </div>     
+                                </div>
+                                <div style={{display: "flex", flexFlow: "column", rowGap: 20}}>
+                                    {cartItems.map((item, index) => (
+                                        <div style={{borderBottom: "0.5px solid #18181A", paddingBottom: 20, position: "relative", display: "flex", columnGap: 14, alignItems: "flex-start"}}>
+                                            <div style={{position: "relative", width: "100%", display: "flex", rowGap: 5, flexShrink: 0}}>
+                                                <div style={{flexShrink: 1, marginTop: 5, width: "100%", display: "flex", flexFlow: "column", gap: 10, justifyContent: "center"}}>
+                                                    <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexShrink: 1}}>
+                                                        <div style={{fontSize: 14, fontWeight: 400}}>{item.product.title} x {item.count} шт.</div>
+                                                    </div>
+                                                    <div style={{display: "flex", justifyContent: "flex-start", alignItems: "center", columnGap: 10, rowGap: 10, width: "100%", flexShrink: 0, flexWrap: "wrap"}}>
+                                                        <div style={{display: "flex", alignItems: "center", columnGap: 8, width: "auto", flexShrink: 1}}>
+                                                            {item.product.selectedCount && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedCount} шт</div>}
+                                                            {item.product.selectedSize && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedSize}</div>}
+                                                            {item.product.selectedColor && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedColor}</div>}
+                                                            {item.product.selectedPackage && <div style={{fontSize: 14, fontWeight: 300, color: "#bbb"}}>{item.product.selectedPackage}</div>}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style={{display: "flex", justifyContent: "flex-start", width: "100%", marginTop: 5}}>
+                                                    <div style={{marginLeft: "auto", display: "flex", flexFlow: "column", alignItems: "flex-end", gap: 5}}>
+                                                        <div style={{fontSize: 15, fontWeight: 300, color: "#fff"}}>{multiplyPrice(getPrice(index), item.count)} ₽</div>
+                                                        {item.count > 1 &&
+                                                        <div style={{fontSize: 14, fontWeight: 300, color: "#8F8E93"}}>{getPrice(index)} / шт</div>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div style={{display: "flex", flexFlow: "column", gap: 10}}>
                                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                                        <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>Итоговая сумма</div>
+                                        <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>Итого</div>
                                         <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total} ₽</div>
                                     </div>     
                                 </div>
