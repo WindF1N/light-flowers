@@ -1,8 +1,7 @@
 import styles from '../screens/styles/Post.module.css';
-import styles2 from '../screens/styles/Main.module.css';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSpringRef, animated, useSpring, config } from '@react-spring/web';
+import { useSpringRef, animated, useSpring } from '@react-spring/web';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import Slider from './Slider';
 import MiniSlider from './MiniSlider';
@@ -10,6 +9,7 @@ import Button from './Button';
 import Hint from './Hint';
 import Contact from './Contact';
 import { useMainContext } from '../context';
+import { display } from '@mui/system';
 
 function multiplyPrice(priceString, multiplier) {
   // Удаляем все символы, кроме цифр и пробелов, из строки цены
@@ -55,7 +55,7 @@ function Post({ postData, type, parent, basePathUrl }) {
   const toggle = () => {
     window.history.replaceState({}, '', '/card/' + data._id);
     // sendMessage(JSON.stringify(["cards", "filter", {"category": "Розы с любовью" }, 6]))
-    sendMessage(JSON.stringify(["cards", "filter", {"category": "Подарки"}, 6]))
+    // sendMessage(JSON.stringify(["cards", "filter", {"category": "Подарки"}, 6]))
     api.start({ transform: "scale(1.05)", config: { duration: 200 } });
     setTimeout(() => {
       api.start({ transform: "scale(1)", config: { duration: 200 } });
@@ -90,13 +90,9 @@ function Post({ postData, type, parent, basePathUrl }) {
   const [ selectedPackage, setSelectedPackage ] = useState(packages[0] || null);
   const [ posts, setPosts ] = useState([]);
   const [ touchStartY, setTouchStartY ] = useState(null);
-  const [ modalMainTopOffset, setModalMainTopOffset ] = useState(null);
   const closing = useRef(false);
   const handleTouchStart = (e) => {
     setTouchStartY(e.touches[0].screenY);
-    if (modalMainRef.current) {
-      setModalMainTopOffset(modalMainRef.current.getBoundingClientRect().top)
-    }
   }
   const handleTouchMove = (e) => {
     if (modalMainRef.current && !closing.current) {
@@ -313,19 +309,19 @@ function Post({ postData, type, parent, basePathUrl }) {
           </div>
         </animated.div>}
       {type === "block-small" &&
-        <animated.div style={{width: "calc(40vw - 20px)", position: "relative", height: "100%", zIndex: 1, ...props}}>
+        <animated.div style={{width: "calc(30vw - 20px)", position: "relative", height: "100%", zIndex: 1, ...props}}>
           <div ref={postDivRef} onClick={(e) => handleCart(e, 1)} style={{position: "relative", display: "flex", flexFlow: "column", rowGap: 10, height: "100%"}}>
-            <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(40vw - 20px)"}}>
+            <div style={{flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 9, height: "calc(30vw - 20px)"}}>
               <LazyLoadImage visibleByDefault={true} src={data.images[0]?.file} placeholderSrc={data.images[0]?.file_lazy} style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </div>
-            <div style={{display: "flex", justifyContent: "flex-end", alignItems: "center", position: "absolute", top: "calc(40vw - 53px)", width: "calc(40vw - 30px)", height: 28, marginRight: 10}}>
-              <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
+            <div style={{display: "flex", justifyContent: "flex-end", alignItems: "center", position: "absolute", top: "calc(30vw - 53px)", width: "calc(30vw - 30px)", height: 28, marginRight: 10}}>
+              <animated.div onClick={(e) => handleCart(e, 0)} style={{width: 24, height: 24, zIndex: 1, position: "absolute", right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsRemoveFromCart}}>
                 <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </animated.div>
               <animated.div ref={divCountItemsCartRef} style={{borderRadius: 4, padding: "0 28px", height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", marginRight: divCountItemsCartRef.current?.offsetWidth * 0.2 || 10, zIndex: 0, ...propsCountItemsCart}}>
                 <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
               </animated.div>
-              <animated.div onClick={(e) => handleCart(e, 1)} style={{width: 28, height: 28, zIndex: 1, position: "absolute", right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsAddFromCart}}>
+              <animated.div onClick={(e) => handleCart(e, 1)} style={{width: 24, height: 24, zIndex: 1, position: "absolute", right: 0, marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center", ...propsAddFromCart}}>
                 <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
               </animated.div>
             </div>
@@ -422,11 +418,11 @@ function Post({ postData, type, parent, basePathUrl }) {
                                   borderTopLeftRadius: 25, 
                                   borderTopRightRadius: 25, 
                                   position: "relative",
-                                  marginTop: "10vh",
+                                  marginTop: "15vh",
                                   ...modalPropsMain}}
                           ref={modalMainRef}>
               <div
-                style={{position: "absolute", top: "-10vh", height: "20vh", width: "100vw", display: "flex", justifyContent: "center", zIndex: 1}}
+                style={{position: "absolute", top: "-15vh", height: "25vh", width: "100vw", display: "flex", justifyContent: "center", zIndex: 1}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -438,9 +434,9 @@ function Post({ postData, type, parent, basePathUrl }) {
                 <div style={{marginTop: "-18vw", position: "relative", zIndex: 3}}>
                   <MiniSlider images={data.images} imagesDivRef={imagesDivRef} activeImage={activeImage} image_color={data.image_color} setSelectedColor={setSelectedColor} setSelectedCount={setSelectedCount} />
                 </div>}
-              <div className={styles.price} style={{padding: data.images.length > 1 ? "30px 15px 10px 15px" : "10px 15px 10px 15px"}}>
-                <div className={styles.title}>{!newPrice ? data.price : newPrice.price}</div>
-                <div className={styles.actions}>
+              <div className={styles.price} style={{padding: data.images.length > 1 ? "30px 15px 0px 15px" : "10px 15px 0px 15px", position: "relative"}}>
+                <div className={styles.title} style={{fontWeight: 400, fontSize: 20, maxWidth: "85%"}}>{data.title}</div>
+                <div className={styles.actions} style={{position: "absolute", right: 15, top: data.images.length > 1 ? 25 : 10}}>
                   {/* <div className={styles.action} style={{color: "#8F8E93"}}>
                     <img src={require("../screens/images/compare.svg").default} alt="" />
                     Сравнить
@@ -449,7 +445,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                     <img src={require("../components/images/like.svg").default} alt="" />
                     Избранное
                   </div> */}
-                  <div className={styles.action} style={{color: "#8F8E93"}} onClick={() => {
+                  <div className={styles.action} style={{color: "#fff", fontSize: 9, fontWeight: 100}} onClick={() => {
                     if (navigator.share) {
                       navigator.share({
                         title: data.title,
@@ -462,11 +458,11 @@ function Post({ postData, type, parent, basePathUrl }) {
                       console.log('Web Share API не поддерживается в вашем браузере');
                     }
                   }}>
-                    <img src={require("../screens/images/share.svg").default} alt="" />
+                    <img src={require("../components/images/share-white.svg").default} alt="" style={{marginBottom: 0, height: 40}} />
                     Поделиться
                   </div>
                   {(account.user?.username === "thecreatxr" || account.user?.username === "Mr_Romadanov") &&
-                  <div className={styles.action} style={{color: "#8F8E93"}} onClick={() => {
+                  <div className={styles.action} style={{color: "#fff", fontSize: 9, fontWeight: 100}} onClick={() => {
                     window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
                     setPosts([]);
                     document.querySelector("html").style.overflow = "auto";
@@ -476,20 +472,20 @@ function Post({ postData, type, parent, basePathUrl }) {
                     setIsOpenPost(false);
                     navigate("/edit/" + data._id);
                   }}>
-                    <img src={require("./images/settings.svg").default} alt="" />
+                    <img src={require("./images/settings.svg").default} alt="" style={{marginBottom: 0, height: 40}} />
                     Настройки
                   </div>}
                 </div>
               </div>
-              <div style={{fontSize: 18, fontWeight: 300, padding: "5px 15px 20px 15px"}}>{data.title} </div>
-              <div style={{paddingBottom: [...colors, ...counts, ...sizes, ...packages].length > 0 ? 0 : 30}}>
+              <div style={{fontSize: 18, fontWeight: 200, padding: "10px 15px 30px 15px"}}>{!newPrice ? data.price : newPrice.price}</div>
+              <div style={{paddingBottom: [...colors, ...counts, ...sizes, ...packages].length > 0 ? 10 : 0}}>
                 {colors.length > 0 &&
-                <div style={{padding: "0px 15px 30px 15px"}}>
-                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
+                <div style={{padding: "0px 15px 20px 15px"}}>
+                  <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Цвет</div>
                   <div style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    gap: 10
+                    gap: 6
                   }}>
                     {colors.map((color, index) => (
                       <div key={"color" + index} 
@@ -500,7 +496,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                             padding: "4px 7px",
                             borderRadius: 4,
                             background: selectedColor === color ? "#fff" : "rgb(24, 24, 26)",
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: 300,
                             color: selectedColor === color ? "#000" : "#fff"
                           }}
@@ -524,12 +520,12 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>}
                 {counts.length > 0 &&    
-                <div style={{padding: "0 15px 30px 15px"}}>
-                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Кол-во стеблей</div>
+                <div style={{padding: "0 15px 20px 15px"}}>
+                  <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Кол-во стеблей</div>
                   <div style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    gap: 10
+                    gap: 6
                   }}>
                     {counts.map((count, index) => (
                       <div key={"count" + index} 
@@ -540,7 +536,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                             padding: "4px 7px",
                             borderRadius: 4,
                             background: selectedCount === count ? "#fff" : "rgb(24, 24, 26)",
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: 300,
                             color: selectedCount === count ? "#000" : "#fff"
                           }}
@@ -564,12 +560,12 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>}
                 {sizes.length > 0 &&
-                <div style={{padding: "0 15px 30px 15px"}}>
-                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Размер букета</div>
+                <div style={{padding: "0 15px 20px 15px"}}>
+                  <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Высота букета</div>
                   <div style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    gap: 10
+                    gap: 6
                   }}>
                     {sizes.map((size, index) => (
                       <div key={"size" + index} 
@@ -580,7 +576,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                             padding: "4px 7px",
                             borderRadius: 4,
                             background: selectedSize === size ? "#fff" : "rgb(24, 24, 26)",
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: 300,
                             color: selectedSize === size ? "#000" : "#fff"
                           }}
@@ -598,12 +594,12 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>}
                 {packages.length > 0 &&
-                <div style={{padding: "0 15px 30px 15px"}}>
-                  <div style={{fontSize: 16, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Упаковка</div>
+                <div style={{padding: "0 15px 20px 15px"}}>
+                  <div style={{fontSize: 14, fontWeight: 300, paddingBottom: 10, color: "#bbb"}}>Упаковка</div>
                   <div style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    gap: 10
+                    gap: 6
                   }}>
                     {packages.map((pckg, index) => (
                       <div key={"package" + index} 
@@ -614,7 +610,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                             padding: "4px 7px",
                             borderRadius: 4,
                             background: selectedPackage === pckg ? "#fff" : "rgb(24, 24, 26)",
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: 300,
                             color: selectedPackage === pckg ? "#000" : "#fff"
                           }}
@@ -632,8 +628,8 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>}
               </div>
-              <Contact />
               <Hint product={data} selectedColor={selectedColor} selectedCount={selectedCount} selectedPackage={selectedPackage} selectedSize={selectedSize}/>
+              <Contact />
               {/* {posts.filter((post) => post.category === "Розы с любовью" && post._id !== data._id).length > 0 &&
               <>
                 <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
@@ -658,7 +654,7 @@ function Post({ postData, type, parent, basePathUrl }) {
                   </div>
                 </div>
               </>} */}
-              {(posts.filter((post) => post.category === "Подарки" && post._id !== data._id).length > 0) &&
+              {/* {(posts.filter((post) => post.category === "Подарки" && post._id !== data._id).length > 0) &&
               <>
                 <div style={{padding: "30px 15px 15px 15px", fontSize: 16, fontWeight: 300}}>
                   Рекомендуем дополнить букет
@@ -681,11 +677,10 @@ function Post({ postData, type, parent, basePathUrl }) {
                     ))}
                   </div>
                 </div>
-              </>}
+              </>} */}
               <animated.div style={{width: "100%",
                                     boxSizing: "border-box",
-                                    minHeight: "90px",
-                                    padding: "20px 20px 25px 20px",
+                                    padding: "20px 20px 30px 20px",
                                     background: "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(26, 24, 24, 1) 100%)", 
                                     position: "fixed",
                                     marginTop: 30, 
@@ -694,41 +689,41 @@ function Post({ postData, type, parent, basePathUrl }) {
                                     justifyContent: "space-between",
                                     flexFlow: "column",
                                     ...modalPropsCart}}>
-                {cartItems.filter((item) => item.product.category === "Подарки").length > 0 &&
+                {/* {cartItems.filter((item) => item.product.category === "Подарки").length > 0 &&
                 <div style={{position: "relative", display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 20}}>
                   {cartItems.filter((item) => item.product.category === "Подарки").map((item, index) => (
                     <span key={index} style={{fontSize: 12, fontWeight: 300, padding: 3, background: "#2C2C2E", borderRadius: 4}}>
                       {item.product.title}, {item.count} шт {multiplyPrice(item.product.price, item.count)} ₽
                     </span>
                   ))}  
-                </div>}
+                </div>} */}
                 <div style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                   width: "100%"
                 }}>
-                  <div style={{display: "flex", flexFlow: "column"}}>
+                  {/* <div style={{display: "flex", flexFlow: "column"}}>
                     <div style={{fontSize: 14, fontWeight: 300, color: "#bbb", marginTop: "auto"}}>{!newPrice ? data.price : newPrice.price}</div>
                     <div style={{fontSize: 14, fontWeight: 300, marginTop: 5}}>{data.title}</div>
                     {data.category === "Розы с любовью" &&
                     <div style={{fontSize: 11, fontWeight: 300, marginTop: 2, color: "#8F8E93"}}>Открытка в подарок</div>}
-                  </div>
-                  <div style={{flexShrink: 0, marginTop: "auto", marginBottom: cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ? 0 : 10}}>
+                  </div> */}
+                  <div style={{flexShrink: 0, marginTop: "auto", width: "100%"}}>
                     {cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data)).length > 0 ?
-                    <div style={{display: "flex", alignItems: "flex-end", flexFlow: "column", gap: 10}}>
-                      <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 28, flexShrink: 0}}>
-                        <div onClick={(e) => handleCart(e, 0)} style={{marginRight: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                    <div style={{display: "flex", alignItems: "center", gap: 25}}>
+                      <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: 40, flexShrink: 0}}>
+                        <div onClick={(e) => handleCart(e, 0)} style={{marginRight: -4, width: 40, height: 40, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
                           <img src={require("../screens/images/remove-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
                         </div>
-                        <div style={{width: 44, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#1C1C1E", zIndex: 0}}>
+                        <div style={{width: 44, height: 40, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0}}>
                           <div style={{fontSize: 16, fontWeight: 300, lineHeight: 1}}>{cartItems.filter((item) => JSON.stringify(item.product) === JSON.stringify(data))[0]?.count}</div>
                         </div>
-                        <div onClick={(e) => handleCart(e, 1)} style={{marginLeft: -4, width: 28, height: 28, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                        <div onClick={(e) => handleCart(e, 1)} style={{marginLeft: -4, width: 40, height: 40, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>
                           <img src={require("../screens/images/add-to-cart.svg").default} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
                         </div>
                       </div>
-                      <Button text="Оформить" small={true} handleClick={(e) => {
+                      <Button text={"Просмотреть корзину (" + cartItems.map(item => item.count).reduce((total, count) => total + count, 0) + ")"}  handleClick={(e) => {
                         window.history.replaceState({}, '', basePathUrl + "?card_id=" + data._id);
                         setPosts([]);
                         document.querySelector("html").style.overflow = "auto";
@@ -737,9 +732,29 @@ function Post({ postData, type, parent, basePathUrl }) {
                         document.querySelector("body").style.top = "0px";
                         setIsOpenPost(false);
                         navigate("/cart");
+                      }} style={{
+                        fontWeight: 500,
+                        fontSize: 16,
+                        borderRadius: 22,
+                        height: 60,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "linear-gradient(125deg, rgb(239 7 50) 0%, rgb(253 68 59) 100%)"
                       }} />
                     </div>
-                    : <Button text="В корзину" small={true} handleClick={(e) => handleCart(e, 1)} />}
+                    : <div style={{display: "flex", alignItems: "center", width: "100%"}}>
+                        <Button text="Добавить в корзину" handleClick={(e) => handleCart(e, 1)} style={{
+                          fontWeight: 500,
+                          fontSize: 16,
+                          borderRadius: 22,
+                          height: 60,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "linear-gradient(125deg, rgb(239 7 50) 0%, rgb(253 68 59) 100%)"
+                        }} />
+                      </div>}
                   </div>
                 </div>
               </animated.div>

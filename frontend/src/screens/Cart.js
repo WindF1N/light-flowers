@@ -6,6 +6,7 @@ import ScrollToError from '../components/ScrollToError';
 import { Formik, Form } from 'formik';
 import FormLIGHT from '../components/FormLIGHT';
 import SendedHover from '../components/SendedHover';
+import Post from '../components/Post';
 import { useMainContext } from '../context';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -227,6 +228,7 @@ function Cart() {
         },
     });
     useEffect(() => {
+        sendMessage(JSON.stringify(["cards", "filter", {"category": "Подарки"}, 10]))
         window.scrollTo({top: 0, smooth: "behavior"});
     }, [])
     const handleCart = (index, type) => {
@@ -326,6 +328,21 @@ function Cart() {
           setMessage(null);
         };
     }, [message]);
+    const [ posts, setPosts ] = useState([]);
+    useEffect(() => {
+        console.log(message);
+        if (message && window.location.pathname === '/cart') {
+          if (message[0] === 'cards') {
+            if (message[1] === 'filter') {
+              setPosts(prevState => [...prevState, ...message[2].filter(item => {
+                const isInMessage = prevState.some(msgItem => msgItem._id === item._id);
+                return !isInMessage;
+              })]);
+            }
+          }
+          setMessage(null);
+        };
+      }, [message]);
     if (cartItems.length > 0) {
         return (
             <div className="view">
@@ -379,6 +396,21 @@ function Cart() {
                         </div>
                     ))}
                 </div>
+                {(posts.filter((post) => post.category === "Подарки" && !cartItems.some((item) => item.product._id === post._id)).length > 0) &&
+                <div style={{marginLeft: -15}}>
+                    <div style={{padding: "20px 0 15px 15px", fontSize: 16, fontWeight: 300}}>
+                        Рекомендуем дополнить заказ
+                    </div>
+                    <div style={{borderBottom: "0.5px solid #18181A", overflowX: "auto", width: "100vw", paddingBottom: 15}} className="no-scrollbar">
+                        <div style={{display: "flex", flexWrap: "nowrap", gap: 10, paddingLeft: 15}}>
+                            {posts.filter((post) => post.category === "Подарки" && !cartItems.some((item) => item.product._id === post._id)).map((post, index) => (
+                                <div key={post._id} style={{paddingRight: index === posts.filter((post) => post.category === "Подарки" && !cartItems.some((item) => item.product._id === post._id)).length - 1 ? 15 : 0}}>
+                                    <Post postData={post} type="block-small" basePathUrl={"/cart"}/>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>}
                 <div style={{display: "flex", justifyContent: "space-between", padding: "10px 0"}}>
                     <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>Сумма</div>
                     <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total} ₽</div>
@@ -465,7 +497,16 @@ function Cart() {
                                         <div style={{fontSize: 18, fontWeight: 300, color: "#fff"}}>{total} ₽</div>
                                     </div>     
                                 </div>
-                                <Button text="Подтвердить заказ" handleClick={handleSubmit} />
+                                <Button text="Подтвердить заказ" handleClick={handleSubmit} style={{
+                                    fontWeight: 500, 
+                                    fontSize: 16,
+                                    borderRadius: 12,
+                                    height: 44,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    background: "#323234"
+                                }} />
                             </div>
                             <ScrollToError/>
                         </Form>
@@ -492,7 +533,16 @@ function Cart() {
             }}>
                 <div style={{fontSize: 18, fontWeight: 300, color: "#bbb"}}>Ваша корзина пустая</div>
                 <div>
-                    <Button text={"Выбрать букет"} small={true} handleClick={() => navigate("/search", {replace: true})} />
+                    <Button text={"Выбрать букет"} small={true} handleClick={() => navigate("/search", {replace: true})} style={{
+                        fontWeight: 500, 
+                        fontSize: 16,
+                        borderRadius: 12,
+                        height: 44,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "#323234"
+                    }} />
                 </div>
             </div>
         )

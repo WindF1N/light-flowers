@@ -2,7 +2,6 @@ import styles from './styles/Main.module.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Post from '../components/Post';
-import Button from '../components/Button';
 import { useMainContext } from '../context';
 import { useSpringRef, animated, useSpring } from '@react-spring/web';
 
@@ -239,7 +238,7 @@ function Main() {
                 <li style={{paddingBottom: 10}}>Доставка:<br/>Как только букет будет готов, курьер доставит его указанному получателю.<br/>Вы получите фотоотчет о вручении и уведомление о доставке.</li>
               </ul>
               <p>
-                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a> или написать в <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a>  для консультации и помощи в оформлении и оплате заказа.<br/><br/>
+                Если у вас возникнут вопросы или потребуется помощь в процессе заказа, вы можете связаться с нами по телефону <a href="tel:+79933074710" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 993 30 74 710</a> или написать в <a href="https://wa.me/79933074710" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="https://t.me/LIGHTbusinessRose" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a> для консультации и помощи в оформлении и оплате заказа.<br/><br/>
                 Мы доступны круглосуточно и всегда рады помочь
               </p>
               {/* <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 10, display: "block"}}>В какое время работает ваш интернет-магазин?</span>
@@ -266,7 +265,7 @@ function Main() {
             <div className={styles.informationdescription}>
               <ul style={{paddingLeft: 20}}>
                 <li style={{paddingBottom: 10}}>Стоимость доставки рассчитывается индивидуально, исходя из адреса получателя. Уточнить точную сумму можно при оформлении заказа.</li>
-                <li>По вопросам стоимости доставки вы можете связаться с нами по телефону <a href="tel:+79667757966" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 (966) 77 57 966</a> или написать в <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="#" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a></li>
+                <li>По вопросам стоимости доставки вы можете связаться с нами по телефону <a href="tel:+79933074710" style={{ textDecoration: 'none', color: '#0066CC' }}>+7 993 30 74 710</a> или написать в <a href="https://wa.me/79933074710" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#0066CC' }}>WhatsApp</a> или <a href="https://t.me/LIGHTbusinessRose" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#0066CC' }}>Telegram</a></li>
               </ul>
               <span className={styles.ptitle} style={{fontWeight: 300, paddingTop: 5, display: "block"}}>Самовывоз:</span>
               <ul style={{paddingLeft: 20}}>
@@ -306,16 +305,20 @@ function Main() {
           </div>
         </div>
         <div className={styles.contacts}>
-          <div className={styles.telephone} style={theme === "Dark" ? {color: "#000"} : null}><a href="tel:+79667757966" style={{ textDecoration: 'none', color: 'inherit' }}>+7 966 77 57 966</a></div>
+          <div className={styles.telephone} style={theme === "Dark" ? {color: "#000"} : null}><a href="tel:+79933074710" style={{ textDecoration: 'none', color: 'inherit' }} rel="noopener noreferrer">+7 993 307 47 10</a></div>
           <div className={styles.icons}>
-            <img src={require("./images/telegram.svg").default} className="" alt="telegram" />
-            <img src={require("./images/whatsapp.svg").default} className="" alt="whatsapp" />
+            <a href="https://t.me/LIGHTbusinessRose" target="_blank" rel="noopener noreferrer">
+              <img src={require("./images/telegram.svg").default} alt="telegram" />
+            </a>
+            <a href="https://wa.me/79933074710" target="_blank" rel="noopener noreferrer">
+              <img src={require("./images/whatsapp.svg").default} alt="whatsapp" />
+            </a>
           </div>
         </div>
         <div className={styles.map}>
           <div className={styles.mapaddress}>г.Сочи, ул. Горького, 89 Б.</div>
           <div className={styles.map_24124}>
-            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Aaaf447bdbb779d61d8f9ff0bfe4c0678b2bc275dff9c32f8950c336ecc1ab18a&amp;source=constructor" width="100%" height="200" frameBorder="0"></iframe>
+            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Aaaf447bdbb779d61d8f9ff0bfe4c0678b2bc275dff9c32f8950c336ecc1ab18a&amp;source=constructor" width="100%" height="200"></iframe>
           </div>
         </div>
         <div className={styles.labelBy}>

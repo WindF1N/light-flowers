@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useMainContext } from './context';
 
 import FixedButton from './components/FixedButton';
@@ -15,6 +16,13 @@ import CardRoute from './components/CardRoute';
 const Navigate = () => {
 
   const { loading } = useMainContext();
+
+  useEffect(() => {
+    window.Telegram.WebApp.ready()
+    window.Telegram.WebApp.expand();
+    // window.Telegram.WebApp.enableClosingConfirmation();
+    window.Telegram.WebApp.disableVerticalSwipes();
+  }, [window.Telegram.WebApp])
 
   return (
     !loading ?

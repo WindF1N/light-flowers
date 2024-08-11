@@ -144,16 +144,16 @@ function Hint({ product, selectedColor, selectedCount, selectedPackage, selected
   }, [message]);
   return (
     <>
-        <animated.div style={{padding: "0 15px", display: "flex", alignItems: "center", gap: 8, marginTop: 15, ...props}} onClick={toggle}>
-            <div style={{height: 27}}>
+        <animated.div style={{padding: "0 15px", display: "flex", alignItems: "center", gap: 8, marginBottom: 20, ...props}} onClick={toggle}>
+            <div style={{height: 20}}>
                 <img src={require("../screens/images/lips.png")} className="" alt="whatsapp" style={{height: "100%"}} />
             </div>
             <div style={{
                 background: "linear-gradient(to left, #EF0E37 0%, #FF0000 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                fontWeight: 400,
-                fontSize: 15
+                fontWeight: 500,
+                fontSize: 14
             }}>
                 Намекнуть о подарке
             </div>
@@ -214,7 +214,16 @@ function Hint({ product, selectedColor, selectedCount, selectedPackage, selected
                       <Form>
                           <div style={{display: "flex", gap: 20, flexFlow: "column"}}>
                               <FormLIGHT inputs={Object.entries(inputs).slice(0, 3)} setInputs={setInputs} errors={errors} touched={touched} />
-                              <Button text="Отправить" handleClick={handleSubmit} />
+                              <Button text="Отправить" handleClick={handleSubmit} style={{
+                                    fontWeight: 500, 
+                                    fontSize: 16,
+                                    borderRadius: 12,
+                                    height: 44,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    background: "#323234"
+                              }}/>
                           </div>
                           <ScrollToError/>
                       </Form>

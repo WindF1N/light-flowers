@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wdth,wght@0,75..100,100..800;1,75..100,100..800&display=swap');
 
 :root {
   --main-bg-color: #000000;
@@ -9,7 +9,8 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "Roboto", sans-serif;
+  font-family: "Ubuntu Sans", sans-serif;
+  font-optical-sizing: auto;
   background-color: var(--main-bg-color);
   color: var(--main-font-color);
   user-select: none;
